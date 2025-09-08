@@ -1,0 +1,32 @@
+{
+  "name": "rbf-ecommerce",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "npm@10.2.4",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "deploy:contracts": "./scripts/deploy.sh",
+    "deploy:factory": "cd contracts && forge script script/DeployFactory.s.sol:DeployFactory --rpc-url base_sepolia --broadcast --verify",
+    "test:contracts": "cd contracts && forge test",
+    "lint": "turbo lint",
+    "clean": "turbo clean"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.7.0",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@vitejs/plugin-react": "^5.0.0",
+    "@vitest/ui": "^3.2.4",
+    "jsdom": "^26.1.0",
+    "turbo": "^2.5.4",
+    "vitest": "^3.2.4"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.1"
+  }
+}
