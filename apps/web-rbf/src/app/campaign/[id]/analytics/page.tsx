@@ -113,7 +113,11 @@ export default function CampaignAnalyticsPage() {
       </div>
 
       {/* Analytics Content */}
-      <CampaignAnalytics campaign={campaign} />
+      <CampaignAnalytics 
+        campaignId={campaignId} 
+        businessName={campaign.metadata?.businessName}
+        website={campaign.metadata?.website}
+      />
     </div>
   );
 }
