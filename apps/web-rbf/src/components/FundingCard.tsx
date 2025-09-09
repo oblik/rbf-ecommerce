@@ -50,8 +50,8 @@ export default function FundingCard({ campaignId, onFundClick }: FundingCardProp
     );
   }
 
-  const progressPercentage = (Number(campaign.totalRaised) / Number(campaign.fundingGoal)) * 100;
-  const remainingAmount = Number(campaign.fundingGoal) - Number(campaign.totalRaised);
+  const progressPercentage = (Number(campaign.totalFunded) / Number(campaign.fundingGoal)) * 100;
+  const remainingAmount = Number(campaign.fundingGoal) - Number(campaign.totalFunded);
   const daysLeft = Math.max(0, Math.floor((Number(campaign.deadline) * 1000 - Date.now()) / (1000 * 60 * 60 * 24)));
 
   if (isSuccess) {
@@ -96,7 +96,7 @@ export default function FundingCard({ campaignId, onFundClick }: FundingCardProp
         <div className="space-y-3">
           <div className="flex justify-between">
             <span className="text-sm text-gray-600">Raised:</span>
-            <span className="font-semibold">${Number(campaign.totalRaised).toLocaleString()}</span>
+            <span className="font-semibold">${Number(campaign.totalFunded).toLocaleString()}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-sm text-gray-600">Goal:</span>

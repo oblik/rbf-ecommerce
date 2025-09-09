@@ -36,9 +36,9 @@ export default function CampaignManagementCard({
 }: CampaignManagementCardProps) {
   const [showActions, setShowActions] = useState(false);
 
-  const progressPercentage = (Number(campaign.totalRaised) / Number(campaign.fundingGoal)) * 100;
+  const progressPercentage = (Number(campaign.totalFunded) / Number(campaign.fundingGoal)) * 100;
   const daysLeft = Math.max(0, Math.floor((Number(campaign.deadline) * 1000 - Date.now()) / (1000 * 60 * 60 * 24)));
-  const raised = Number(campaign.totalRaised);
+  const raised = Number(campaign.totalFunded);
   const goal = Number(campaign.fundingGoal);
 
   return (

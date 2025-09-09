@@ -88,7 +88,7 @@ export default function DashboardPage() {
     if (filter === 'all') return true;
     if (filter === 'active') return campaign.isActive;
     if (filter === 'ended') return !campaign.isActive;
-    if (filter === 'draft') return Number(campaign.totalRaised) === 0;
+    if (filter === 'draft') return Number(campaign.totalFunded) === 0;
     return true;
   });
 

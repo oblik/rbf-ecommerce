@@ -131,7 +131,7 @@ export default function FundCampaignPage() {
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Raised:</span>
-                  <span className="font-semibold">${Number(campaign.totalRaised).toLocaleString()}</span>
+                  <span className="font-semibold">${Number(campaign.totalFunded).toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Goal:</span>

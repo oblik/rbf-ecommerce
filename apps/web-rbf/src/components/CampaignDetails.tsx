@@ -46,7 +46,7 @@ export default function CampaignDetails({ campaignId }: CampaignDetailsProps) {
     { id: 'comments', label: 'Comments' },
   ];
 
-  const progressPercentage = (Number(campaign.totalRaised) / Number(campaign.fundingGoal)) * 100;
+  const progressPercentage = (Number(campaign.totalFunded) / Number(campaign.fundingGoal)) * 100;
   const daysLeft = Math.max(0, Math.floor((Number(campaign.deadline) * 1000 - Date.now()) / (1000 * 60 * 60 * 24)));
 
   return (
