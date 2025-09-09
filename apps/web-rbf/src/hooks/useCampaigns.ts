@@ -1,12 +1,31 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { createPublicClient, http } from 'viem';
-import { baseSepolia } from 'viem/chains';
-import { factoryAbi } from '@/abi/factory';
-import { campaignAbi } from '@/abi/campaign';
+import { useQuery } from '@apollo/client';
+import { gql } from '@apollo/client';
 
 const IPFS_GATEWAY = process.env.NEXT_PUBLIC_IPFS_GATEWAY || 'https://gateway.pinata.cloud/ipfs/';
+
+const GET_ALL_CAMPAIGNS = gql`
+  query GetAllCampaigns {
+    campaigns(orderBy: createdAt, orderDirection: desc) {
+      id
+      campaignId
+      creator
+      metadataURI
+      deadline
+      goalAmount
+      totalRaised
+      totalDirectTransfers
+      actualBalance
+      ended
+      tokenAddress
+      state
+      claimed
+      createdAt
+    }
+  }
+`;
 
 interface CampaignMetadata {
   title: string;
@@ -32,101 +51,69 @@ interface Campaign {
   metadata: CampaignMetadata | null;
 }
 
+async function getIPFSMetadata(cid: string): Promise<CampaignMetadata | null> {
+  if (!cid) return null;
+  try {
+    const url = `${IPFS_GATEWAY}${cid.replace('ipfs://', '')}`;
+    const response = await fetch(url);
+    if (!response.ok) {
+      console.error(`Failed to fetch metadata from IPFS: ${response.statusText}`);
+      return null;
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching or parsing IPFS metadata:", error);
+    return null;
+  }
+}
+
 export function useCampaigns() {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data, loading, error, refetch } = useQuery(GET_ALL_CAMPAIGNS, {
+    fetchPolicy: 'network-only',
+  });
 
   useEffect(() => {
-    fetchCampaigns();
-  }, []);
+    if (data?.campaigns) {
+      processCampaigns();
+    }
+  }, [data]);
 
-  const fetchCampaigns = async () => {
+  const processCampaigns = async () => {
+    if (!data?.campaigns) return;
+
     try {
-      setLoading(true);
-      setError(null);
-
-      const publicClient = createPublicClient({
-        chain: baseSepolia,
-        transport: http(process.env.NEXT_PUBLIC_RPC_URL),
-      });
-
-      const factoryAddress = process.env.NEXT_PUBLIC_FACTORY_ADDRESS as `0x${string}`;
-      
-      if (!factoryAddress) {
-        throw new Error('Factory address not configured');
-      }
-
-      // Get all campaigns from factory
-      const campaignAddresses = await publicClient.readContract({
-        address: factoryAddress,
-        abi: factoryAbi,
-        functionName: 'getCampaigns',
-      }) as `0x${string}`[];
-
-      // Fetch details for each campaign
-      const campaignPromises = campaignAddresses.map(async (address) => {
-        try {
-          // Get campaign details
-          const [details, metadataURI] = await Promise.all([
-            publicClient.readContract({
-              address,
-              abi: campaignAbi,
-              functionName: 'getCampaignDetails',
-            }) as Promise<any>,
-            publicClient.readContract({
-              address,
-              abi: campaignAbi,
-              functionName: 'metadataURI',
-            }) as Promise<string>,
-          ]);
-
-          // Fetch metadata from IPFS
-          let metadata: CampaignMetadata | null = null;
-          if (metadataURI) {
-            try {
-              const url = `${IPFS_GATEWAY}${metadataURI.replace('ipfs://', '')}`;
-              const response = await fetch(url);
-              if (response.ok) {
-                metadata = await response.json();
-              }
-            } catch (e) {
-              console.error(`Failed to fetch metadata for ${address}:`, e);
-            }
-          }
-
-          return {
-            address: address as `0x${string}`,
-            owner: await publicClient.readContract({
-              address,
-              abi: campaignAbi,
-              functionName: 'owner',
-            }) as string,
-            fundingGoal: details[0].toString(),
-            totalFunded: details[1].toString(),
-            revenueSharePercent: Number(details[3]),
-            repaymentCap: Number(details[4]),
-            fundingActive: details[5],
-            repaymentActive: details[6],
-            metadata,
-          };
-        } catch (e) {
-          console.error(`Failed to fetch campaign ${address}:`, e);
-          return null;
+      const campaignPromises = data.campaigns.map(async (campaign: any) => {
+        let metadata: CampaignMetadata | null = null;
+        
+        if (campaign.metadataURI) {
+          metadata = await getIPFSMetadata(campaign.metadataURI);
         }
+
+        return {
+          address: campaign.id as `0x${string}`,
+          owner: campaign.creator,
+          fundingGoal: campaign.goalAmount.toString(),
+          totalFunded: campaign.totalRaised.toString(),
+          revenueSharePercent: 500, // Default 5% - would come from contract details
+          repaymentCap: 15000, // Default 1.5x - would come from contract details
+          fundingActive: !campaign.ended,
+          repaymentActive: false,
+          metadata,
+        };
       });
 
       const results = await Promise.all(campaignPromises);
-      const validCampaigns = results.filter((c): c is Campaign => c !== null);
-      
-      setCampaigns(validCampaigns);
+      setCampaigns(results);
     } catch (e) {
-      console.error('Failed to fetch campaigns:', e);
-      setError(e instanceof Error ? e.message : 'Failed to fetch campaigns');
-    } finally {
-      setLoading(false);
+      console.error('Failed to process campaigns:', e);
     }
   };
 
-  return { campaigns, loading, error, refetch: fetchCampaigns };
+  return { 
+    campaigns, 
+    loading, 
+    error: error?.message || null, 
+    refetch 
+  };
 }

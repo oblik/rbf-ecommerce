@@ -50,7 +50,7 @@ export default function CampaignManagementCard({
             type="checkbox"
             checked={isSelected}
             onChange={(e) => onSelect(e.target.checked)}
-            className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
           />
         </div>
 
@@ -78,7 +78,7 @@ export default function CampaignManagementCard({
               <div className="flex items-center space-x-2 mb-1">
                 <Link 
                   href={`/campaign/${campaign.address}`}
-                  className="text-lg font-semibold text-gray-900 hover:text-green-600 truncate"
+                  className="text-lg font-semibold text-gray-900 hover:text-blue-600 truncate"
                 >
                   {campaign.metadata?.title || 'Untitled Campaign'}
                 </Link>
@@ -113,7 +113,7 @@ export default function CampaignManagementCard({
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2">
                   <div 
-                    className="bg-green-600 h-2 rounded-full transition-all duration-500"
+                    className="bg-blue-600 h-2 rounded-full transition-all duration-500"
                     style={{ width: `${Math.min(progressPercentage, 100)}%` }}
                   />
                 </div>
@@ -213,7 +213,7 @@ export default function CampaignManagementCard({
             
             {campaign.isActive && (
               <div className="flex items-center space-x-2">
-                <span className="text-green-600 text-xs font-medium">Revenue sharing phase</span>
+                <span className="text-blue-600 text-xs font-medium">Revenue sharing phase</span>
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
               </div>
             )}

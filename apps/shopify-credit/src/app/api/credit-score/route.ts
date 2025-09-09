@@ -78,37 +78,58 @@ function calculateCreditScore(metrics: ShopifyMetrics): {
 
 export async function POST(request: NextRequest) {
   try {
-    const { shop } = await request.json();
+    const body = await request.json();
+    const { shop, revenueInCents, businessData, businessName, website } = body;
     
-    if (!shop) {
+    if (!shop && !businessName) {
       return NextResponse.json(
-        { error: 'Missing shop parameter' },
+        { error: 'Missing shop or businessName parameter' },
         { status: 400 }
       );
     }
 
-    console.log(`Calculating credit score for shop: ${shop}`);
+    let metrics: ShopifyMetrics;
 
-    // Mock metrics - in production, these would come from Shopify API
-    const mockMetrics: ShopifyMetrics = {
-      totalOrders: Math.floor(Math.random() * 2000) + 100,
-      totalRevenue: Math.floor(Math.random() * 1000000) + 50000,
-      averageOrderValue: Math.floor(Math.random() * 200) + 30,
-      customerCount: Math.floor(Math.random() * 1000) + 50,
-      returnRate: Math.random() * 0.3,
-      monthlyGrowthRate: (Math.random() * 0.3) - 0.1,
-    };
+    if (shop && revenueInCents !== undefined) {
+      // Real Shopify data from OAuth flow
+      console.log(`Calculating credit score for shop: ${shop} with real data`);
+      
+      const totalRevenue = revenueInCents / 100; // Convert cents to dollars
+      const orderCount = businessData?.orderCount || 0;
+      
+      metrics = {
+        totalOrders: orderCount,
+        totalRevenue: totalRevenue,
+        averageOrderValue: orderCount > 0 ? totalRevenue / orderCount : 0,
+        customerCount: Math.floor(orderCount * 0.7), // Estimate unique customers
+        returnRate: Math.random() * 0.15, // Still need to estimate, could be fetched from Shopify API
+        monthlyGrowthRate: Math.random() * 0.2, // Still need to estimate, would require historical data
+      };
+    } else {
+      // Mock data for testing or when real data unavailable
+      console.log(`Calculating credit score for business: ${businessName || shop} with mock data`);
+      
+      metrics = {
+        totalOrders: Math.floor(Math.random() * 2000) + 100,
+        totalRevenue: Math.floor(Math.random() * 1000000) + 50000,
+        averageOrderValue: Math.floor(Math.random() * 200) + 30,
+        customerCount: Math.floor(Math.random() * 1000) + 50,
+        returnRate: Math.random() * 0.3,
+        monthlyGrowthRate: (Math.random() * 0.3) - 0.1,
+      };
+    }
 
-    const creditAssessment = calculateCreditScore(mockMetrics);
+    const creditAssessment = calculateCreditScore(metrics);
 
     // Store in database or cache for retrieval
     // For now, we'll return immediately
     
     return NextResponse.json({
       message: "Credit score calculated successfully",
-      shopDomain: shop,
+      shopDomain: shop || businessName,
       assessment: creditAssessment,
       timestamp: new Date().toISOString(),
+      dataSource: revenueInCents !== undefined ? 'shopify_oauth' : 'mock',
     });
 
   } catch (error) {

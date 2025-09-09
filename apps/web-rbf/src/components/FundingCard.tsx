@@ -59,7 +59,7 @@ export default function FundingCard({ campaignId, onFundClick }: FundingCardProp
       <div className="bg-green-50 border border-green-200 rounded-xl p-6">
         <div className="text-center">
           <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
           </div>
@@ -69,7 +69,7 @@ export default function FundingCard({ campaignId, onFundClick }: FundingCardProp
           </p>
           <button
             onClick={() => window.location.reload()}
-            className="text-green-600 hover:text-green-700 underline"
+            className="text-blue-600 hover:text-green-700 underline"
           >
             View Updated Campaign
           </button>
@@ -88,7 +88,7 @@ export default function FundingCard({ campaignId, onFundClick }: FundingCardProp
         </div>
         <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
           <div 
-            className="bg-green-600 h-2 rounded-full transition-all duration-500"
+            className="bg-blue-600 h-2 rounded-full transition-all duration-500"
             style={{ width: `${Math.min(progressPercentage, 100)}%` }}
           />
         </div>
@@ -104,7 +104,7 @@ export default function FundingCard({ campaignId, onFundClick }: FundingCardProp
           </div>
           <div className="flex justify-between">
             <span className="text-sm text-gray-600">Remaining:</span>
-            <span className="font-semibold text-green-600">
+            <span className="font-semibold text-blue-600">
               ${remainingAmount.toLocaleString()}
             </span>
           </div>
@@ -143,7 +143,7 @@ export default function FundingCard({ campaignId, onFundClick }: FundingCardProp
             <button
               onClick={() => setShowFundingForm(true)}
               disabled={!isConnected}
-              className="w-full bg-green-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+              className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
               {isConnected ? 'Fund This Campaign' : 'Connect Wallet to Fund'}
             </button>
@@ -161,7 +161,7 @@ export default function FundingCard({ campaignId, onFundClick }: FundingCardProp
                     placeholder="100"
                     min="100"
                     max={remainingAmount.toString()}
-                    className="w-full px-4 py-3 pl-8 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full px-4 py-3 pl-8 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                   <span className="absolute left-3 top-3 text-gray-500">$</span>
                 </div>
@@ -180,7 +180,7 @@ export default function FundingCard({ campaignId, onFundClick }: FundingCardProp
                 <button
                   onClick={handleFund}
                   disabled={!fundAmount || isPending || isConfirming || Number(fundAmount) < 100}
-                  className="flex-1 bg-green-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                  className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
                 >
                   {isPending || isConfirming ? 'Investing...' : 'Invest'}
                 </button>

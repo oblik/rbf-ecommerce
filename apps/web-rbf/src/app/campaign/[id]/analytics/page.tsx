@@ -18,7 +18,7 @@ export default function CampaignAnalyticsPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
           <p className="text-red-800 font-medium">Invalid campaign ID</p>
-          <a href="/dashboard" className="text-green-600 hover:text-green-700 underline mt-2 inline-block">
+          <a href="/dashboard" className="text-blue-600 hover:text-green-700 underline mt-2 inline-block">
             Back to Dashboard →
           </a>
         </div>
@@ -47,7 +47,7 @@ export default function CampaignAnalyticsPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
           <p className="text-red-800 font-medium">Campaign not found</p>
-          <a href="/dashboard" className="text-green-600 hover:text-green-700 underline mt-2 inline-block">
+          <a href="/dashboard" className="text-blue-600 hover:text-green-700 underline mt-2 inline-block">
             Back to Dashboard →
           </a>
         </div>
@@ -81,7 +81,7 @@ export default function CampaignAnalyticsPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
-              <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
               Campaign Analytics
@@ -100,7 +100,7 @@ export default function CampaignAnalyticsPage() {
             </button>
             <a
               href={`/campaign/${campaignId}`}
-              className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+              className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
             >
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />

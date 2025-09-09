@@ -6,7 +6,7 @@ import { Providers } from '@/providers/Providers';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'RBF Protocol - Revenue-Based Financing for Ecommerce',
+  title: 'RevFlow - Revenue-Based Financing for Ecommerce',
   description: 'Get the capital you need to grow, pay it back as you earn',
 };
 

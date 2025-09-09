@@ -110,15 +110,15 @@ export default function CreateCampaignForm() {
     return (
       <div className="bg-green-50 border border-green-200 rounded-xl p-8 text-center">
         <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
         </div>
         <h2 className="text-2xl font-bold text-gray-900 mb-2">Campaign Created!</h2>
-        <p className="text-gray-600 mb-4">Your RBF campaign has been successfully created and is now live.</p>
+        <p className="text-gray-600 mb-4">Your RevFlow campaign has been successfully created and is now live.</p>
         <button
           onClick={() => window.location.href = '/'}
-          className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700"
+          className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
         >
           View All Campaigns
         </button>
@@ -145,7 +145,7 @@ export default function CreateCampaignForm() {
           {steps.map((step, index) => (
             <div key={step.id} className="flex items-center">
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                currentStep >= step.id ? 'bg-green-600 text-white' : 'bg-gray-200 text-gray-500'
+                currentStep >= step.id ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-500'
               }`}>
                 {step.id}
               </div>
@@ -156,7 +156,7 @@ export default function CreateCampaignForm() {
               </span>
               {index < steps.length - 1 && (
                 <div className={`w-12 h-0.5 mx-4 ${
-                  currentStep > step.id ? 'bg-green-600' : 'bg-gray-200'
+                  currentStep > step.id ? 'bg-blue-600' : 'bg-gray-200'
                 }`} />
               )}
             </div>
@@ -178,7 +178,7 @@ export default function CreateCampaignForm() {
                 value={formData.title}
                 onChange={handleInputChange}
                 placeholder="e.g., Expand Our Eco-Friendly Product Line"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               />
             </div>
@@ -193,7 +193,7 @@ export default function CreateCampaignForm() {
                 value={formData.businessName}
                 onChange={handleInputChange}
                 placeholder="e.g., GreenTech Solutions Inc."
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               />
             </div>
@@ -208,7 +208,7 @@ export default function CreateCampaignForm() {
                 value={formData.website}
                 onChange={handleInputChange}
                 placeholder="https://yourwebsite.com"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
 
@@ -222,7 +222,7 @@ export default function CreateCampaignForm() {
                 onChange={handleInputChange}
                 rows={4}
                 placeholder="Describe your business, how you'll use the funding, and your growth plans..."
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               />
             </div>
@@ -245,7 +245,7 @@ export default function CreateCampaignForm() {
                   placeholder="50000"
                   min="1000"
                   max="10000000"
-                  className="w-full px-4 py-3 pl-8 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  className="w-full px-4 py-3 pl-8 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 />
                 <span className="absolute left-3 top-3 text-gray-500">$</span>
@@ -261,7 +261,7 @@ export default function CreateCampaignForm() {
                 name="fundingPeriodDays"
                 value={formData.fundingPeriodDays}
                 onChange={(e) => setFormData(prev => ({ ...prev, fundingPeriodDays: e.target.value }))}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="7">7 days</option>
                 <option value="14">14 days</option>
@@ -291,7 +291,7 @@ export default function CreateCampaignForm() {
                     min="1"
                     max="20"
                     step="0.1"
-                    className="w-full px-4 py-3 pr-8 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full px-4 py-3 pr-8 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     required
                   />
                   <span className="absolute right-3 top-3 text-gray-500">%</span>
@@ -312,7 +312,7 @@ export default function CreateCampaignForm() {
                     min="1.1"
                     max="3.0"
                     step="0.1"
-                    className="w-full px-4 py-3 pr-8 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full px-4 py-3 pr-8 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     required
                   />
                   <span className="absolute right-3 top-3 text-gray-500">x</span>
@@ -374,7 +374,7 @@ export default function CreateCampaignForm() {
               disabled={!isStepValid}
               className={`px-6 py-2 rounded-lg font-medium ${
                 isStepValid 
-                  ? 'bg-green-600 text-white hover:bg-green-700' 
+                  ? 'bg-blue-600 text-white hover:bg-blue-700' 
                   : 'bg-gray-100 text-gray-400 cursor-not-allowed'
               }`}
             >
@@ -384,7 +384,7 @@ export default function CreateCampaignForm() {
             <button
               type="submit"
               disabled={!isConnected || isSubmitting || isPending || isConfirming}
-              className="px-8 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+              className="px-8 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
               {isSubmitting || isPending || isConfirming ? 'Creating...' : 'Create Campaign'}
             </button>

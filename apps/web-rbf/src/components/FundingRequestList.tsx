@@ -27,8 +27,8 @@ export default function FundingRequestList() {
       <div className="text-center py-12">
         <p className="text-gray-500 mb-4">No funding requests found.</p>
         <Link 
-          href="/create" 
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700"
+          href="/create-campaign" 
+          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
         >
           Create Campaign
         </Link>
@@ -82,7 +82,7 @@ function FundingRequestCard({ campaign }: { campaign: any }) {
         <div className="mb-3">
           <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
             <div 
-              className="bg-green-600 h-2 rounded-full transition-all duration-500"
+              className="bg-blue-600 h-2 rounded-full transition-all duration-500"
               style={{ width: `${Math.min(progressPercentage, 100)}%` }}
             />
           </div>
