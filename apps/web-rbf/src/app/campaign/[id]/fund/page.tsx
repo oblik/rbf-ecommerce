@@ -160,13 +160,13 @@ export default function FundCampaignPage() {
                 <div className="flex justify-between">
                   <span className="text-blue-700">Revenue Share:</span>
                   <span className="font-medium text-blue-900">
-                    {campaign.metadata?.revenueShare || 5}%
+                    {(campaign.revenueSharePercent / 100) || 5}%
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-blue-700">Repayment Cap:</span>
                   <span className="font-medium text-blue-900">
-                    {campaign.metadata?.repaymentCap || 1.5}x
+                    {(campaign.repaymentCap / 10000) || 1.5}x
                   </span>
                 </div>
                 <div className="flex justify-between">
@@ -230,12 +230,12 @@ export default function FundCampaignPage() {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-green-700">Monthly Revenue Share:</span>
-                      <span className="font-medium">{campaign.metadata?.revenueShare || 5}%</span>
+                      <span className="font-medium">{(campaign.revenueSharePercent / 100) || 5}%</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-green-700">Maximum Return:</span>
                       <span className="font-medium">
-                        ${(Number(fundAmount) * (campaign.metadata?.repaymentCap || 1.5)).toLocaleString()}
+                        ${(Number(fundAmount) * ((campaign.repaymentCap / 10000) || 1.5)).toLocaleString()}
                       </span>
                     </div>
                   </div>

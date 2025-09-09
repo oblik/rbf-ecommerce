@@ -74,20 +74,18 @@ export default function DashboardPage() {
   // Calculate aggregate stats
   const stats = {
     totalRaised: userCampaigns.reduce((sum, c) => {
-      return sum + Number(c.totalRaised || 0);
+      return sum + Number(c.totalFunded || 0);
     }, 0),
-    activeCampaigns: userCampaigns.filter(c => c.isActive).length,
-    totalBackers: userCampaigns.reduce((sum, c) => {
-      return sum + (c.backerCount || 0);
-    }, 0),
+    activeCampaigns: userCampaigns.filter(c => c.fundingActive).length,
+    totalBackers: 0, // TODO: Implement backer count from smart contract
     totalCampaigns: userCampaigns.length,
   };
 
   // Filter campaigns
   const filteredCampaigns = userCampaigns.filter(campaign => {
     if (filter === 'all') return true;
-    if (filter === 'active') return campaign.isActive;
-    if (filter === 'ended') return !campaign.isActive;
+    if (filter === 'active') return campaign.fundingActive;
+    if (filter === 'ended') return !campaign.fundingActive;
     if (filter === 'draft') return Number(campaign.totalFunded) === 0;
     return true;
   });
