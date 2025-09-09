@@ -44,10 +44,12 @@ interface Campaign {
   owner: string;
   fundingGoal: string;
   totalFunded: string;
+  deadline: string;
   revenueSharePercent: number;
   repaymentCap: number;
   fundingActive: boolean;
   repaymentActive: boolean;
+  backerCount?: number;
   metadata: CampaignMetadata | null;
 }
 
@@ -95,10 +97,12 @@ export function useCampaigns() {
           owner: campaign.creator,
           fundingGoal: campaign.goalAmount.toString(),
           totalFunded: campaign.totalRaised.toString(),
+          deadline: campaign.deadline,
           revenueSharePercent: 500, // Default 5% - would come from contract details
           repaymentCap: 15000, // Default 1.5x - would come from contract details
           fundingActive: !campaign.ended,
           repaymentActive: false,
+          backerCount: 0, // Default - would come from contract details
           metadata,
         };
       });

@@ -123,11 +123,11 @@ export default function FundingCard({ campaignId, onFundClick }: FundingCardProp
         <div className="space-y-2 text-sm">
           <div className="flex justify-between">
             <span className="text-gray-600">Revenue Share:</span>
-            <span className="font-medium">{campaign.metadata?.revenueShare || 5}%</span>
+            <span className="font-medium">{(campaign.revenueSharePercent / 100) || 5}%</span>
           </div>
           <div className="flex justify-between">
             <span className="text-gray-600">Repayment Cap:</span>
-            <span className="font-medium">{campaign.metadata?.repaymentCap || 1.5}x</span>
+            <span className="font-medium">{(campaign.repaymentCap / 10000) || 1.5}x</span>
           </div>
           <div className="flex justify-between">
             <span className="text-gray-600">Min Investment:</span>
@@ -137,7 +137,7 @@ export default function FundingCard({ campaignId, onFundClick }: FundingCardProp
       </div>
 
       {/* Funding Actions */}
-      {campaign.isActive && daysLeft > 0 ? (
+      {campaign.fundingActive && daysLeft > 0 ? (
         <div className="space-y-4">
           {!showFundingForm ? (
             <button

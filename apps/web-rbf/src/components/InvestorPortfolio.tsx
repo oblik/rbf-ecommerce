@@ -56,7 +56,7 @@ export default function InvestorPortfolio() {
         title: campaigns[0]?.metadata?.title || 'Expand Our SaaS Platform',
         invested: 5000,
         returns: 1250,
-        totalFunded: Number(campaigns[0]?.totalRaised || 0),
+        totalFunded: Number(campaigns[0]?.totalFunded || 0),
         totalRepaid: 0,
         revenueSharePercentage: 5,
         repaymentCap: 1.5,

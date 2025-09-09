@@ -96,7 +96,7 @@ export default function DashboardPage() {
       case 'recent':
         return Number(b.deadline) - Number(a.deadline);
       case 'raised':
-        return Number(b.totalRaised) - Number(a.totalRaised);
+        return Number(b.totalFunded) - Number(a.totalFunded);
       case 'goal':
         return Number(b.fundingGoal) - Number(a.fundingGoal);
       case 'backers':

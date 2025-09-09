@@ -134,16 +134,13 @@ export default function CampaignDetails({ campaignId }: CampaignDetailsProps) {
                     <div className="flex justify-between">
                       <span className="text-gray-600">Created:</span>
                       <span className="font-medium">
-                        {campaign.metadata?.createdAt 
-                          ? formatDistanceToNow(new Date(campaign.metadata.createdAt), { addSuffix: true })
-                          : 'Unknown'
-                        }
+Unknown
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Status:</span>
                       <span className="font-medium">
-                        {campaign.isActive ? 'Fundraising' : 'Completed'}
+                        {campaign.fundingActive ? 'Fundraising' : 'Completed'}
                       </span>
                     </div>
                   </div>
@@ -160,7 +157,7 @@ export default function CampaignDetails({ campaignId }: CampaignDetailsProps) {
                   <div className="bg-blue-50 rounded-lg p-4">
                     <h4 className="font-medium text-blue-900 mb-2">Revenue Share</h4>
                     <p className="text-2xl font-bold text-blue-900">
-                      {campaign.metadata?.revenueShare || 5}%
+                      {(campaign.revenueSharePercent / 100) || 5}%
                     </p>
                     <p className="text-sm text-blue-700 mt-1">
                       Monthly revenue percentage shared with investors
@@ -170,7 +167,7 @@ export default function CampaignDetails({ campaignId }: CampaignDetailsProps) {
                   <div className="bg-purple-50 rounded-lg p-4">
                     <h4 className="font-medium text-purple-900 mb-2">Repayment Cap</h4>
                     <p className="text-2xl font-bold text-purple-900">
-                      {campaign.metadata?.repaymentCap || 1.5}x
+                      {(campaign.repaymentCap / 10000) || 1.5}x
                     </p>
                     <p className="text-sm text-purple-700 mt-1">
                       Maximum return as multiple of investment
@@ -184,8 +181,8 @@ export default function CampaignDetails({ campaignId }: CampaignDetailsProps) {
                 <ol className="list-decimal list-inside space-y-2 text-sm text-yellow-800">
                   <li>Investors fund your campaign with USDC</li>
                   <li>You receive the funding to grow your business</li>
-                  <li>Share {campaign.metadata?.revenueShare || 5}% of monthly revenue until cap is reached</li>
-                  <li>Maximum repayment is {campaign.metadata?.repaymentCap || 1.5}x the original investment</li>
+                  <li>Share {(campaign.revenueSharePercent / 100) || 5}% of monthly revenue until cap is reached</li>
+                  <li>Maximum repayment is {(campaign.repaymentCap / 10000) || 1.5}x the original investment</li>
                 </ol>
               </div>
 
