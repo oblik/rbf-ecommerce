@@ -62,8 +62,8 @@ export default function FundCampaignPage() {
     );
   }
 
-  const remainingAmount = Number(campaign.fundingGoal) - Number(campaign.totalRaised);
-  const progressPercentage = (Number(campaign.totalRaised) / Number(campaign.fundingGoal)) * 100;
+  const remainingAmount = Number(campaign.fundingGoal) - Number(campaign.totalFunded);
+  const progressPercentage = (Number(campaign.totalFunded) / Number(campaign.fundingGoal)) * 100;
 
   if (isSuccess) {
     return (
