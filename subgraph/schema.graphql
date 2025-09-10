@@ -1,0 +1,52 @@
+type Factory @entity(immutable: false) {
+  id: ID!
+  campaignCount: Int!
+  totalFunded: BigInt!
+  campaigns: [Campaign!]! @derivedFrom(field: "factory")
+}
+
+type Business @entity(immutable: false) {
+  id: ID! # address
+  name: String!
+  metadataURI: String!
+  isVerified: Boolean!
+  isSuspended: Boolean!
+  registeredAt: BigInt!
+  campaigns: [Campaign!]! @derivedFrom(field: "business")
+}
+
+type Campaign @entity(immutable: false) {
+  id: ID! # address
+  factory: Factory!
+  business: Business!
+  metadataURI: String!
+  fundingGoal: BigInt!
+  fundingDeadline: BigInt!
+  totalFunded: BigInt!
+  fundingActive: Boolean!
+  revenueSharePercent: BigInt!
+  repaymentCap: BigInt!
+  totalRepaid: BigInt!
+  repaymentActive: Boolean!
+  repaymentComplete: Boolean!
+  lastRevenueReport: BigInt!
+  createdAt: BigInt!
+  contributions: [Contribution!]! @derivedFrom(field: "campaign")
+  investors: [Investor!]! @derivedFrom(field: "campaigns")
+}
+
+type Contribution @entity(immutable: false) {
+  id: ID! # campaign-investor
+  campaign: Campaign!
+  investor: Investor!
+  amount: BigInt!
+  timestamp: BigInt!
+}
+
+type Investor @entity(immutable: false) {
+  id: ID! # address
+  totalContributed: BigInt!
+  totalReturns: BigInt!
+  campaigns: [Campaign!]!
+  contributions: [Contribution!]! @derivedFrom(field: "investor")
+}

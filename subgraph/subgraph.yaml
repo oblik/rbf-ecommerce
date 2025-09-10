@@ -1,0 +1,81 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: RBFCampaignFactory
+    network: base-sepolia
+    source:
+      address: "0xe241f2c71644721F34D7293a4a9dfe9341c479fD"
+      abi: RBFCampaignFactory
+      startBlock: 19000000
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Campaign
+        - Business
+        - Factory
+      abis:
+        - name: RBFCampaignFactory
+          file: ./abis/RBFCampaignFactory.json
+        - name: RBFCampaign
+          file: ./abis/RBFCampaign.json
+      eventHandlers:
+        - event: CampaignCreated(indexed address,indexed address,indexed uint256,uint256,uint256,uint256,uint256,string)
+          handler: handleCampaignCreated
+        - event: ParametersUpdated(string,uint256,uint256)
+          handler: handleParametersUpdated
+      file: ./src/mappings/factory.ts
+  - kind: ethereum
+    name: BusinessRegistry
+    network: base-sepolia
+    source:
+      address: "0xa734Cf8b6a94E8e47Fc25F854f2fCEF917Ab6C36"
+      abi: BusinessRegistry
+      startBlock: 19000000
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Business
+      abis:
+        - name: BusinessRegistry
+          file: ./abis/BusinessRegistry.json
+      eventHandlers:
+        - event: BusinessRegistered(indexed address,string,string,uint256)
+          handler: handleBusinessRegistered
+        - event: BusinessVerified(indexed address,indexed address,uint256)
+          handler: handleBusinessVerified
+      file: ./src/mappings/registry.ts
+templates:
+  - kind: ethereum
+    name: RBFCampaign
+    network: base-sepolia
+    source:
+      abi: RBFCampaign
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Campaign
+        - Contribution
+        - Investor
+      abis:
+        - name: RBFCampaign
+          file: ./abis/RBFCampaign.json
+      eventHandlers:
+        - event: Contributed(indexed address,uint256)
+          handler: handleContributed
+        - event: FundingGoalReached(uint256)
+          handler: handleFundingGoalReached
+        - event: RevenueShared(uint256,uint256)
+          handler: handleRevenueShared
+        - event: ReturnsWithdrawn(indexed address,uint256)
+          handler: handleReturnsWithdrawn
+        - event: RepaymentCompleted(uint256)
+          handler: handleRepaymentCompleted
+      file: ./src/mappings/campaign.ts

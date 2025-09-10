@@ -4,6 +4,7 @@ pragma solidity ^0.8.20;
 import "forge-std/Test.sol";
 import "../src/RBFCampaign.sol";
 import "../src/RBFCampaignFactory.sol";
+import "../src/BusinessRegistry.sol";
 import "../src/TestUSDC.sol";
 
 contract RBFCampaignTest is Test {
@@ -24,7 +25,8 @@ contract RBFCampaignTest is Test {
     function setUp() public {
         // Deploy USDC and Factory
         usdc = new TestUSDC();
-        factory = new RBFCampaignFactory(address(usdc));
+        BusinessRegistry businessRegistry = new BusinessRegistry();
+        factory = new RBFCampaignFactory(address(usdc), address(businessRegistry));
         
         // Create a campaign
         vm.prank(owner);
