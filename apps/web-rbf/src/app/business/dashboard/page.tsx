@@ -6,8 +6,13 @@ import { useBusinessRegistry } from '@/hooks/useBusinessRegistry';
 import { useState } from 'react';
 import Link from 'next/link';
 
+interface BusinessParams {
+  name: string;
+  metadataURI: string;
+}
+
 interface BusinessRegistrationFormProps {
-  onRegister: (name: string, metadataURI: string) => void;
+  onRegister: (params: BusinessParams) => void;
   isPending: boolean;
 }
 
@@ -31,7 +36,10 @@ function BusinessRegistrationForm({ onRegister, isPending }: BusinessRegistratio
       external_url: formData.website,
     };
 
-    onRegister(formData.businessName, `data:application/json,${encodeURIComponent(JSON.stringify(metadata))}`);
+    onRegister({
+      name: formData.businessName,
+      metadataURI: `data:application/json,${encodeURIComponent(JSON.stringify(metadata))}`
+    });
   };
 
   return (
