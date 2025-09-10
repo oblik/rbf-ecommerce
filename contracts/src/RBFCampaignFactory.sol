@@ -2,6 +2,7 @@
 pragma solidity ^0.8.20;
 
 import "./RBFCampaign.sol";
+import "./BusinessRegistry.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract RBFCampaignFactory is Ownable {
@@ -12,8 +13,24 @@ contract RBFCampaignFactory is Ownable {
     error InvalidRepaymentCap();
     error EmptyMetadataURI();
     error InvalidParameterUpdate();
+    error BusinessNotRegistered();
+    error BusinessNotVerified();
+    
+    struct CampaignParams {
+        string metadataURI;
+        uint256 fundingGoal;
+        uint256 fundingPeriodDays;
+        uint256 revenueSharePercent;
+        uint256 repaymentCap;
+    }
+    
+    struct BusinessParams {
+        string name;
+        string metadataURI;
+    }
 
     address public immutable usdcToken;
+    BusinessRegistry public businessRegistry;
     address[] public campaigns;
     mapping(address => address[]) public businessCampaigns;
     mapping(address => bool) public isValidCampaign;
@@ -30,18 +47,54 @@ contract RBFCampaignFactory is Ownable {
     event CampaignCreated(
         address indexed campaign,
         address indexed business,
+        uint256 indexed campaignId,
         uint256 fundingGoal,
         uint256 deadline,
         uint256 revenueSharePercent,
-        uint256 repaymentCap
+        uint256 repaymentCap,
+        string metadataURI
     );
     
     event ParametersUpdated(string parameterType, uint256 newMin, uint256 newMax);
 
-    constructor(address _usdcToken) Ownable(msg.sender) {
+    constructor(address _usdcToken, address _businessRegistry) Ownable(msg.sender) {
         usdcToken = _usdcToken;
+        businessRegistry = BusinessRegistry(_businessRegistry);
     }
 
+    function setBusinessRegistry(address _businessRegistry) external onlyOwner {
+        businessRegistry = BusinessRegistry(_businessRegistry);
+    }
+
+    function createCampaign(
+        CampaignParams memory campaignParams,
+        BusinessParams memory businessParams
+    ) external returns (address) {
+        // Auto-register business if not already registered
+        if (address(businessRegistry) != address(0)) {
+            if (!businessRegistry.isRegistered(msg.sender)) {
+                // Require business parameters for new businesses
+                if (bytes(businessParams.name).length == 0) revert EmptyMetadataURI();
+                if (bytes(businessParams.metadataURI).length == 0) revert EmptyMetadataURI();
+                
+                businessRegistry.registerBusinessFor(
+                    msg.sender,
+                    businessParams.name,
+                    businessParams.metadataURI
+                );
+            }
+        }
+        
+        return _createCampaign(
+            campaignParams.metadataURI,
+            campaignParams.fundingGoal,
+            campaignParams.fundingPeriodDays,
+            campaignParams.revenueSharePercent,
+            campaignParams.repaymentCap
+        );
+    }
+
+    // Legacy function for backward compatibility
     function createCampaign(
         string memory metadataURI,
         uint256 fundingGoal,
@@ -49,6 +102,28 @@ contract RBFCampaignFactory is Ownable {
         uint256 revenueSharePercent,
         uint256 repaymentCap
     ) external returns (address) {
+        return _createCampaign(metadataURI, fundingGoal, fundingPeriodDays, revenueSharePercent, repaymentCap);
+    }
+
+    function _createCampaign(
+        string memory metadataURI,
+        uint256 fundingGoal,
+        uint256 fundingPeriodDays,
+        uint256 revenueSharePercent,
+        uint256 repaymentCap
+    ) internal returns (address) {
+        // Check business registration
+        if (address(businessRegistry) != address(0)) {
+            if (!businessRegistry.isRegistered(msg.sender)) {
+                revert BusinessNotRegistered();
+            }
+            
+            // Require verification for large campaigns
+            if (fundingGoal > 100_000e6 && !businessRegistry.isVerified(msg.sender)) {
+                revert BusinessNotVerified();
+            }
+        }
+        
         if (bytes(metadataURI).length == 0) revert EmptyMetadataURI();
         if (fundingGoal < minFundingGoal || fundingGoal > maxFundingGoal) {
             revert InvalidFundingGoal();
@@ -72,6 +147,7 @@ contract RBFCampaignFactory is Ownable {
         RBFCampaign campaign = new RBFCampaign(
             msg.sender,
             usdcToken,
+            address(businessRegistry),
             metadataURI,
             fundingGoal,
             deadline,
@@ -84,14 +160,21 @@ contract RBFCampaignFactory is Ownable {
         campaigns.push(campaignAddress);
         businessCampaigns[msg.sender].push(campaignAddress);
         isValidCampaign[campaignAddress] = true;
+        
+        // Update business registry
+        if (address(businessRegistry) != address(0)) {
+            businessRegistry.incrementCampaignCount(msg.sender);
+        }
 
         emit CampaignCreated(
             campaignAddress,
             msg.sender,
+            campaigns.length - 1, // Campaign ID
             fundingGoal,
             deadline,
             revenueSharePercent,
-            repaymentCap
+            repaymentCap,
+            metadataURI
         );
 
         return campaignAddress;

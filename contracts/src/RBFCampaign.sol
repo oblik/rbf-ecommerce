@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "./BusinessRegistry.sol";
 
 contract RBFCampaign is ReentrancyGuard {
     using SafeERC20 for IERC20;
@@ -20,10 +21,16 @@ contract RBFCampaign is ReentrancyGuard {
     error NoReturnsAvailable();
     error TransferFailed();
     error PermitDeadlineExpired();
+    error MetadataUpdateRestricted();
+    error EmptyMetadataURI();
+    error UpdateCooldownActive();
 
     address public immutable owner;
     IERC20 public immutable token;
+    BusinessRegistry public immutable businessRegistry;
     string public metadataURI;
+    uint256 public lastMetadataUpdate;
+    uint256 public constant METADATA_UPDATE_COOLDOWN = 1 hours;
 
     uint256 public immutable fundingGoal;
     uint256 public immutable fundingDeadline;
@@ -57,6 +64,7 @@ contract RBFCampaign is ReentrancyGuard {
     constructor(
         address _owner,
         address _token,
+        address _businessRegistry,
         string memory _metadataURI,
         uint256 _fundingGoal,
         uint256 _fundingDeadline,
@@ -65,6 +73,7 @@ contract RBFCampaign is ReentrancyGuard {
     ) {
         owner = _owner;
         token = IERC20(_token);
+        businessRegistry = BusinessRegistry(_businessRegistry);
         metadataURI = _metadataURI;
         fundingGoal = _fundingGoal;
         fundingDeadline = _fundingDeadline;
@@ -145,6 +154,11 @@ contract RBFCampaign is ReentrancyGuard {
         
         token.safeTransfer(owner, totalFunded);
         
+        // Update business metrics for successful funding
+        if (address(businessRegistry) != address(0)) {
+            businessRegistry.updateBusinessMetrics(owner, totalFunded, 0, true);
+        }
+        
         emit FundingGoalReached(totalFunded);
     }
 
@@ -173,6 +187,12 @@ contract RBFCampaign is ReentrancyGuard {
 
         totalRepaid += shareAmount;
         lastRevenueReport = block.timestamp;
+
+        // Update business metrics for revenue sharing
+        bool onTime = true; // Payment is on time if within 30 day window
+        if (address(businessRegistry) != address(0)) {
+            businessRegistry.updateBusinessMetrics(owner, 0, shareAmount, onTime);
+        }
 
         emit RevenueShared(revenueAmount, shareAmount);
 
@@ -208,7 +228,26 @@ contract RBFCampaign is ReentrancyGuard {
     }
 
     function updateMetadata(string memory newURI) external onlyOwner {
+        if (bytes(newURI).length == 0) revert EmptyMetadataURI();
+        
+        // Check update restrictions based on funding status
+        if (fundingActive && totalFunded > 0) {
+            // During funding: only allow updates if less than 50% funded
+            if (totalFunded >= fundingGoal / 2) {
+                revert MetadataUpdateRestricted();
+            }
+        } else if (repaymentActive) {
+            // No updates allowed during repayment phase
+            revert MetadataUpdateRestricted();
+        }
+        
+        // Enforce cooldown period
+        if (block.timestamp < lastMetadataUpdate + METADATA_UPDATE_COOLDOWN) {
+            revert UpdateCooldownActive();
+        }
+        
         metadataURI = newURI;
+        lastMetadataUpdate = block.timestamp;
         emit MetadataUpdated(newURI);
     }
 
