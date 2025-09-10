@@ -7,6 +7,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { InvestmentRiskAnalysis, RiskBadge } from './InvestmentRiskAnalysis';
 import { CompactHealthScore, HealthScore } from './HealthScoreIndicator';
 import { BusinessMetricsSummary } from './BusinessMetrics';
+import { BusinessAnalytics } from './BusinessAnalytics';
 import Link from 'next/link';
 
 interface CampaignDetailsProps {
@@ -304,52 +305,7 @@ Unknown
 
           {activeTab === 'analytics' && (
             <div className="space-y-6">
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Business Analytics</h3>
-                
-                {/* Risk Assessment Section */}
-                {campaign.businessHealth && campaign.riskAnalysis ? (
-                  <InvestmentRiskAnalysis
-                    campaign={{
-                      address: campaign.address,
-                      owner: campaign.owner,
-                      fundingGoal: campaign.fundingGoal,
-                      totalFunded: campaign.totalFunded,
-                      revenueSharePercent: campaign.revenueSharePercent,
-                      repaymentCap: campaign.repaymentCap,
-                    }}
-                    businessHealth={campaign.businessHealth}
-                    riskAnalysis={campaign.riskAnalysis}
-                    compact={false}
-                  />
-                ) : (
-                  <div className="text-center py-8 text-gray-500">
-                    Risk analysis not available
-                  </div>
-                )}
-
-                {/* Business Analytics Section */}
-                <div className="bg-white rounded-lg border border-gray-200 p-6">
-                  <h4 className="text-lg font-semibold text-gray-900 mb-4">Performance Metrics</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-blue-600 mb-1">18%</div>
-                      <div className="text-sm text-gray-600">YoY Growth</div>
-                      <div className="text-xs text-gray-500 mt-1">Consistent upward trend</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-green-600 mb-1">$127</div>
-                      <div className="text-sm text-gray-600">Avg Order Value</div>
-                      <div className="text-xs text-gray-500 mt-1">8% increase vs last year</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-purple-600 mb-1">$324</div>
-                      <div className="text-sm text-gray-600">Customer LTV</div>
-                      <div className="text-xs text-gray-500 mt-1">12% improvement</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <BusinessAnalytics address={campaign.owner} />
             </div>
           )}
 
