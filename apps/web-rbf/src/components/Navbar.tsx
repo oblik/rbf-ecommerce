@@ -41,6 +41,9 @@ export default function Navbar() {
                 <Link href="/dashboard" className="text-gray-700 hover:text-gray-900 font-medium">
                   Dashboard
                 </Link>
+                <Link href="/business/dashboard" className="text-gray-700 hover:text-gray-900 font-medium">
+                  Business Profile
+                </Link>
               </>
             )}
             <ConnectWallet />
@@ -76,6 +79,9 @@ export default function Navbar() {
                   </Link>
                   <Link href="/dashboard" className="text-gray-700 hover:text-gray-900 font-medium py-2">
                     Dashboard
+                  </Link>
+                  <Link href="/business/dashboard" className="text-gray-700 hover:text-gray-900 font-medium py-2">
+                    Business Profile
                   </Link>
                 </>
               )}

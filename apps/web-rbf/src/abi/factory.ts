@@ -1,6 +1,9 @@
 export const factoryAbi = [
   {
-    inputs: [{ internalType: "address", name: "_usdcToken", type: "address" }],
+    inputs: [
+      { internalType: "address", name: "_usdcToken", type: "address" },
+      { internalType: "address", name: "_businessRegistry", type: "address" }
+    ],
     stateMutability: "nonpayable",
     type: "constructor"
   },
@@ -35,16 +38,38 @@ export const factoryAbi = [
     type: "error"
   },
   {
+    inputs: [],
+    name: "BusinessNotRegistered",
+    type: "error"
+  },
+  {
+    inputs: [],
+    name: "BusinessNotVerified",
+    type: "error"
+  },
+  {
     anonymous: false,
     inputs: [
       { indexed: true, internalType: "address", name: "campaign", type: "address" },
       { indexed: true, internalType: "address", name: "business", type: "address" },
+      { indexed: true, internalType: "uint256", name: "campaignId", type: "uint256" },
       { indexed: false, internalType: "uint256", name: "fundingGoal", type: "uint256" },
       { indexed: false, internalType: "uint256", name: "deadline", type: "uint256" },
       { indexed: false, internalType: "uint256", name: "revenueSharePercent", type: "uint256" },
-      { indexed: false, internalType: "uint256", name: "repaymentCap", type: "uint256" }
+      { indexed: false, internalType: "uint256", name: "repaymentCap", type: "uint256" },
+      { indexed: false, internalType: "string", name: "metadataURI", type: "string" }
     ],
     name: "CampaignCreated",
+    type: "event"
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: false, internalType: "string", name: "parameterType", type: "string" },
+      { indexed: false, internalType: "uint256", name: "newMin", type: "uint256" },
+      { indexed: false, internalType: "uint256", name: "newMax", type: "uint256" }
+    ],
+    name: "ParametersUpdated",
     type: "event"
   },
   {
@@ -54,6 +79,35 @@ export const factoryAbi = [
       { internalType: "uint256", name: "fundingPeriodDays", type: "uint256" },
       { internalType: "uint256", name: "revenueSharePercent", type: "uint256" },
       { internalType: "uint256", name: "repaymentCap", type: "uint256" }
+    ],
+    name: "createCampaign",
+    outputs: [{ internalType: "address", name: "", type: "address" }],
+    stateMutability: "nonpayable",
+    type: "function"
+  },
+  {
+    inputs: [
+      {
+        components: [
+          { internalType: "string", name: "metadataURI", type: "string" },
+          { internalType: "uint256", name: "fundingGoal", type: "uint256" },
+          { internalType: "uint256", name: "fundingPeriodDays", type: "uint256" },
+          { internalType: "uint256", name: "revenueSharePercent", type: "uint256" },
+          { internalType: "uint256", name: "repaymentCap", type: "uint256" }
+        ],
+        internalType: "struct RBFCampaignFactory.CampaignParams",
+        name: "campaignParams",
+        type: "tuple"
+      },
+      {
+        components: [
+          { internalType: "string", name: "name", type: "string" },
+          { internalType: "string", name: "metadataURI", type: "string" }
+        ],
+        internalType: "struct RBFCampaignFactory.BusinessParams",
+        name: "businessParams",
+        type: "tuple"
+      }
     ],
     name: "createCampaign",
     outputs: [{ internalType: "address", name: "", type: "address" }],
@@ -101,6 +155,36 @@ export const factoryAbi = [
     inputs: [],
     name: "usdcToken",
     outputs: [{ internalType: "address", name: "", type: "address" }],
+    stateMutability: "view",
+    type: "function"
+  },
+  {
+    inputs: [],
+    name: "businessRegistry",
+    outputs: [{ internalType: "address", name: "", type: "address" }],
+    stateMutability: "view",
+    type: "function"
+  },
+  {
+    inputs: [{ internalType: "address", name: "_businessRegistry", type: "address" }],
+    name: "setBusinessRegistry",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function"
+  },
+  {
+    inputs: [],
+    name: "getLimits",
+    outputs: [
+      { internalType: "uint256", name: "_minFundingGoal", type: "uint256" },
+      { internalType: "uint256", name: "_maxFundingGoal", type: "uint256" },
+      { internalType: "uint256", name: "_minRevenueShare", type: "uint256" },
+      { internalType: "uint256", name: "_maxRevenueShare", type: "uint256" },
+      { internalType: "uint256", name: "_minRepaymentCap", type: "uint256" },
+      { internalType: "uint256", name: "_maxRepaymentCap", type: "uint256" },
+      { internalType: "uint256", name: "_minFundingDays", type: "uint256" },
+      { internalType: "uint256", name: "_maxFundingDays", type: "uint256" }
+    ],
     stateMutability: "view",
     type: "function"
   }

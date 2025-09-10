@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { parseUnits } from 'viem';
 import { factoryAbi } from '@/abi/factory';
+import { useBusinessRegistry } from '@/hooks/useBusinessRegistry';
 
 interface CampaignFormData {
   title: string;
@@ -19,6 +20,12 @@ interface CampaignFormData {
 
 export default function CreateCampaignForm() {
   const { address, isConnected } = useAccount();
+  
+  // Business Registry Integration
+  const { useIsRegistered, useBusinessProfile } = useBusinessRegistry();
+  const { data: isRegistered, isLoading: checkingRegistration } = useIsRegistered(address);
+  const { data: businessProfile } = useBusinessProfile(address);
+  
   const [formData, setFormData] = useState<CampaignFormData>({
     title: '',
     description: '',
@@ -29,6 +36,9 @@ export default function CreateCampaignForm() {
     revenueSharePercent: '5',
     repaymentCap: '1.5',
   });
+  const [businessMetadata, setBusinessMetadata] = useState({
+    businessDescription: '',
+  });
   const [imagePreview, setImagePreview] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
@@ -37,9 +47,24 @@ export default function CreateCampaignForm() {
   const { writeContract, data: hash, error, isPending } = useWriteContract();
   const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash });
 
+  // Auto-fill business data if already registered
+  useEffect(() => {
+    if (businessProfile && isRegistered) {
+      setFormData(prev => ({
+        ...prev,
+        businessName: businessProfile.name || prev.businessName,
+      }));
+    }
+  }, [businessProfile, isRegistered]);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleBusinessMetadataChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setBusinessMetadata(prev => ({ ...prev, [name]: value }));
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,9 +77,9 @@ export default function CreateCampaignForm() {
     }
   };
 
-  const uploadMetadata = async (): Promise<string> => {
+  const uploadMetadata = async (): Promise<{ campaignURI: string; businessURI?: string }> => {
     // Mock IPFS upload - replace with actual implementation
-    const metadata = {
+    const campaignMetadata = {
       title: formData.title,
       description: formData.description,
       businessName: formData.businessName,
@@ -65,8 +90,24 @@ export default function CreateCampaignForm() {
       createdAt: new Date().toISOString(),
     };
 
-    // Mock upload to IPFS - returns a hash
-    return `ipfs://QmMock${Date.now()}`;
+    let businessURI: string | undefined;
+
+    // Only create business metadata if not registered
+    if (!isRegistered) {
+      const businessMetadataObj = {
+        name: formData.businessName,
+        description: businessMetadata.businessDescription,
+        website: formData.website,
+        registeredAt: new Date().toISOString(),
+      };
+      
+      // Mock upload to IPFS - returns a hash
+      businessURI = `ipfs://QmBusiness${Date.now()}`;
+    }
+
+    const campaignURI = `ipfs://QmCampaign${Date.now()}`;
+    
+    return { campaignURI, businessURI };
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -79,25 +120,50 @@ export default function CreateCampaignForm() {
     setIsSubmitting(true);
     try {
       // Upload metadata to IPFS
-      const metadataUri = await uploadMetadata();
+      const { campaignURI, businessURI } = await uploadMetadata();
 
-      // Create campaign on blockchain
+      // Prepare campaign parameters
       const fundingGoal = parseUnits(formData.fundingGoal, 6); // USDC has 6 decimals
       const revenueShareBP = Math.floor(Number(formData.revenueSharePercent) * 100); // Convert to basis points
       const repaymentCapBP = Math.floor(Number(formData.repaymentCap) * 10000); // Convert to basis points
 
-      writeContract({
-        address: process.env.NEXT_PUBLIC_FACTORY_ADDRESS as `0x${string}`,
-        abi: factoryAbi,
-        functionName: 'createCampaign',
-        args: [
-          metadataUri,
-          fundingGoal,
-          BigInt(formData.fundingPeriodDays),
-          BigInt(revenueShareBP),
-          BigInt(repaymentCapBP),
-        ],
-      });
+      if (isRegistered) {
+        // Use legacy function for existing businesses
+        writeContract({
+          address: process.env.NEXT_PUBLIC_FACTORY_ADDRESS as `0x${string}`,
+          abi: factoryAbi,
+          functionName: 'createCampaign',
+          args: [
+            campaignURI,
+            fundingGoal,
+            BigInt(formData.fundingPeriodDays),
+            BigInt(revenueShareBP),
+            BigInt(repaymentCapBP),
+          ],
+        });
+      } else {
+        // Use new auto-registration function for new businesses
+        writeContract({
+          address: process.env.NEXT_PUBLIC_FACTORY_ADDRESS as `0x${string}`,
+          abi: factoryAbi,
+          functionName: 'createCampaign',
+          args: [
+            // CampaignParams struct
+            {
+              metadataURI: campaignURI,
+              fundingGoal: fundingGoal,
+              fundingPeriodDays: BigInt(formData.fundingPeriodDays),
+              revenueSharePercent: BigInt(revenueShareBP),
+              repaymentCap: BigInt(repaymentCapBP),
+            },
+            // BusinessParams struct (only used if not registered)
+            {
+              name: formData.businessName,
+              metadataURI: businessURI || '',
+            },
+          ],
+        });
+      }
     } catch (error) {
       console.error('Error creating campaign:', error);
       alert('Failed to create campaign. Please try again.');
@@ -127,15 +193,33 @@ export default function CreateCampaignForm() {
   }
 
   const steps = [
-    { id: 1, title: 'Business Info', fields: ['title', 'businessName', 'website', 'description'] },
+    { id: 1, title: 'Business Info', fields: ['title', 'businessName', 'description'] },
     { id: 2, title: 'Funding Details', fields: ['fundingGoal', 'fundingPeriodDays'] },
     { id: 3, title: 'Terms & Image', fields: ['revenueSharePercent', 'repaymentCap', 'image'] },
   ];
 
   const currentStepData = steps.find(s => s.id === currentStep);
-  const isStepValid = currentStepData?.fields.every(field => 
-    field === 'image' ? true : formData[field as keyof CampaignFormData]
-  );
+  const isStepValid = () => {
+    if (!currentStepData) return false;
+    
+    // Step 1: Business Info validation
+    if (currentStep === 1) {
+      const requiredFields = ['title', 'description'];
+      // Business name is only required for new businesses
+      if (!isRegistered) {
+        requiredFields.push('businessName');
+      }
+      
+      return requiredFields.every(field => 
+        formData[field as keyof CampaignFormData]?.toString().trim()
+      );
+    }
+    
+    // Step 2 & 3: Standard validation
+    return currentStepData.fields.every(field => 
+      field === 'image' ? true : formData[field as keyof CampaignFormData]?.toString().trim()
+    );
+  };
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
@@ -168,6 +252,39 @@ export default function CreateCampaignForm() {
         {/* Step 1: Business Information */}
         {currentStep === 1 && (
           <>
+            {/* Business Registration Status */}
+            {checkingRegistration ? (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <p className="text-blue-700">Checking business registration status...</p>
+              </div>
+            ) : isRegistered ? (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                <div className="flex items-center gap-2">
+                  <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <p className="text-green-700 font-medium">
+                    Welcome back, {businessProfile?.name || 'Business'}!
+                  </p>
+                </div>
+                <p className="text-green-600 text-sm mt-1">
+                  Your business is already registered. You can create campaigns instantly.
+                </p>
+              </div>
+            ) : (
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                <div className="flex items-center gap-2">
+                  <svg className="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 15.5c-.77.833.192 2.5 1.732 2.5z" />
+                  </svg>
+                  <p className="text-yellow-700 font-medium">New Business</p>
+                </div>
+                <p className="text-yellow-600 text-sm mt-1">
+                  We'll register your business profile when you create your first campaign.
+                </p>
+              </div>
+            )}
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Campaign Title
@@ -186,6 +303,7 @@ export default function CreateCampaignForm() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Business Name
+                {!isRegistered && <span className="text-red-500"> *</span>}
               </label>
               <input
                 type="text"
@@ -194,9 +312,34 @@ export default function CreateCampaignForm() {
                 onChange={handleInputChange}
                 placeholder="e.g., GreenTech Solutions Inc."
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                required
+                required={!isRegistered}
+                disabled={isRegistered}
               />
+              {isRegistered && (
+                <p className="text-sm text-gray-500 mt-1">
+                  Registered business name (cannot be changed)
+                </p>
+              )}
             </div>
+
+            {!isRegistered && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Business Description
+                </label>
+                <textarea
+                  name="businessDescription"
+                  value={businessMetadata.businessDescription}
+                  onChange={handleBusinessMetadataChange}
+                  rows={3}
+                  placeholder="Tell us about your business, industry, and what makes you unique..."
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+                <p className="text-sm text-gray-500 mt-1">
+                  This will be used for your business profile
+                </p>
+              </div>
+            )}
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -214,14 +357,14 @@ export default function CreateCampaignForm() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Description
+                Campaign Description
               </label>
               <textarea
                 name="description"
                 value={formData.description}
                 onChange={handleInputChange}
                 rows={4}
-                placeholder="Describe your business, how you'll use the funding, and your growth plans..."
+                placeholder="Describe how you'll use the funding and your growth plans..."
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               />
@@ -371,9 +514,9 @@ export default function CreateCampaignForm() {
             <button
               type="button"
               onClick={() => setCurrentStep(currentStep + 1)}
-              disabled={!isStepValid}
+              disabled={!isStepValid()}
               className={`px-6 py-2 rounded-lg font-medium ${
-                isStepValid 
+                isStepValid() 
                   ? 'bg-blue-600 text-white hover:bg-blue-700' 
                   : 'bg-gray-100 text-gray-400 cursor-not-allowed'
               }`}
