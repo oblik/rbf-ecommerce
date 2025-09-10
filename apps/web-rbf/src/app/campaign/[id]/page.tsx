@@ -4,13 +4,14 @@ import { useParams, useRouter } from 'next/navigation';
 import CampaignDetails from '@/components/CampaignDetails';
 import FundingCard from '@/components/FundingCard';
 import CampaignAnalytics from '@/components/CampaignAnalytics';
-import { useCampaigns } from '@/hooks/useCampaigns';
+import { useEnhancedCampaigns } from '@/hooks/useEnhancedCampaigns';
+import { InvestmentRiskAnalysis } from '@/components/InvestmentRiskAnalysis';
 
 export default function CampaignPage() {
   const router = useRouter();
   const params = useParams<{ id: string }>();
   const id = params.id;
-  const { campaigns } = useCampaigns();
+  const { campaigns } = useEnhancedCampaigns();
   const campaign = campaigns.find(c => c.address === id);
 
   const handleFundClick = () => {
@@ -39,6 +40,24 @@ export default function CampaignPage() {
         <div className="lg:col-span-4">
           <div className="lg:sticky lg:top-8 space-y-6">
             <FundingCard campaignId={id} onFundClick={handleFundClick} />
+            
+            {/* Investment Risk Analysis */}
+            {campaign && (campaign.businessHealth || campaign.riskAnalysis) && (
+              <InvestmentRiskAnalysis 
+                campaign={{
+                  address: campaign.address,
+                  owner: campaign.owner,
+                  fundingGoal: campaign.fundingGoal,
+                  totalFunded: campaign.totalFunded,
+                  revenueSharePercent: campaign.revenueSharePercent,
+                  repaymentCap: campaign.repaymentCap,
+                }}
+                businessHealth={campaign.businessHealth}
+                riskAnalysis={campaign.riskAnalysis}
+                compact={true}
+              />
+            )}
+            
             <CampaignAnalytics 
               campaignId={id} 
               businessName={campaign?.metadata?.businessName}

@@ -1,16 +1,20 @@
 'use client';
 
 import { useState } from 'react';
-import { useCampaigns } from '@/hooks/useCampaigns';
+import { useEnhancedCampaigns, type EnhancedCampaign } from '@/hooks/useEnhancedCampaigns';
+import { useBusinessRegistry } from '@/hooks/useBusinessRegistry';
 import { formatDistanceToNow } from 'date-fns';
-import RiskAssessment from './RiskAssessment';
+import { InvestmentRiskAnalysis, RiskBadge } from './InvestmentRiskAnalysis';
+import { CompactHealthScore, HealthScore } from './HealthScoreIndicator';
+import { BusinessMetricsSummary } from './BusinessMetrics';
+import Link from 'next/link';
 
 interface CampaignDetailsProps {
   campaignId: string;
 }
 
 export default function CampaignDetails({ campaignId }: CampaignDetailsProps) {
-  const { campaigns, loading, error } = useCampaigns();
+  const { campaigns, loading, error } = useEnhancedCampaigns();
   const [activeTab, setActiveTab] = useState('overview');
   
   const campaign = campaigns.find(c => c.address === campaignId);
@@ -40,10 +44,10 @@ export default function CampaignDetails({ campaignId }: CampaignDetailsProps) {
 
   const tabs = [
     { id: 'overview', label: 'Overview' },
+    { id: 'business', label: 'Business Info' },
     { id: 'analytics', label: 'Analytics' },
     { id: 'terms', label: 'Terms' },
     { id: 'updates', label: 'Updates' },
-    { id: 'comments', label: 'Comments' },
   ];
 
   const progressPercentage = (Number(campaign.totalFunded) / Number(campaign.fundingGoal)) * 100;
@@ -73,6 +77,54 @@ export default function CampaignDetails({ campaignId }: CampaignDetailsProps) {
         )}
       </div>
 
+      {/* Business Health Header */}
+      {campaign.businessHealth && (
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-gray-900">Business Health Overview</h2>
+            <Link
+              href={`/business/profile/${campaign.owner}`}
+              className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+            >
+              View Full Profile →
+            </Link>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="flex items-center gap-3">
+              <CompactHealthScore score={campaign.businessHealth.healthScore} showLabel />
+            </div>
+            
+            <div className="flex items-center justify-center">
+              {campaign.riskAnalysis && (
+                <RiskBadge riskLevel={campaign.riskAnalysis.overallRisk} size="md" />
+              )}
+            </div>
+            
+            <div className="flex items-center gap-2">
+              {campaign.businessHealth.isVerified && (
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full" />
+                  <span className="text-sm text-gray-600">Verified</span>
+                </div>
+              )}
+              {campaign.businessHealth.isRegistered && (
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 bg-green-500 rounded-full" />
+                  <span className="text-sm text-gray-600">Registered</span>
+                </div>
+              )}
+            </div>
+            
+            <div className="text-right">
+              <div className="text-sm text-gray-600">Repayment Rate</div>
+              <div className="text-lg font-semibold text-gray-900">
+                {Number(campaign.businessHealth.repaymentRate) / 100}%
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Tabs */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200">
@@ -149,6 +201,158 @@ Unknown
             </div>
           )}
 
+          {activeTab === 'business' && (
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Business Information</h3>
+                
+                {campaign.businessHealth ? (
+                  <div className="space-y-6">
+                    {/* Business Health Details */}
+                    <div className="bg-gray-50 rounded-lg p-6">
+                      <h4 className="font-medium text-gray-900 mb-4">Health & Performance</h4>
+                      <HealthScore score={campaign.businessHealth.healthScore} size="lg" />
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                        <div className="text-center">
+                          <div className="text-2xl font-bold text-blue-600 mb-1">
+                            {Number(campaign.businessHealth.repaymentRate) / 100}%
+                          </div>
+                          <div className="text-sm text-gray-600">Repayment Rate</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-2xl font-bold text-green-600 mb-1">
+                            {Number(campaign.businessHealth.successRate) / 100}%
+                          </div>
+                          <div className="text-sm text-gray-600">Success Rate</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-2xl font-bold text-purple-600 mb-1">
+                            {campaign.businessHealth.riskLevel}
+                          </div>
+                          <div className="text-sm text-gray-600">Risk Level</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Business Status */}
+                    <div className="bg-gray-50 rounded-lg p-6">
+                      <h4 className="font-medium text-gray-900 mb-4">Verification Status</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-3 h-3 rounded-full ${
+                            campaign.businessHealth.isRegistered ? 'bg-green-500' : 'bg-gray-300'
+                          }`} />
+                          <span className="text-sm">
+                            {campaign.businessHealth.isRegistered ? 'Registered on Platform' : 'Not Registered'}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <div className={`w-3 h-3 rounded-full ${
+                            campaign.businessHealth.isVerified ? 'bg-blue-500' : 'bg-gray-300'
+                          }`} />
+                          <span className="text-sm">
+                            {campaign.businessHealth.isVerified ? 'Verified Business' : 'Unverified'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Business Metrics Preview */}
+                    <div className="bg-gray-50 rounded-lg p-6">
+                      <h4 className="font-medium text-gray-900 mb-4">Platform Metrics</h4>
+                      <BusinessMetricsSummary address={campaign.owner} compact />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    Business information not available
+                  </div>
+                )}
+                
+                {/* Contact Information */}
+                <div className="bg-gray-50 rounded-lg p-6">
+                  <h4 className="font-medium text-gray-900 mb-4">Contact & Links</h4>
+                  <div className="space-y-3">
+                    {campaign.metadata?.website && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Website:</span>
+                        <a 
+                          href={campaign.metadata.website}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:text-blue-800"
+                        >
+                          Visit Website →
+                        </a>
+                      </div>
+                    )}
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Business Profile:</span>
+                      <Link
+                        href={`/business/profile/${campaign.owner}`}
+                        className="text-blue-600 hover:text-blue-800"
+                      >
+                        View Full Profile →
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'analytics' && (
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Business Analytics</h3>
+                
+                {/* Risk Assessment Section */}
+                {campaign.businessHealth && campaign.riskAnalysis ? (
+                  <InvestmentRiskAnalysis
+                    campaign={{
+                      address: campaign.address,
+                      owner: campaign.owner,
+                      fundingGoal: campaign.fundingGoal,
+                      totalFunded: campaign.totalFunded,
+                      revenueSharePercent: campaign.revenueSharePercent,
+                      repaymentCap: campaign.repaymentCap,
+                    }}
+                    businessHealth={campaign.businessHealth}
+                    riskAnalysis={campaign.riskAnalysis}
+                    compact={false}
+                  />
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    Risk analysis not available
+                  </div>
+                )}
+
+                {/* Business Analytics Section */}
+                <div className="bg-white rounded-lg border border-gray-200 p-6">
+                  <h4 className="text-lg font-semibold text-gray-900 mb-4">Performance Metrics</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-blue-600 mb-1">18%</div>
+                      <div className="text-sm text-gray-600">YoY Growth</div>
+                      <div className="text-xs text-gray-500 mt-1">Consistent upward trend</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-green-600 mb-1">$127</div>
+                      <div className="text-sm text-gray-600">Avg Order Value</div>
+                      <div className="text-xs text-gray-500 mt-1">8% increase vs last year</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-purple-600 mb-1">$324</div>
+                      <div className="text-sm text-gray-600">Customer LTV</div>
+                      <div className="text-xs text-gray-500 mt-1">12% improvement</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {activeTab === 'terms' && (
             <div className="space-y-6">
               <div>
@@ -186,69 +390,32 @@ Unknown
                 </ol>
               </div>
 
-              {/* Enhanced Risk Assessment */}
-              <div className="mt-6">
-                <h4 className="font-medium text-gray-900 mb-3">Detailed Risk Assessment</h4>
-                <RiskAssessment 
-                  businessName={campaign.metadata?.businessName}
-                  website={campaign.metadata?.website}
-                  showFullReport={true}
-                />
-              </div>
-
-              {/* Additional Revenue Analysis */}
-              <div className="mt-6">
-                <h4 className="font-medium text-gray-900 mb-3">Revenue Performance Analysis</h4>
-                <div className="bg-gray-50 rounded-lg p-6">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-blue-600 mb-1">18%</div>
-                      <div className="text-sm text-gray-600">YoY Growth</div>
-                      <div className="text-xs text-gray-500 mt-1">Consistent upward trend</div>
+              {/* Risk Assessment Link */}
+              {campaign.riskAnalysis && (
+                <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium text-blue-900 mb-1">Investment Risk Assessment</h4>
+                      <p className="text-sm text-blue-700">
+                        View detailed risk analysis based on business health metrics
+                      </p>
                     </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-green-600 mb-1">$127</div>
-                      <div className="text-sm text-gray-600">Avg Order Value</div>
-                      <div className="text-xs text-gray-500 mt-1">8% increase vs last year</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-purple-600 mb-1">$324</div>
-                      <div className="text-sm text-gray-600">Customer LTV</div>
-                      <div className="text-xs text-gray-500 mt-1">12% improvement</div>
-                    </div>
-                  </div>
-
-                  <div className="mt-6 pt-4 border-t border-gray-200">
-                    <h5 className="font-medium text-gray-900 mb-3">Revenue Stability Indicators</h5>
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-600">Seasonal Variance</span>
-                        <span className="text-sm font-medium text-gray-900">Low (±12%)</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-600">Revenue Predictability</span>
-                        <span className="text-sm font-medium text-green-700">High</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-600">Customer Concentration Risk</span>
-                        <span className="text-sm font-medium text-green-700">Low</span>
-                      </div>
-                    </div>
+                    <button
+                      onClick={() => setActiveTab('analytics')}
+                      className="text-sm bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+                    >
+                      View Analytics
+                    </button>
                   </div>
                 </div>
-              </div>
+              )}
+
             </div>
           )}
 
           {activeTab === 'updates' && (
             <div className="text-center py-12">
               <p className="text-gray-500">No updates available yet.</p>
-            </div>
-          )}
-
-          {activeTab === 'comments' && (
-            <div className="text-center py-12">
-              <p className="text-gray-500">Comments coming soon.</p>
             </div>
           )}
         </div>

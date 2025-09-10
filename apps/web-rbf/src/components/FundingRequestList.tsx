@@ -1,14 +1,16 @@
 'use client';
 
 import React from 'react';
-import { useCampaigns } from '@/hooks/useCampaigns';
+import { useEnhancedCampaigns, type EnhancedCampaign } from '@/hooks/useEnhancedCampaigns';
 import { formatUnits } from 'viem';
 import Link from 'next/link';
+import { RiskBadge, InvestmentRiskAnalysis } from './InvestmentRiskAnalysis';
+import { CompactHealthScore } from './HealthScoreIndicator';
 
 const USDC_DECIMALS = 6;
 
 export default function FundingRequestList() {
-  const { campaigns, loading, error } = useCampaigns();
+  const { campaigns, loading, error } = useEnhancedCampaigns();
 
   if (loading) {
     return (
@@ -45,7 +47,7 @@ export default function FundingRequestList() {
   );
 }
 
-function FundingRequestCard({ campaign }: { campaign: any }) {
+function FundingRequestCard({ campaign }: { campaign: EnhancedCampaign }) {
   const formattedTotal = formatUnits(BigInt(campaign.totalFunded || '0'), USDC_DECIMALS);
   const formattedGoal = formatUnits(BigInt(campaign.fundingGoal || '0'), USDC_DECIMALS);
   const progressPercentage = campaign.fundingGoal && Number(campaign.fundingGoal) > 0 
@@ -71,13 +73,44 @@ function FundingRequestCard({ campaign }: { campaign: any }) {
       )}
 
       <div className="p-5">
-        <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
-          {campaign.metadata?.title || 'Untitled Campaign'}
-        </h3>
+        <div className="flex items-start justify-between mb-3">
+          <h3 className="text-lg font-bold text-gray-900 line-clamp-2 flex-1">
+            {campaign.metadata?.title || 'Untitled Campaign'}
+          </h3>
+          {campaign.riskAnalysis && (
+            <RiskBadge riskLevel={campaign.riskAnalysis.overallRisk} size="sm" />
+          )}
+        </div>
         
-        <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+        <p className="text-sm text-gray-600 mb-3 line-clamp-2">
           {campaign.metadata?.description || 'No description available'}
         </p>
+
+        {/* Business Health Indicator */}
+        {campaign.businessHealth && (
+          <div className="mb-3 p-2 bg-gray-50 rounded-lg">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <CompactHealthScore score={campaign.businessHealth.healthScore} />
+                <div className="flex items-center gap-1 text-xs text-gray-500">
+                  {campaign.businessHealth.isVerified && (
+                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full" />
+                  )}
+                  {campaign.businessHealth.isRegistered && (
+                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full" />
+                  )}
+                </div>
+              </div>
+              <Link
+                href={`/business/profile/${campaign.owner}`}
+                className="text-xs text-blue-600 hover:text-blue-800"
+                onClick={(e) => e.stopPropagation()}
+              >
+                View Profile
+              </Link>
+            </div>
+          </div>
+        )}
 
         <div className="mb-3">
           <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
