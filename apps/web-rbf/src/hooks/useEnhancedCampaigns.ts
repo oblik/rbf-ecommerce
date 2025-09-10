@@ -115,7 +115,7 @@ export function useEnhancedCampaigns() {
       overallRisk = 'High';
     } else if (businessHealth.riskLevel === 'Medium') {
       riskFactors.push('Moderate business health score');
-      if (overallRisk !== 'High') overallRisk = 'Medium';
+      if (overallRisk === 'Low') overallRisk = 'Medium';
     }
 
     // Analyze registration status
