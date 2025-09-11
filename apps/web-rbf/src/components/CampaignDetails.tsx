@@ -78,54 +78,6 @@ export default function CampaignDetails({ campaignId }: CampaignDetailsProps) {
         )}
       </div>
 
-      {/* Business Health Header */}
-      {campaign.businessHealth && (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">Business Health Overview</h2>
-            <Link
-              href={`/business/profile/${campaign.owner}`}
-              className="text-sm text-blue-600 hover:text-blue-800 font-medium"
-            >
-              View Full Profile →
-            </Link>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="flex items-center gap-3">
-              <CompactHealthScore score={campaign.businessHealth.healthScore} showLabel />
-            </div>
-            
-            <div className="flex items-center justify-center">
-              {campaign.riskAnalysis && (
-                <RiskBadge riskLevel={campaign.riskAnalysis.overallRisk} size="md" />
-              )}
-            </div>
-            
-            <div className="flex items-center gap-2">
-              {campaign.businessHealth.isVerified && (
-                <div className="flex items-center gap-1">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full" />
-                  <span className="text-sm text-gray-600">Verified</span>
-                </div>
-              )}
-              {campaign.businessHealth.isRegistered && (
-                <div className="flex items-center gap-1">
-                  <div className="w-2 h-2 bg-green-500 rounded-full" />
-                  <span className="text-sm text-gray-600">Registered</span>
-                </div>
-              )}
-            </div>
-            
-            <div className="text-right">
-              <div className="text-sm text-gray-600">Repayment Rate</div>
-              <div className="text-lg font-semibold text-gray-900">
-                {Number(campaign.businessHealth.repaymentRate) / 100}%
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Tabs */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200">
