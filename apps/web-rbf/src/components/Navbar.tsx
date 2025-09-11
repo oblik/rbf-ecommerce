@@ -1,96 +1,180 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePrivy } from '@privy-io/react-auth';
-import { useAccount } from 'wagmi';
-import ConnectWallet from './ConnectWallet';
+import { UserMenu } from './UserMenu';
+
+const HamburgerIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+  </svg>
+);
+
+const CloseIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+  </svg>
+);
 
 export default function Navbar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { authenticated } = usePrivy();
-  const { address } = useAccount();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const { ready, authenticated, login } = usePrivy();
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [mobileMenuOpen]);
 
   return (
-    <nav className="bg-white shadow-sm border-b border-gray-200">
+    <nav className="bg-white border-b border-gray-200 sticky top-0 z-50 backdrop-blur-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <div className="flex items-center">
+        {/* Mobile Navbar */}
+        <div className="md:hidden flex items-center justify-between h-16">
+          <Link href="/" className="flex items-center">
+            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center mr-3">
+              <span className="text-white font-bold text-lg">R</span>
+            </div>
+            <span className="text-xl font-bold text-gray-900">RevFlow</span>
+          </Link>
+          
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="p-2 rounded-lg text-gray-700 hover:bg-gray-100"
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? <CloseIcon /> : <HamburgerIcon />}
+          </button>
+        </div>
+
+        {/* Mobile Menu Slide-out Panel */}
+        <>
+          {/* Backdrop */}
+          {mobileMenuOpen && (
+            <div 
+              className="fixed inset-0 bg-black bg-opacity-10 z-40 md:hidden"
+              onClick={() => setMobileMenuOpen(false)}
+            />
+          )}
+          
+          {/* Sliding Panel */}
+          <div 
+            ref={mobileMenuRef}
+            className={`fixed top-0 right-0 h-full w-80 bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out md:hidden ${
+              mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+            }`}
+          >
+            <div className="flex flex-col h-full bg-white">
+              {/* Header with close button */}
+              <div className="flex justify-end p-4 bg-white">
+                <button
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="p-2 rounded-lg hover:bg-gray-100"
+                  aria-label="Close menu"
+                >
+                  <CloseIcon />
+                </button>
+              </div>
+              
+              {/* Menu Content */}
+              <div className="flex-1 px-6 py-4 bg-white">
+                <div className="space-y-4">
+                  {/* User authentication section */}
+                  <div className="w-full">
+                    {!ready ? (
+                      <div className="w-full h-12 bg-gray-100 rounded-xl animate-pulse" />
+                    ) : authenticated ? (
+                      <UserMenu inline={true} onItemClick={() => setMobileMenuOpen(false)} />
+                    ) : (
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          login();
+                          setMobileMenuOpen(false);
+                        }}
+                        className="w-full bg-white hover:bg-gray-50 text-gray-700 font-medium py-3 px-5 border border-gray-200 rounded-xl shadow-sm transition-colors"
+                      >
+                        Sign in
+                      </button>
+                    )}
+                  </div>
+                  
+                  {/* Navigation links - only show when not authenticated */}
+                  {!authenticated && (
+                    <div className="space-y-2">
+                      <Link
+                        href="/"
+                        className="block px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl font-medium no-underline transition-colors"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        Explore
+                      </Link>
+                      <Link
+                        href="/create-campaign"
+                        className="block px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl font-bold no-underline transition-colors"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        Start Campaign
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+
+        {/* Desktop Navbar */}
+        <div className="hidden md:flex items-center justify-between h-16">
+          <div className="flex items-center space-x-6">
             <Link href="/" className="flex items-center">
               <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center mr-3">
                 <span className="text-white font-bold text-lg">R</span>
               </div>
               <span className="text-xl font-bold text-gray-900">RevFlow</span>
             </Link>
-          </div>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            <Link href="/" className="text-gray-700 hover:text-gray-900 font-medium">
-              Explore
-            </Link>
-            <Link href="/create-campaign" className="text-gray-700 hover:text-gray-900 font-medium">
-              Start Campaign
-            </Link>
-            {authenticated && (
-              <>
-                <Link href="/portfolio" className="text-gray-700 hover:text-gray-900 font-medium">
-                  Portfolio
-                </Link>
-                <Link href="/dashboard" className="text-gray-700 hover:text-gray-900 font-medium">
-                  Dashboard
-                </Link>
-                <Link href="/business/dashboard" className="text-gray-700 hover:text-gray-900 font-medium">
-                  Business Profile
-                </Link>
-              </>
-            )}
-            <ConnectWallet />
-          </div>
-
-          {/* Mobile menu button */}
-          <div className="md:hidden">
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-gray-700 hover:text-gray-900 focus:outline-none"
-            >
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile menu */}
-        {isMenuOpen && (
-          <div className="md:hidden pb-4">
-            <div className="flex flex-col space-y-3">
-              <Link href="/" className="text-gray-700 hover:text-gray-900 font-medium py-2">
+            
+            {/* Navigation Links */}
+            <div className="flex items-center space-x-6">
+              <Link href="/" className="text-gray-700 hover:text-gray-900 font-medium transition-colors">
                 Explore
               </Link>
-              <Link href="/create-campaign" className="text-gray-700 hover:text-gray-900 font-medium py-2">
+              <Link href="/create-campaign" className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-xl transition-colors duration-200">
                 Start Campaign
               </Link>
-              {authenticated && (
-                <>
-                  <Link href="/portfolio" className="text-gray-700 hover:text-gray-900 font-medium py-2">
-                    Portfolio
-                  </Link>
-                  <Link href="/dashboard" className="text-gray-700 hover:text-gray-900 font-medium py-2">
-                    Dashboard
-                  </Link>
-                  <Link href="/business/dashboard" className="text-gray-700 hover:text-gray-900 font-medium py-2">
-                    Business Profile
-                  </Link>
-                </>
-              )}
-              <div className="py-2">
-                <ConnectWallet />
-              </div>
             </div>
           </div>
-        )}
+
+          {/* Right: Auth Buttons and User Menu */}
+          <div className="flex-shrink-0 flex items-center space-x-3">
+            {!ready ? (
+              <div className="w-20 h-10 bg-gray-100 rounded-xl animate-pulse" />
+            ) : authenticated ? (
+              <UserMenu />
+            ) : (
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  login();
+                }}
+                className="bg-white hover:bg-gray-50 text-gray-700 font-medium py-2.5 px-5 border border-gray-200 rounded-xl shadow-sm transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-opacity-20"
+              >
+                Login
+              </button>
+            )}
+          </div>
+        </div>
       </div>
     </nav>
   );
