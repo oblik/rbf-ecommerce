@@ -138,9 +138,9 @@ export default function InvestorPortfolio() {
         </h2>
         
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4">
+          <div className="bg-white border border-gray-200 rounded-xl p-4">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-green-700">Total Invested</span>
+              <span className="text-sm text-gray-600">Total Invested</span>
               <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
               </svg>
@@ -150,9 +150,9 @@ export default function InvestorPortfolio() {
             </p>
           </div>
           
-          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4">
+          <div className="bg-white border border-gray-200 rounded-xl p-4">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-blue-700">Total Returns</span>
+              <span className="text-sm text-gray-600">Total Returns</span>
               <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
               </svg>
@@ -160,15 +160,15 @@ export default function InvestorPortfolio() {
             <p className="text-2xl font-bold text-gray-900">
               ${totalReturns.toLocaleString()}
             </p>
-            <p className="text-xs text-blue-600">
+            <p className="text-xs text-gray-500">
               {averageReturn > 0 ? '+' : ''}{averageReturn.toFixed(1)}% ROI
             </p>
           </div>
           
-          <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-4">
+          <div className="bg-white border border-gray-200 rounded-xl p-4">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-purple-700">Active Investments</span>
-              <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <span className="text-sm text-gray-600">Active Investments</span>
+              <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
@@ -177,18 +177,18 @@ export default function InvestorPortfolio() {
             </p>
           </div>
           
-          <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-4">
+          <div className="bg-white border border-gray-200 rounded-xl p-4">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-orange-700">Available</span>
-              <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+              <span className="text-sm text-gray-600">Available</span>
+              <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2-2z" />
               </svg>
             </div>
             <p className="text-2xl font-bold text-gray-900">
               ${availableWithdrawals.toLocaleString()}
             </p>
             {availableWithdrawals > 0 && (
-              <button className="text-xs text-orange-600 hover:text-orange-700 font-medium">
+              <button className="text-xs text-gray-600 hover:text-blue-600 font-medium">
                 Withdraw →
               </button>
             )}
