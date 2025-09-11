@@ -8,7 +8,7 @@ dataSources:
     source:
       address: "0x8180E2B27BC4F01e97Ffc6bbC10b5C679ad716A7"
       abi: RBFCampaignFactory
-      startBlock: 19000000
+      startBlock: 30922000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -28,28 +28,29 @@ dataSources:
         - event: ParametersUpdated(string,uint256,uint256)
           handler: handleParametersUpdated
       file: ./src/factory.ts
-  - kind: ethereum
-    name: BusinessRegistry
-    network: base-sepolia
-    source:
-      address: "0xa734Cf8b6a94E8e47Fc25F854f2fCEF917Ab6C36"
-      abi: BusinessRegistry
-      startBlock: 19000000
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - Business
-      abis:
-        - name: BusinessRegistry
-          file: ./abis/BusinessRegistry.json
-      eventHandlers:
-        - event: BusinessRegistered(indexed address,string,string,uint256)
-          handler: handleBusinessRegistered
-        - event: BusinessVerified(indexed address,indexed address,uint256)
-          handler: handleBusinessVerified
-      file: ./src/registry.ts
+# BusinessRegistry temporarily disabled - contract not properly deployed
+  # - kind: ethereum
+  #   name: BusinessRegistry
+  #   network: base-sepolia
+  #   source:
+  #     address: "0x1b9BE43D71612bd47bca2CeC92055679B5a95167"
+  #     abi: BusinessRegistry
+  #     startBlock: 30922000
+  #   mapping:
+  #     kind: ethereum/events
+  #     apiVersion: 0.0.7
+  #     language: wasm/assemblyscript
+  #     entities:
+  #       - Business
+  #     abis:
+  #       - name: BusinessRegistry
+  #         file: ./abis/BusinessRegistry.json
+  #     eventHandlers:
+  #       - event: BusinessRegistered(indexed address,string,string,uint256)
+  #         handler: handleBusinessRegistered
+  #       - event: BusinessVerified(indexed address,indexed address,uint256)
+  #         handler: handleBusinessVerified
+  #     file: ./src/registry.ts
 templates:
   - kind: ethereum
     name: RBFCampaign
