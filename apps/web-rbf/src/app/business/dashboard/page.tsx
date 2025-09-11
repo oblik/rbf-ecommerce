@@ -256,7 +256,6 @@ export default function BusinessDashboard() {
             onRegister={registerBusiness} 
             isPending={isPending}
           />
-          <BusinessInsights />
         </div>
       ) : (
         <div className="space-y-6">
