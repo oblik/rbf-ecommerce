@@ -6,7 +6,7 @@ dataSources:
     name: RBFCampaignFactory
     network: base-sepolia
     source:
-      address: "0xe241f2c71644721F34D7293a4a9dfe9341c479fD"
+      address: "0x8180E2B27BC4F01e97Ffc6bbC10b5C679ad716A7"
       abi: RBFCampaignFactory
       startBlock: 19000000
     mapping:
@@ -27,7 +27,7 @@ dataSources:
           handler: handleCampaignCreated
         - event: ParametersUpdated(string,uint256,uint256)
           handler: handleParametersUpdated
-      file: ./src/mappings/factory.ts
+      file: ./src/factory.ts
   - kind: ethereum
     name: BusinessRegistry
     network: base-sepolia
@@ -49,7 +49,7 @@ dataSources:
           handler: handleBusinessRegistered
         - event: BusinessVerified(indexed address,indexed address,uint256)
           handler: handleBusinessVerified
-      file: ./src/mappings/registry.ts
+      file: ./src/registry.ts
 templates:
   - kind: ethereum
     name: RBFCampaign
@@ -78,4 +78,4 @@ templates:
           handler: handleReturnsWithdrawn
         - event: RepaymentCompleted(uint256)
           handler: handleRepaymentCompleted
-      file: ./src/mappings/campaign.ts
+      file: ./src/campaign.ts

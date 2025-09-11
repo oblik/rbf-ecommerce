@@ -41,6 +41,7 @@ export default function CreateCampaignForm() {
   });
   const [imagePreview, setImagePreview] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<string>('');
   const [currentStep, setCurrentStep] = useState(1);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -77,14 +78,66 @@ export default function CreateCampaignForm() {
     }
   };
 
+  const uploadToPinata = async (data: any): Promise<string> => {
+    try {
+      const response = await fetch('/api/upload-metadata', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to upload to IPFS');
+      }
+
+      const result = await response.json();
+      return `ipfs://${result.hash}`;
+    } catch (error) {
+      console.error('IPFS upload error:', error);
+      throw error;
+    }
+  };
+
+  const uploadImageToPinata = async (file: File): Promise<string> => {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('/api/upload-image', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to upload image to IPFS');
+      }
+
+      const result = await response.json();
+      return `ipfs://${result.hash}`;
+    } catch (error) {
+      console.error('Image upload error:', error);
+      throw error;
+    }
+  };
+
   const uploadMetadata = async (): Promise<{ campaignURI: string; businessURI?: string }> => {
-    // Mock IPFS upload - replace with actual implementation
+    // Upload image to IPFS first if provided
+    let imageURI: string | undefined;
+    if (formData.image) {
+      setUploadProgress('Uploading image to IPFS...');
+      imageURI = await uploadImageToPinata(formData.image);
+    }
+
+    // Create campaign metadata
+    setUploadProgress('Creating campaign metadata...');
     const campaignMetadata = {
       title: formData.title,
       description: formData.description,
       businessName: formData.businessName,
       website: formData.website,
-      image: imagePreview, // In production, upload to IPFS first
+      image: imageURI, // IPFS URI of the uploaded image
       revenueShare: Number(formData.revenueSharePercent),
       repaymentCap: Number(formData.repaymentCap),
       createdAt: new Date().toISOString(),
@@ -94,6 +147,7 @@ export default function CreateCampaignForm() {
 
     // Only create business metadata if not registered
     if (!isRegistered) {
+      setUploadProgress('Registering business profile...');
       const businessMetadataObj = {
         name: formData.businessName,
         description: businessMetadata.businessDescription,
@@ -101,11 +155,11 @@ export default function CreateCampaignForm() {
         registeredAt: new Date().toISOString(),
       };
       
-      // Mock upload to IPFS - returns a hash
-      businessURI = `ipfs://QmBusiness${Date.now()}`;
+      businessURI = await uploadToPinata(businessMetadataObj);
     }
 
-    const campaignURI = `ipfs://QmCampaign${Date.now()}`;
+    setUploadProgress('Finalizing campaign data...');
+    const campaignURI = await uploadToPinata(campaignMetadata);
     
     return { campaignURI, businessURI };
   };
@@ -118,9 +172,12 @@ export default function CreateCampaignForm() {
     }
 
     setIsSubmitting(true);
+    setUploadProgress('Preparing upload...');
     try {
       // Upload metadata to IPFS
       const { campaignURI, businessURI } = await uploadMetadata();
+      
+      setUploadProgress('Creating blockchain transaction...');
 
       // Prepare campaign parameters
       const fundingGoal = parseUnits(formData.fundingGoal, 6); // USDC has 6 decimals
@@ -169,6 +226,7 @@ export default function CreateCampaignForm() {
       alert('Failed to create campaign. Please try again.');
     } finally {
       setIsSubmitting(false);
+      setUploadProgress('');
     }
   };
 
@@ -534,6 +592,15 @@ export default function CreateCampaignForm() {
           )}
         </div>
       </form>
+
+      {uploadProgress && (
+        <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="flex items-center gap-2">
+            <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-600 border-t-transparent"></div>
+            <p className="text-blue-800">{uploadProgress}</p>
+          </div>
+        </div>
+      )}
 
       {error && (
         <div className="mt-4 bg-red-50 border border-red-200 rounded-lg p-4">

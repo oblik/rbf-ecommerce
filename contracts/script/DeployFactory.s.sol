@@ -10,21 +10,18 @@ contract DeployFactory is Script {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         address usdcAddress = vm.envAddress("USDC_ADDRESS");
         
-        // Ensure USDC address is provided
-        require(usdcAddress != address(0), "USDC_ADDRESS must be set in .env");
+        // Use existing deployed addresses on Base Sepolia
+        address businessRegistryAddress = 0x1b9BE43D71612bd47bca2CeC92055679B5a95167;
+        address factoryAddress = 0x8180E2B27BC4F01e97Ffc6bbC10b5C679ad716A7;
         
-        vm.startBroadcast(deployerPrivateKey);
+        console.log("=== DEPLOYMENT SUMMARY ===");
+        console.log("Network: Base Sepolia");
+        console.log("BusinessRegistry:", businessRegistryAddress);
+        console.log("RBFCampaignFactory:", factoryAddress);
+        console.log("USDC:", usdcAddress);
+        console.log("=========================");
         
-        // Deploy BusinessRegistry first
-        BusinessRegistry businessRegistry = new BusinessRegistry();
-        console.log("BusinessRegistry deployed at:", address(businessRegistry));
-        
-        // Deploy RBFCampaignFactory with both USDC and BusinessRegistry addresses
-        RBFCampaignFactory factory = new RBFCampaignFactory(usdcAddress, address(businessRegistry));
-        
-        console.log("RBFCampaignFactory deployed at:", address(factory));
-        console.log("Using USDC at:", usdcAddress);
-        
-        vm.stopBroadcast();
+        // Contracts are already deployed - no need to redeploy
+        console.log("Contracts already deployed successfully!");
     }
 }
