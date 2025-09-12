@@ -5,18 +5,22 @@ import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagm
 import { parseUnits } from 'viem';
 import { factoryAbi } from '@/abi/factory';
 import { useBusinessRegistry } from '@/hooks/useBusinessRegistry';
+import VerticalSelector from './VerticalSelector';
+import VerticalInsights from './VerticalInsights';
 
 interface CampaignFormData {
   title: string;
   description: string;
   businessName: string;
   website: string;
+  vertical: string;
   fundingGoal: string;
   fundingPeriodDays: string;
   revenueSharePercent: string;
   repaymentCap: string;
   image?: File;
 }
+
 
 export default function CreateCampaignForm() {
   const { address, isConnected } = useAccount();
@@ -31,6 +35,7 @@ export default function CreateCampaignForm() {
     description: '',
     businessName: '',
     website: '',
+    vertical: '',
     fundingGoal: '',
     fundingPeriodDays: '30',
     revenueSharePercent: '5',
@@ -137,6 +142,7 @@ export default function CreateCampaignForm() {
       description: formData.description,
       businessName: formData.businessName,
       website: formData.website,
+      vertical: formData.vertical,
       image: imageURI, // IPFS URI of the uploaded image
       revenueShare: Number(formData.revenueSharePercent),
       repaymentCap: Number(formData.repaymentCap),
@@ -262,7 +268,7 @@ export default function CreateCampaignForm() {
     
     // Step 1: Business Info validation
     if (currentStep === 1) {
-      const requiredFields = ['title', 'description', 'businessName'];
+      const requiredFields = ['title', 'description', 'businessName', 'vertical'];
       
       return requiredFields.every(field => 
         formData[field as keyof CampaignFormData]?.toString().trim()
@@ -396,6 +402,28 @@ export default function CreateCampaignForm() {
                 </p>
               )}
             </div>
+
+            {/* Business Vertical Selector */}
+            <VerticalSelector
+              value={formData.vertical}
+              onChange={(verticalId) => setFormData(prev => ({ ...prev, vertical: verticalId }))}
+              showDescription={true}
+            />
+
+            {/* Show insights if vertical is selected */}
+            {formData.vertical && (
+              <VerticalInsights 
+                verticalId={formData.vertical}
+                onRecommendationApply={(revenueShare, repaymentCap) => {
+                  setFormData(prev => ({
+                    ...prev,
+                    revenueSharePercent: revenueShare.toString(),
+                    repaymentCap: repaymentCap.toString()
+                  }));
+                }}
+                showApplyButton={true}
+              />
+            )}
 
             {!isRegistered && (
               <div>
