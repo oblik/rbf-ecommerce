@@ -33,22 +33,27 @@ const client = new ApolloClient({
       typePolicies: {
         Campaign: {
           fields: {
-            goalAmount: {
+            fundingGoal: {
               read(existing) {
                 return existing || "0";
               }
             },
-            totalRaised: {
+            totalFunded: {
               read(existing) {
                 return existing || "0";
               }
             },
-            totalDirectTransfers: {
+            totalRepaid: {
               read(existing) {
                 return existing || "0";
               }
             },
-            actualBalance: {
+            revenueSharePercent: {
+              read(existing) {
+                return existing || "0";
+              }
+            },
+            repaymentCap: {
               read(existing) {
                 return existing || "0";
               }
@@ -56,15 +61,6 @@ const client = new ApolloClient({
           }
         },
         Contribution: {
-          fields: {
-            amount: {
-              read(existing) {
-                return existing || "0";
-              }
-            }
-          }
-        },
-        DirectTransfer: {
           fields: {
             amount: {
               read(existing) {

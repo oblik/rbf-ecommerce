@@ -11,17 +11,18 @@ const GET_ALL_CAMPAIGNS = gql`
     campaigns(orderBy: createdAt, orderDirection: desc) {
       id
       campaignId
-      creator
+      owner
       metadataURI
+      fundingGoal
+      totalFunded
       deadline
-      goalAmount
-      totalRaised
-      totalDirectTransfers
-      actualBalance
-      ended
-      tokenAddress
-      state
-      claimed
+      revenueSharePercent
+      repaymentCap
+      fundingActive
+      repaymentActive
+      totalRepaid
+      contributionCount
+      investorCount
       createdAt
     }
   }
@@ -99,15 +100,15 @@ export function useCampaigns() {
 
         return {
           address: campaign.id as `0x${string}`,
-          owner: campaign.creator,
-          fundingGoal: campaign.goalAmount.toString(),
-          totalFunded: campaign.totalRaised.toString(),
-          deadline: campaign.deadline,
-          revenueSharePercent: 500, // Default 5% - would come from contract details
-          repaymentCap: 15000, // Default 1.5x - would come from contract details
-          fundingActive: !campaign.ended,
-          repaymentActive: false,
-          backerCount: 0, // Default - would come from contract details
+          owner: campaign.owner,
+          fundingGoal: campaign.fundingGoal.toString(),
+          totalFunded: campaign.totalFunded.toString(),
+          deadline: campaign.deadline.toString(),
+          revenueSharePercent: parseInt(campaign.revenueSharePercent.toString()) / 100, // Convert from basis points
+          repaymentCap: parseInt(campaign.repaymentCap.toString()) / 10000, // Convert from basis points 
+          fundingActive: campaign.fundingActive,
+          repaymentActive: campaign.repaymentActive,
+          backerCount: campaign.investorCount || 0,
           metadata,
         };
       });
