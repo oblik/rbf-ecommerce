@@ -234,7 +234,7 @@ export default function CreateCampaignForm() {
     return (
       <div className="bg-green-50 border border-green-200 rounded-xl p-8 text-center">
         <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-8 h-8 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
         </div>
@@ -242,7 +242,7 @@ export default function CreateCampaignForm() {
         <p className="text-gray-600 mb-4">Your Folk campaign has been successfully created and is now live.</p>
         <button
           onClick={() => window.location.href = '/'}
-          className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
+          className="bg-cyan-600 text-white px-6 py-2 rounded-lg hover:bg-cyan-700"
         >
           View All Campaigns
         </button>
@@ -287,7 +287,7 @@ export default function CreateCampaignForm() {
           {steps.map((step, index) => (
             <div key={step.id} className="flex items-center">
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                currentStep >= step.id ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-500'
+                currentStep >= step.id ? 'bg-cyan-600 text-white' : 'bg-gray-200 text-gray-500'
               }`}>
                 {step.id}
               </div>
@@ -298,7 +298,7 @@ export default function CreateCampaignForm() {
               </span>
               {index < steps.length - 1 && (
                 <div className={`w-12 h-0.5 mx-4 ${
-                  currentStep > step.id ? 'bg-blue-600' : 'bg-gray-200'
+                  currentStep > step.id ? 'bg-cyan-600' : 'bg-gray-200'
                 }`} />
               )}
             </div>
@@ -575,7 +575,7 @@ export default function CreateCampaignForm() {
               disabled={!isStepValid()}
               className={`px-6 py-2 rounded-lg font-medium ${
                 isStepValid() 
-                  ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                  ? 'bg-cyan-600 text-white hover:bg-cyan-700' 
                   : 'bg-gray-100 text-gray-400 cursor-not-allowed'
               }`}
             >
@@ -585,7 +585,7 @@ export default function CreateCampaignForm() {
             <button
               type="submit"
               disabled={!isConnected || isSubmitting || isPending || isConfirming}
-              className="px-8 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+              className="px-8 py-2 bg-cyan-600 text-white rounded-lg font-medium hover:bg-cyan-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
               {isSubmitting || isPending || isConfirming ? 'Creating...' : 'Create Campaign'}
             </button>
@@ -596,7 +596,7 @@ export default function CreateCampaignForm() {
       {uploadProgress && (
         <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
           <div className="flex items-center gap-2">
-            <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-600 border-t-transparent"></div>
+            <div className="animate-spin rounded-full h-4 w-4 border-2 border-cyan-600 border-t-transparent"></div>
             <p className="text-blue-800">{uploadProgress}</p>
           </div>
         </div>

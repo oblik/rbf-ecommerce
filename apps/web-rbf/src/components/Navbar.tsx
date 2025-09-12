@@ -42,7 +42,7 @@ export default function Navbar() {
         {/* Mobile Navbar */}
         <div className="md:hidden flex items-center justify-between h-16">
           <Link href="/" className="flex items-center">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center mr-3">
+            <div className="w-8 h-8 bg-cyan-600 rounded-lg flex items-center justify-center mr-3">
               <span className="text-white font-bold text-lg">F</span>
             </div>
             <span className="text-xl font-bold text-gray-900">Folk</span>
@@ -114,7 +114,7 @@ export default function Navbar() {
                     <div className="w-full">
                       <Link
                         href="/create-campaign"
-                        className="block px-4 py-3 text-center bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl no-underline transition-colors"
+                        className="block px-4 py-3 text-center bg-cyan-600 hover:bg-cyan-700 text-white font-bold rounded-xl no-underline transition-colors"
                         onClick={() => setMobileMenuOpen(false)}
                       >
                         Start Campaign
@@ -132,7 +132,7 @@ export default function Navbar() {
           {/* Left: Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center mr-3">
+              <div className="w-8 h-8 bg-cyan-600 rounded-lg flex items-center justify-center mr-3">
                 <span className="text-white font-bold text-lg">F</span>
               </div>
               <span className="text-xl font-bold text-gray-900">Folk</span>
@@ -141,7 +141,7 @@ export default function Navbar() {
 
           {/* Right: Start Campaign, Auth Buttons and User Menu */}
           <div className="flex-shrink-0 flex items-center space-x-3">
-            <Link href="/create-campaign" className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-xl transition-colors duration-200">
+            <Link href="/create-campaign" className="bg-cyan-600 hover:bg-cyan-700 text-white font-medium py-2.5 px-4 rounded-xl transition-colors duration-200">
               Start Campaign
             </Link>
             {!ready ? (
@@ -155,7 +155,7 @@ export default function Navbar() {
                   e.stopPropagation();
                   login();
                 }}
-                className="bg-white hover:bg-gray-50 text-gray-700 font-medium py-2.5 px-5 border border-gray-200 rounded-xl shadow-sm transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-opacity-20"
+                className="bg-white hover:bg-gray-50 text-gray-700 font-medium py-2.5 px-5 border border-gray-200 rounded-xl shadow-sm transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-opacity-20"
               >
                 Login
               </button>

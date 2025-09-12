@@ -57,7 +57,7 @@ export const UserMenu = ({ inline = false, onItemClick }: UserMenuProps) => {
       <div className="space-y-0">
         {/* User info section */}
         <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-xl mb-4">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-blue-500 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-600 to-cyan-500 flex items-center justify-center">
             <span className="text-white font-semibold text-sm">
               {displayName.substring(0, 2).toUpperCase()}
             </span>
@@ -123,10 +123,10 @@ export const UserMenu = ({ inline = false, onItemClick }: UserMenuProps) => {
     <div className="relative" ref={menuRef}>
       <button
         onClick={() => setMenuOpen(!menuOpen)}
-        className="flex items-center space-x-2 p-1.5 pr-3 rounded-full text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-600"
+        className="flex items-center space-x-2 p-1.5 pr-3 rounded-full text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-cyan-600"
         aria-label="Open user menu"
       >
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-blue-500 flex items-center justify-center">
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-600 to-cyan-500 flex items-center justify-center">
           <span className="text-white font-semibold text-xs">
             {displayName.substring(0, 2).toUpperCase()}
           </span>
@@ -145,7 +145,7 @@ export const UserMenu = ({ inline = false, onItemClick }: UserMenuProps) => {
         >
           <div className="px-4 py-3 border-b border-gray-200">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-blue-500 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-600 to-cyan-500 flex items-center justify-center">
                 <span className="text-white font-semibold text-sm">
                   {displayName.substring(0, 2).toUpperCase()}
                 </span>

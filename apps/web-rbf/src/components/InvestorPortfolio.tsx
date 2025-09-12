@@ -131,7 +131,7 @@ export default function InvestorPortfolio() {
       {/* Portfolio Overview */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
         <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-          <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-6 h-6 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
           </svg>
           Your Investment Portfolio
@@ -141,7 +141,7 @@ export default function InvestorPortfolio() {
           <div className="bg-white border border-gray-200 rounded-xl p-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-gray-600">Total Invested</span>
-              <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
               </svg>
             </div>
@@ -153,7 +153,7 @@ export default function InvestorPortfolio() {
           <div className="bg-white border border-gray-200 rounded-xl p-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-gray-600">Total Returns</span>
-              <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
               </svg>
             </div>
@@ -168,7 +168,7 @@ export default function InvestorPortfolio() {
           <div className="bg-white border border-gray-200 rounded-xl p-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-gray-600">Active Investments</span>
-              <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
@@ -180,7 +180,7 @@ export default function InvestorPortfolio() {
           <div className="bg-white border border-gray-200 rounded-xl p-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-gray-600">Available</span>
-              <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2-2z" />
               </svg>
             </div>
@@ -188,7 +188,7 @@ export default function InvestorPortfolio() {
               ${availableWithdrawals.toLocaleString()}
             </p>
             {availableWithdrawals > 0 && (
-              <button className="text-xs text-gray-600 hover:text-blue-600 font-medium">
+              <button className="text-xs text-gray-600 hover:text-cyan-600 font-medium">
                 Withdraw →
               </button>
             )}
@@ -244,7 +244,7 @@ export default function InvestorPortfolio() {
                 <div>
                   <Link 
                     href={`/campaign/${investment.campaignAddress}`} 
-                    className="font-semibold text-gray-900 hover:text-blue-600"
+                    className="font-semibold text-gray-900 hover:text-cyan-600"
                   >
                     {investment.title}
                   </Link>
@@ -289,7 +289,7 @@ export default function InvestorPortfolio() {
                 <button
                   onClick={() => handleWithdraw(investment.campaignAddress)}
                   disabled={isPending || isConfirming}
-                  className="w-full bg-blue-600 text-white text-sm font-medium py-2 px-4 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="w-full bg-cyan-600 text-white text-sm font-medium py-2 px-4 rounded-lg hover:bg-cyan-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   {isPending || isConfirming ? 'Processing...' : `Withdraw Available Returns`}
                 </button>
@@ -300,7 +300,7 @@ export default function InvestorPortfolio() {
           {portfolio.filter(inv => inv.status === 'active').length === 0 && (
             <div className="text-center py-8">
               <p className="text-gray-500">No active investments</p>
-              <Link href="/" className="text-blue-600 hover:text-green-700 font-medium text-sm">
+              <Link href="/" className="text-cyan-600 hover:text-green-700 font-medium text-sm">
                 Browse funding opportunities →
               </Link>
             </div>
@@ -312,7 +312,7 @@ export default function InvestorPortfolio() {
       {completedInvestments > 0 && (
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
           <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-            <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             Completed Investments
@@ -333,7 +333,7 @@ export default function InvestorPortfolio() {
                       Invested ${investment.invested.toLocaleString()} → Returned ${investment.returns.toLocaleString()}
                     </p>
                   </div>
-                  <span className={`font-semibold ${Number(roi) > 0 ? 'text-blue-600' : 'text-gray-600'}`}>
+                  <span className={`font-semibold ${Number(roi) > 0 ? 'text-cyan-600' : 'text-gray-600'}`}>
                     {Number(roi) > 0 ? '+' : ''}{roi}% ROI
                   </span>
                 </div>
@@ -347,7 +347,7 @@ export default function InvestorPortfolio() {
       {isSuccess && selectedCampaign && (
         <div className="fixed bottom-4 right-4 bg-green-50 border border-green-200 rounded-xl p-4 shadow-lg">
           <div className="flex items-center gap-2">
-            <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <p className="text-green-900 font-medium">Returns withdrawn successfully!</p>

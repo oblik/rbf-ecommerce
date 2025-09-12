@@ -30,7 +30,7 @@ export default function FundingRequestList() {
         <p className="text-gray-500 mb-4">No funding requests found.</p>
         <Link 
           href="/create-campaign" 
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
+          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-cyan-600 hover:bg-cyan-700"
         >
           Create Campaign
         </Link>
@@ -154,7 +154,7 @@ function FundingRequestCard({ campaign }: { campaign: EnhancedCampaign }) {
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div 
               className={`h-2 rounded-full transition-all duration-500 ${
-                isFullyFunded ? 'bg-green-500' : progressPercentage > 75 ? 'bg-orange-500' : 'bg-blue-600'
+                isFullyFunded ? 'bg-green-500' : progressPercentage > 75 ? 'bg-orange-500' : 'bg-cyan-600'
               }`}
               style={{ width: `${Math.min(progressPercentage, 100)}%` }}
             />
@@ -176,7 +176,7 @@ function FundingRequestCard({ campaign }: { campaign: EnhancedCampaign }) {
         {/* Quick Action */}
         <div className="flex gap-2">
           {isActive && !isFullyFunded ? (
-            <div className="flex-1 bg-blue-600 text-white text-center py-2 rounded-lg text-sm font-medium group-hover:bg-blue-700 transition-colors">
+            <div className="flex-1 bg-cyan-600 text-white text-center py-2 rounded-lg text-sm font-medium group-hover:bg-cyan-700 transition-colors">
               Invest Now
             </div>
           ) : isFullyFunded ? (

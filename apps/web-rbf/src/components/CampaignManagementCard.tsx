@@ -57,7 +57,7 @@ export default function CampaignManagementCard({
             type="checkbox"
             checked={isSelected}
             onChange={(e) => onSelect(e.target.checked)}
-            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            className="h-4 w-4 text-cyan-600 focus:ring-blue-500 border-gray-300 rounded"
           />
         </div>
 
@@ -107,7 +107,7 @@ export default function CampaignManagementCard({
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2">
                   <div 
-                    className="bg-blue-600 h-2 rounded-full transition-all"
+                    className="bg-cyan-600 h-2 rounded-full transition-all"
                     style={{ width: `${Math.min(progressPercentage, 100)}%` }}
                   />
                 </div>
@@ -176,7 +176,7 @@ export default function CampaignManagementCard({
             
           {campaign.fundingActive && (
             <div className="flex items-center space-x-2">
-              <span className="text-blue-600 text-xs font-medium">Revenue sharing phase</span>
+              <span className="text-cyan-600 text-xs font-medium">Revenue sharing phase</span>
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
             </div>
           )}

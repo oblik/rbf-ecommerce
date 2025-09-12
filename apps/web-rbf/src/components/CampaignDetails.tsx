@@ -67,7 +67,7 @@ export default function CampaignDetails({ campaignId }: CampaignDetailsProps) {
         ) : (
           <div className="w-full h-64 sm:h-80 bg-gradient-to-br from-green-100 to-green-200 flex items-center justify-center">
             <div className="text-center">
-              <div className="w-16 h-16 bg-blue-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-cyan-600 rounded-lg flex items-center justify-center mx-auto mb-4">
                 <span className="text-white font-bold text-2xl">
                   {campaign.metadata?.businessName?.[0] || 'B'}
                 </span>
@@ -89,7 +89,7 @@ export default function CampaignDetails({ campaignId }: CampaignDetailsProps) {
                 onClick={() => setActiveTab(tab.id)}
                 className={`py-4 px-1 border-b-2 font-medium text-sm ${
                   activeTab === tab.id
-                    ? 'border-green-500 text-blue-600'
+                    ? 'border-green-500 text-cyan-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`}
               >
@@ -124,7 +124,7 @@ export default function CampaignDetails({ campaignId }: CampaignDetailsProps) {
                           href={campaign.metadata.website}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-blue-600 hover:text-green-700"
+                          className="text-cyan-600 hover:text-green-700"
                         >
                           Visit
                         </a>
@@ -168,7 +168,7 @@ Unknown
                       
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
                         <div className="text-center">
-                          <div className="text-2xl font-bold text-blue-600 mb-1">
+                          <div className="text-2xl font-bold text-cyan-600 mb-1">
                             {Number(campaign.businessHealth.repaymentRate) / 100}%
                           </div>
                           <div className="text-sm text-gray-600">Repayment Rate</div>
@@ -234,7 +234,7 @@ Unknown
                           href={campaign.metadata.website}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-blue-600 hover:text-blue-800"
+                          className="text-cyan-600 hover:text-blue-800"
                         >
                           Visit Website →
                         </a>
@@ -244,7 +244,7 @@ Unknown
                       <span className="text-gray-600">Business Profile:</span>
                       <Link
                         href={`/business/profile/${campaign.owner}`}
-                        className="text-blue-600 hover:text-blue-800"
+                        className="text-cyan-600 hover:text-blue-800"
                       >
                         View Full Profile →
                       </Link>
@@ -310,7 +310,7 @@ Unknown
                     </div>
                     <button
                       onClick={() => setActiveTab('analytics')}
-                      className="text-sm bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+                      className="text-sm bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700"
                     >
                       View Analytics
                     </button>
