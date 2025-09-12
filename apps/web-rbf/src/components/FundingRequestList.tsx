@@ -85,11 +85,22 @@ function FundingRequestCard({ campaign }: { campaign: EnhancedCampaign }) {
         <div className="relative h-48 w-full overflow-hidden">
           <img 
             src={campaign.metadata.image.startsWith('ipfs://') 
-              ? `https://gateway.pinata.cloud/ipfs/${campaign.metadata.image.replace('ipfs://', '')}`
+              ? `https://ipfs.io/ipfs/${campaign.metadata.image.replace('ipfs://', '')}`
               : campaign.metadata.image
             } 
             alt={campaign.metadata?.title || 'Business'}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            onError={(e) => {
+              // Fallback to alternative IPFS gateways if the primary fails
+              const target = e.target as HTMLImageElement;
+              const originalSrc = target.src;
+              
+              if (originalSrc.includes('ipfs.io')) {
+                target.src = originalSrc.replace('https://ipfs.io/ipfs/', 'https://dweb.link/ipfs/');
+              } else if (originalSrc.includes('dweb.link')) {
+                target.src = originalSrc.replace('https://dweb.link/ipfs/', 'https://cloudflare-ipfs.com/ipfs/');
+              }
+            }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
         </div>

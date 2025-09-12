@@ -60,9 +60,23 @@ export default function CampaignDetails({ campaignId }: CampaignDetailsProps) {
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         {campaign.metadata?.image ? (
           <img 
-            src={campaign.metadata.image} 
+            src={campaign.metadata.image.startsWith('ipfs://') 
+              ? `https://ipfs.io/ipfs/${campaign.metadata.image.replace('ipfs://', '')}`
+              : campaign.metadata.image
+            } 
             alt={campaign.metadata.title}
             className="w-full h-64 sm:h-80 object-cover"
+            onError={(e) => {
+              // Fallback to alternative IPFS gateways if the primary fails
+              const target = e.target as HTMLImageElement;
+              const originalSrc = target.src;
+              
+              if (originalSrc.includes('ipfs.io')) {
+                target.src = originalSrc.replace('https://ipfs.io/ipfs/', 'https://dweb.link/ipfs/');
+              } else if (originalSrc.includes('dweb.link')) {
+                target.src = originalSrc.replace('https://dweb.link/ipfs/', 'https://cloudflare-ipfs.com/ipfs/');
+              }
+            }}
           />
         ) : (
           <div className="w-full h-64 sm:h-80 bg-gradient-to-br from-green-100 to-green-200 flex items-center justify-center">
