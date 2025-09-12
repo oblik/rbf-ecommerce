@@ -234,7 +234,7 @@ export default function CreateCampaignForm() {
     return (
       <div className="bg-green-50 border border-green-200 rounded-xl p-8 text-center">
         <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <svg className="w-8 h-8 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-8 h-8 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
         </div>
@@ -242,7 +242,7 @@ export default function CreateCampaignForm() {
         <p className="text-gray-600 mb-4">Your Jama campaign has been successfully created and is now live.</p>
         <button
           onClick={() => window.location.href = '/'}
-          className="bg-cyan-600 text-white px-6 py-2 rounded-lg hover:bg-cyan-700"
+          className="bg-sky-600 text-white px-6 py-2 rounded-lg hover:bg-sky-700"
         >
           View All Campaigns
         </button>
@@ -287,7 +287,7 @@ export default function CreateCampaignForm() {
           {steps.map((step, index) => (
             <div key={step.id} className="flex items-center">
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                currentStep >= step.id ? 'bg-cyan-600 text-white' : 'bg-gray-200 text-gray-500'
+                currentStep >= step.id ? 'bg-sky-600 text-white' : 'bg-gray-200 text-gray-500'
               }`}>
                 {step.id}
               </div>
@@ -298,7 +298,7 @@ export default function CreateCampaignForm() {
               </span>
               {index < steps.length - 1 && (
                 <div className={`w-12 h-0.5 mx-4 ${
-                  currentStep > step.id ? 'bg-cyan-600' : 'bg-gray-200'
+                  currentStep > step.id ? 'bg-sky-600' : 'bg-gray-200'
                 }`} />
               )}
             </div>
@@ -312,8 +312,8 @@ export default function CreateCampaignForm() {
           <>
             {/* Business Registration Status */}
             {checkingRegistration ? (
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                <p className="text-blue-700">Checking business registration status...</p>
+              <div className="bg-sky-50 border border-sky-200 rounded-lg p-4 mb-6">
+                <p className="text-sky-700">Checking business registration status...</p>
               </div>
             ) : isRegistered ? (
               <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
@@ -353,7 +353,7 @@ export default function CreateCampaignForm() {
                 value={formData.title}
                 onChange={handleInputChange}
                 placeholder="e.g., Expand Our Eco-Friendly Product Line"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent"
                 required
               />
             </div>
@@ -369,7 +369,7 @@ export default function CreateCampaignForm() {
                 value={formData.businessName}
                 onChange={handleInputChange}
                 placeholder="e.g., GreenTech Solutions Inc."
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent"
                 required={!isRegistered}
                 disabled={isRegistered}
               />
@@ -391,7 +391,7 @@ export default function CreateCampaignForm() {
                   onChange={handleBusinessMetadataChange}
                   rows={3}
                   placeholder="Tell us about your business, industry, and what makes you unique..."
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent"
                 />
                 <p className="text-sm text-gray-500 mt-1">
                   This will be used for your business profile
@@ -409,7 +409,7 @@ export default function CreateCampaignForm() {
                 value={formData.website}
                 onChange={handleInputChange}
                 placeholder="https://yourwebsite.com"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent"
               />
             </div>
 
@@ -423,7 +423,7 @@ export default function CreateCampaignForm() {
                 onChange={handleInputChange}
                 rows={4}
                 placeholder="Describe how you'll use the funding and your growth plans..."
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent"
                 required
               />
             </div>
@@ -446,7 +446,7 @@ export default function CreateCampaignForm() {
                   placeholder="50000"
                   min="1000"
                   max="10000000"
-                  className="w-full px-4 py-3 pl-8 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 pl-8 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent"
                   required
                 />
                 <span className="absolute left-3 top-3 text-gray-500">$</span>
@@ -462,7 +462,7 @@ export default function CreateCampaignForm() {
                 name="fundingPeriodDays"
                 value={formData.fundingPeriodDays}
                 onChange={(e) => setFormData(prev => ({ ...prev, fundingPeriodDays: e.target.value }))}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent"
               >
                 <option value="7">7 days</option>
                 <option value="14">14 days</option>
@@ -492,7 +492,7 @@ export default function CreateCampaignForm() {
                     min="1"
                     max="20"
                     step="0.1"
-                    className="w-full px-4 py-3 pr-8 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 pr-8 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent"
                     required
                   />
                   <span className="absolute right-3 top-3 text-gray-500">%</span>
@@ -513,7 +513,7 @@ export default function CreateCampaignForm() {
                     min="1.1"
                     max="3.0"
                     step="0.1"
-                    className="w-full px-4 py-3 pr-8 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 pr-8 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent"
                     required
                   />
                   <span className="absolute right-3 top-3 text-gray-500">x</span>
@@ -575,7 +575,7 @@ export default function CreateCampaignForm() {
               disabled={!isStepValid()}
               className={`px-6 py-2 rounded-lg font-medium ${
                 isStepValid() 
-                  ? 'bg-cyan-600 text-white hover:bg-cyan-700' 
+                  ? 'bg-sky-600 text-white hover:bg-sky-700' 
                   : 'bg-gray-100 text-gray-400 cursor-not-allowed'
               }`}
             >
@@ -585,7 +585,7 @@ export default function CreateCampaignForm() {
             <button
               type="submit"
               disabled={!isConnected || isSubmitting || isPending || isConfirming}
-              className="px-8 py-2 bg-cyan-600 text-white rounded-lg font-medium hover:bg-cyan-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+              className="px-8 py-2 bg-sky-600 text-white rounded-lg font-medium hover:bg-sky-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
               {isSubmitting || isPending || isConfirming ? 'Creating...' : 'Create Campaign'}
             </button>
@@ -594,10 +594,10 @@ export default function CreateCampaignForm() {
       </form>
 
       {uploadProgress && (
-        <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div className="mt-4 bg-sky-50 border border-sky-200 rounded-lg p-4">
           <div className="flex items-center gap-2">
-            <div className="animate-spin rounded-full h-4 w-4 border-2 border-cyan-600 border-t-transparent"></div>
-            <p className="text-blue-800">{uploadProgress}</p>
+            <div className="animate-spin rounded-full h-4 w-4 border-2 border-sky-600 border-t-transparent"></div>
+            <p className="text-sky-800">{uploadProgress}</p>
           </div>
         </div>
       )}

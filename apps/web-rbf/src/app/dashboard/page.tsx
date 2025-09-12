@@ -55,7 +55,7 @@ export default function DashboardPage() {
           </p>
           <button
             onClick={login}
-            className="w-full bg-cyan-600 text-white font-medium py-3 px-6 rounded-xl hover:bg-cyan-700 transition-colors"
+            className="w-full bg-sky-600 text-white font-medium py-3 px-6 rounded-xl hover:bg-sky-700 transition-colors"
           >
             Sign In to Continue
           </button>
@@ -114,7 +114,7 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
-                <svg className="w-8 h-8 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-8 h-8 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
                 Business Dashboard
@@ -126,7 +126,7 @@ export default function DashboardPage() {
             
             <Link
               href="/create-campaign"
-              className="flex items-center gap-2 bg-cyan-600 text-white font-medium py-2.5 px-5 rounded-xl hover:bg-cyan-700 transition-colors"
+              className="flex items-center gap-2 bg-sky-600 text-white font-medium py-2.5 px-5 rounded-xl hover:bg-sky-700 transition-colors"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -158,7 +158,7 @@ export default function DashboardPage() {
               <select
                 value={filter}
                 onChange={(e) => setFilter(e.target.value as FilterType)}
-                className="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-sky-500"
               >
                 <option value="all">All Campaigns</option>
                 <option value="active">Active</option>
@@ -175,7 +175,7 @@ export default function DashboardPage() {
               <select
                 value={sort}
                 onChange={(e) => setSort(e.target.value as SortType)}
-                className="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-sky-500"
               >
                 <option value="recent">Most Recent</option>
                 <option value="raised">Amount Raised</option>
@@ -223,7 +223,7 @@ export default function DashboardPage() {
             </p>
             <Link
               href="/create-campaign"
-              className="inline-flex items-center px-6 py-3 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 transition-colors"
+              className="inline-flex items-center px-6 py-3 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors"
             >
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />

@@ -67,7 +67,7 @@ export default function CampaignDetails({ campaignId }: CampaignDetailsProps) {
         ) : (
           <div className="w-full h-64 sm:h-80 bg-gradient-to-br from-green-100 to-green-200 flex items-center justify-center">
             <div className="text-center">
-              <div className="w-16 h-16 bg-cyan-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-sky-600 rounded-lg flex items-center justify-center mx-auto mb-4">
                 <span className="text-white font-bold text-2xl">
                   {campaign.metadata?.businessName?.[0] || 'B'}
                 </span>
@@ -89,7 +89,7 @@ export default function CampaignDetails({ campaignId }: CampaignDetailsProps) {
                 onClick={() => setActiveTab(tab.id)}
                 className={`py-4 px-1 border-b-2 font-medium text-sm ${
                   activeTab === tab.id
-                    ? 'border-green-500 text-cyan-600'
+                    ? 'border-green-500 text-sky-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`}
               >
@@ -124,7 +124,7 @@ export default function CampaignDetails({ campaignId }: CampaignDetailsProps) {
                           href={campaign.metadata.website}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-cyan-600 hover:text-green-700"
+                          className="text-sky-600 hover:text-green-700"
                         >
                           Visit
                         </a>
@@ -168,7 +168,7 @@ Unknown
                       
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
                         <div className="text-center">
-                          <div className="text-2xl font-bold text-cyan-600 mb-1">
+                          <div className="text-2xl font-bold text-sky-600 mb-1">
                             {Number(campaign.businessHealth.repaymentRate) / 100}%
                           </div>
                           <div className="text-sm text-gray-600">Repayment Rate</div>
@@ -202,7 +202,7 @@ Unknown
                         </div>
                         <div className="flex items-center gap-3">
                           <div className={`w-3 h-3 rounded-full ${
-                            campaign.businessHealth.isVerified ? 'bg-blue-500' : 'bg-gray-300'
+                            campaign.businessHealth.isVerified ? 'bg-sky-500' : 'bg-gray-300'
                           }`} />
                           <span className="text-sm">
                             {campaign.businessHealth.isVerified ? 'Verified Business' : 'Unverified'}
@@ -234,7 +234,7 @@ Unknown
                           href={campaign.metadata.website}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-cyan-600 hover:text-blue-800"
+                          className="text-sky-600 hover:text-sky-800"
                         >
                           Visit Website →
                         </a>
@@ -244,7 +244,7 @@ Unknown
                       <span className="text-gray-600">Business Profile:</span>
                       <Link
                         href={`/business/profile/${campaign.owner}`}
-                        className="text-cyan-600 hover:text-blue-800"
+                        className="text-sky-600 hover:text-sky-800"
                       >
                         View Full Profile →
                       </Link>
@@ -266,12 +266,12 @@ Unknown
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Funding Terms</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="bg-blue-50 rounded-lg p-4">
-                    <h4 className="font-medium text-blue-900 mb-2">Revenue Share</h4>
-                    <p className="text-2xl font-bold text-blue-900">
+                  <div className="bg-sky-50 rounded-lg p-4">
+                    <h4 className="font-medium text-sky-900 mb-2">Revenue Share</h4>
+                    <p className="text-2xl font-bold text-sky-900">
                       {(campaign.revenueSharePercent / 100) || 5}%
                     </p>
-                    <p className="text-sm text-blue-700 mt-1">
+                    <p className="text-sm text-sky-700 mt-1">
                       Monthly revenue percentage shared with investors
                     </p>
                   </div>
@@ -300,17 +300,17 @@ Unknown
 
               {/* Risk Assessment Link */}
               {campaign.riskAnalysis && (
-                <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div className="mt-6 bg-sky-50 border border-sky-200 rounded-lg p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h4 className="font-medium text-blue-900 mb-1">Investment Risk Assessment</h4>
-                      <p className="text-sm text-blue-700">
+                      <h4 className="font-medium text-sky-900 mb-1">Investment Risk Assessment</h4>
+                      <p className="text-sm text-sky-700">
                         View detailed risk analysis based on business health metrics
                       </p>
                     </div>
                     <button
                       onClick={() => setActiveTab('analytics')}
-                      className="text-sm bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700"
+                      className="text-sm bg-sky-600 text-white px-4 py-2 rounded-lg hover:bg-sky-700"
                     >
                       View Analytics
                     </button>

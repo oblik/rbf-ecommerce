@@ -134,7 +134,7 @@ export default function CampaignAnalytics({ campaignId, businessName, website }:
               {analyticsData.monthlyRevenue.map((month, index) => (
                 <div key={index} className="flex flex-col items-center flex-1">
                   <div 
-                    className="bg-blue-500 rounded-t w-4 min-h-[8px] mb-1"
+                    className="bg-sky-500 rounded-t w-4 min-h-[8px] mb-1"
                     style={{ height: `${(month.revenue / maxRevenue) * 48}px` }}
                     title={`${month.month}: $${month.revenue.toLocaleString()}`}
                   />
@@ -335,10 +335,10 @@ export default function CampaignAnalytics({ campaignId, businessName, website }:
                 <span className="text-sm text-green-800">Stable revenue growth</span>
               </div>
             </div>
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+            <div className="bg-sky-50 border border-sky-200 rounded-lg p-3">
               <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                <span className="text-sm text-blue-800">Low customer concentration</span>
+                <div className="w-2 h-2 bg-sky-500 rounded-full"></div>
+                <span className="text-sm text-sky-800">Low customer concentration</span>
               </div>
             </div>
             <div className="bg-purple-50 border border-purple-200 rounded-lg p-3">
@@ -422,10 +422,10 @@ export default function CampaignAnalytics({ campaignId, businessName, website }:
 
           {/* Brand Health Indicators */}
           <div className="space-y-2">
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+            <div className="bg-sky-50 border border-sky-200 rounded-lg p-3">
               <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                <span className="text-sm text-blue-800">Diversified revenue channels</span>
+                <div className="w-2 h-2 bg-sky-500 rounded-full"></div>
+                <span className="text-sm text-sky-800">Diversified revenue channels</span>
               </div>
             </div>
             <div className="bg-green-50 border border-green-200 rounded-lg p-3">

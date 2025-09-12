@@ -148,7 +148,7 @@ export function HealthScoreProgress({
         
         <div className="w-full bg-gray-200 rounded-full h-2 relative">
           <div 
-            className="h-2 rounded-full bg-blue-500 transition-all duration-300"
+            className="h-2 rounded-full bg-sky-500 transition-all duration-300"
             style={{ width: `${Math.min(currentPercentage, 100)}%` }}
           />
           {targetScore > currentScore && (
@@ -172,7 +172,7 @@ export function HealthScoreProgress({
           <ul className="space-y-1">
             {improvements.map((improvement, index) => (
               <li key={index} className="text-xs text-gray-600 flex items-center">
-                <div className="w-1.5 h-1.5 bg-blue-400 rounded-full mr-2 flex-shrink-0" />
+                <div className="w-1.5 h-1.5 bg-sky-400 rounded-full mr-2 flex-shrink-0" />
                 {improvement}
               </li>
             ))}

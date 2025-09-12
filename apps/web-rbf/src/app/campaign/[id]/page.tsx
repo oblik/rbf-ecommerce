@@ -23,7 +23,7 @@ export default function CampaignPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
           <p className="text-red-800 font-medium">Invalid campaign ID</p>
-          <a href="/" className="text-cyan-600 hover:text-green-700 underline mt-2 inline-block">
+          <a href="/" className="text-sky-600 hover:text-green-700 underline mt-2 inline-block">
             Browse campaigns →
           </a>
         </div>

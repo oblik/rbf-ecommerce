@@ -57,7 +57,7 @@ export default function CampaignManagementCard({
             type="checkbox"
             checked={isSelected}
             onChange={(e) => onSelect(e.target.checked)}
-            className="h-4 w-4 text-cyan-600 focus:ring-blue-500 border-gray-300 rounded"
+            className="h-4 w-4 text-sky-600 focus:ring-sky-500 border-gray-300 rounded"
           />
         </div>
 
@@ -107,7 +107,7 @@ export default function CampaignManagementCard({
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2">
                   <div 
-                    className="bg-cyan-600 h-2 rounded-full transition-all"
+                    className="bg-sky-600 h-2 rounded-full transition-all"
                     style={{ width: `${Math.min(progressPercentage, 100)}%` }}
                   />
                 </div>
@@ -162,8 +162,8 @@ export default function CampaignManagementCard({
       <div className="mt-4 pt-4 border-t border-gray-200">
         <div className="flex items-center justify-between text-sm">
           <div className="flex items-center space-x-4">
-            <div className="bg-blue-50 px-3 py-1 rounded-full">
-              <span className="text-blue-700 font-medium">
+            <div className="bg-sky-50 px-3 py-1 rounded-full">
+              <span className="text-sky-700 font-medium">
                 {(campaign.revenueSharePercent / 100) || 5}% revenue share
               </span>
             </div>
@@ -176,7 +176,7 @@ export default function CampaignManagementCard({
             
           {campaign.fundingActive && (
             <div className="flex items-center space-x-2">
-              <span className="text-cyan-600 text-xs font-medium">Revenue sharing phase</span>
+              <span className="text-sky-600 text-xs font-medium">Revenue sharing phase</span>
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
             </div>
           )}

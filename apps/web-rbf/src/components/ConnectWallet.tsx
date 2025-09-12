@@ -34,7 +34,7 @@ export default function ConnectWallet() {
   return (
     <button
       onClick={login}
-      className="px-4 py-2 text-sm font-medium text-white bg-cyan-600 rounded-lg hover:bg-cyan-700 transition-colors"
+      className="px-4 py-2 text-sm font-medium text-white bg-sky-600 rounded-lg hover:bg-sky-700 transition-colors"
     >
       Connect Wallet
     </button>

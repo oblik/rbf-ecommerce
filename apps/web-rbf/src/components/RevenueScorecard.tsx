@@ -182,7 +182,7 @@ export default function RevenueScorecard({ businessName, website }: RevenueScore
               onClick={() => setActiveTab(tab.id)}
               className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
                 activeTab === tab.id
-                  ? 'border-blue-500 text-cyan-600'
+                  ? 'border-sky-500 text-sky-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
@@ -196,7 +196,7 @@ export default function RevenueScorecard({ businessName, website }: RevenueScore
         {activeTab === 'overview' && (
           <div className="space-y-6">
             {/* Risk Scorecard Header */}
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-100">
+            <div className="bg-gradient-to-r from-sky-50 to-sky-50 rounded-lg p-6 border border-sky-100">
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h3 className="text-2xl font-bold text-gray-900">
@@ -341,7 +341,7 @@ export default function RevenueScorecard({ businessName, website }: RevenueScore
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2">
                   <div 
-                    className="h-2 rounded-full bg-blue-500"
+                    className="h-2 rounded-full bg-sky-500"
                     style={{ width: `${Math.min((scorecardData.gmv90Days / 200000) * 100, 100)}%` }}
                   />
                 </div>
@@ -369,7 +369,7 @@ export default function RevenueScorecard({ businessName, website }: RevenueScore
                 {scorecardData.monthlyBreakdown.map((month, index) => (
                   <div key={index} className="flex-1 flex flex-col items-center">
                     <div 
-                      className="bg-blue-500 rounded-t w-full min-h-[20px]"
+                      className="bg-sky-500 rounded-t w-full min-h-[20px]"
                       style={{ height: `${(month.revenue / 60000) * 80}px` }}
                     />
                     <div className="mt-2 text-center">
@@ -441,8 +441,8 @@ export default function RevenueScorecard({ businessName, website }: RevenueScore
               </div>
             </div>
 
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <p className="text-sm text-blue-800">
+            <div className="bg-sky-50 border border-sky-200 rounded-lg p-4">
+              <p className="text-sm text-sky-800">
                 <strong>Financial Resilience:</strong> Monthly revenue can drop {scorecardData.breakEvenBuffer}% before hitting break-even point.
               </p>
             </div>
@@ -559,9 +559,9 @@ export default function RevenueScorecard({ businessName, website }: RevenueScore
                 <p className="text-sm text-green-800">Consistently below 3% for 12 months</p>
               </div>
 
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <h5 className="font-medium text-blue-900 mb-2">Margin Improvement</h5>
-                <p className="text-sm text-blue-800">+3% improvement vs last year</p>
+              <div className="bg-sky-50 border border-sky-200 rounded-lg p-4">
+                <h5 className="font-medium text-sky-900 mb-2">Margin Improvement</h5>
+                <p className="text-sm text-sky-800">+3% improvement vs last year</p>
               </div>
 
               <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">

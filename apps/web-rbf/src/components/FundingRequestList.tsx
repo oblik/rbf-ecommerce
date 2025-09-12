@@ -30,7 +30,7 @@ export default function FundingRequestList() {
         <p className="text-gray-500 mb-4">No funding requests found.</p>
         <Link 
           href="/create-campaign" 
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-cyan-600 hover:bg-cyan-700"
+          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-sky-600 hover:bg-sky-700"
         >
           Create Campaign
         </Link>
@@ -94,7 +94,7 @@ function FundingRequestCard({ campaign }: { campaign: EnhancedCampaign }) {
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
         </div>
       ) : (
-        <div className="h-48 w-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+        <div className="h-48 w-full bg-gradient-to-br from-sky-500 to-purple-600 flex items-center justify-center">
           <div className="text-white text-center">
             <div className="w-16 h-16 mx-auto mb-2 bg-white/20 rounded-full flex items-center justify-center">
               <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -129,7 +129,7 @@ function FundingRequestCard({ campaign }: { campaign: EnhancedCampaign }) {
               </h4>
               <div className="flex items-center gap-1">
                 {campaign.businessHealth?.isVerified && (
-                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full" title="Verified Business" />
+                  <div className="w-1.5 h-1.5 bg-sky-500 rounded-full" title="Verified Business" />
                 )}
                 {campaign.businessHealth?.isRegistered && (
                   <div className="w-1.5 h-1.5 bg-green-500 rounded-full" title="Registered Business" />
@@ -154,7 +154,7 @@ function FundingRequestCard({ campaign }: { campaign: EnhancedCampaign }) {
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div 
               className={`h-2 rounded-full transition-all duration-500 ${
-                isFullyFunded ? 'bg-green-500' : progressPercentage > 75 ? 'bg-orange-500' : 'bg-cyan-600'
+                isFullyFunded ? 'bg-green-500' : progressPercentage > 75 ? 'bg-orange-500' : 'bg-sky-600'
               }`}
               style={{ width: `${Math.min(progressPercentage, 100)}%` }}
             />
@@ -176,7 +176,7 @@ function FundingRequestCard({ campaign }: { campaign: EnhancedCampaign }) {
         {/* Quick Action */}
         <div className="flex gap-2">
           {isActive && !isFullyFunded ? (
-            <div className="flex-1 bg-cyan-600 text-white text-center py-2 rounded-lg text-sm font-medium group-hover:bg-cyan-700 transition-colors">
+            <div className="flex-1 bg-sky-600 text-white text-center py-2 rounded-lg text-sm font-medium group-hover:bg-sky-700 transition-colors">
               Invest Now
             </div>
           ) : isFullyFunded ? (

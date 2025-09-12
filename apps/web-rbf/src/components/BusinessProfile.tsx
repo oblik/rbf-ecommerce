@@ -55,7 +55,7 @@ export function BusinessProfile({ address }: BusinessProfileProps) {
           </div>
           <div className="flex items-center gap-2">
             {isVerified && (
-              <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full border border-blue-200">
+              <span className="px-2 py-1 text-xs font-medium bg-sky-100 text-sky-800 rounded-full border border-sky-200">
                 Verified
               </span>
             )}

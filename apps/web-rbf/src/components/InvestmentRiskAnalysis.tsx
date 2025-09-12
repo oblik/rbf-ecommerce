@@ -143,7 +143,7 @@ export function InvestmentRiskAnalysis({
           </div>
           <div className="flex items-center gap-2">
             {businessHealth.isVerified ? (
-              <div className="w-2 h-2 bg-blue-500 rounded-full" />
+              <div className="w-2 h-2 bg-sky-500 rounded-full" />
             ) : (
               <div className="w-2 h-2 bg-gray-400 rounded-full" />
             )}

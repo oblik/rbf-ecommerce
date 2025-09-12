@@ -43,7 +43,7 @@ export default function FundCampaignPage() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
           <p className="text-red-800 font-medium">Invalid campaign ID</p>
-          <a href="/" className="text-cyan-600 hover:text-green-700 underline mt-2 inline-block">
+          <a href="/" className="text-sky-600 hover:text-green-700 underline mt-2 inline-block">
             Browse campaigns →
           </a>
         </div>
@@ -70,7 +70,7 @@ export default function FundCampaignPage() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="bg-green-50 border border-green-200 rounded-xl p-8 text-center">
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg className="w-8 h-8 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-8 h-8 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
           </div>
@@ -81,7 +81,7 @@ export default function FundCampaignPage() {
           <div className="flex justify-center space-x-4">
             <button
               onClick={() => router.push(`/campaign/${campaignId}`)}
-              className="bg-cyan-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-cyan-700"
+              className="bg-sky-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-sky-700"
             >
               View Campaign
             </button>
@@ -139,7 +139,7 @@ export default function FundCampaignPage() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Available:</span>
-                  <span className="font-semibold text-cyan-600">
+                  <span className="font-semibold text-sky-600">
                     ${remainingAmount.toLocaleString()}
                   </span>
                 </div>
@@ -147,31 +147,31 @@ export default function FundCampaignPage() {
               <div className="mt-3">
                 <div className="w-full bg-gray-200 rounded-full h-2">
                   <div 
-                    className="bg-cyan-600 h-2 rounded-full"
+                    className="bg-sky-600 h-2 rounded-full"
                     style={{ width: `${Math.min(progressPercentage, 100)}%` }}
                   />
                 </div>
               </div>
             </div>
 
-            <div className="bg-blue-50 rounded-lg p-4">
-              <h4 className="font-medium text-blue-900 mb-3">Investment Terms</h4>
+            <div className="bg-sky-50 rounded-lg p-4">
+              <h4 className="font-medium text-sky-900 mb-3">Investment Terms</h4>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-blue-700">Revenue Share:</span>
-                  <span className="font-medium text-blue-900">
+                  <span className="text-sky-700">Revenue Share:</span>
+                  <span className="font-medium text-sky-900">
                     {(campaign.revenueSharePercent / 100) || 5}%
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-blue-700">Repayment Cap:</span>
-                  <span className="font-medium text-blue-900">
+                  <span className="text-sky-700">Repayment Cap:</span>
+                  <span className="font-medium text-sky-900">
                     {(campaign.repaymentCap / 10000) || 1.5}x
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-blue-700">Min Investment:</span>
-                  <span className="font-medium text-blue-900">$100</span>
+                  <span className="text-sky-700">Min Investment:</span>
+                  <span className="font-medium text-sky-900">$100</span>
                 </div>
               </div>
             </div>
@@ -193,7 +193,7 @@ export default function FundCampaignPage() {
               <p className="text-gray-600 mb-4">
                 Please connect your wallet to make an investment
               </p>
-              <button className="bg-cyan-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-cyan-700">
+              <button className="bg-sky-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-sky-700">
                 Connect Wallet
               </button>
             </div>
@@ -211,7 +211,7 @@ export default function FundCampaignPage() {
                     placeholder="100"
                     min="100"
                     max={remainingAmount.toString()}
-                    className="w-full px-4 py-3 pl-8 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 pl-8 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent"
                   />
                   <span className="absolute left-3 top-3 text-gray-500">$</span>
                 </div>
@@ -248,7 +248,7 @@ export default function FundCampaignPage() {
                     type="checkbox"
                     checked={agreedToTerms}
                     onChange={(e) => setAgreedToTerms(e.target.checked)}
-                    className="mt-1 rounded border-gray-300 text-cyan-600 focus:ring-blue-500"
+                    className="mt-1 rounded border-gray-300 text-sky-600 focus:ring-sky-500"
                   />
                   <span className="ml-3 text-sm text-gray-700">
                     I understand the risks involved in revenue-based financing and agree to the investment terms. 
@@ -259,7 +259,7 @@ export default function FundCampaignPage() {
                 <button
                   onClick={handleFund}
                   disabled={!fundAmount || !agreedToTerms || isPending || isConfirming || Number(fundAmount) < 100}
-                  className="w-full bg-cyan-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-cyan-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                  className="w-full bg-sky-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-sky-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
                 >
                   {isPending || isConfirming 
                     ? 'Processing Investment...' 

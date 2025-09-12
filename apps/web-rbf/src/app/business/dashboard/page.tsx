@@ -58,7 +58,7 @@ function BusinessRegistrationForm({ onRegister, isPending }: BusinessRegistratio
               required
               value={formData.businessName}
               onChange={(e) => setFormData(prev => ({ ...prev, businessName: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
               placeholder="Your business name"
             />
           </div>
@@ -72,7 +72,7 @@ function BusinessRegistrationForm({ onRegister, isPending }: BusinessRegistratio
               rows={3}
               value={formData.description}
               onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
               placeholder="Brief description of your business"
             />
           </div>
@@ -86,7 +86,7 @@ function BusinessRegistrationForm({ onRegister, isPending }: BusinessRegistratio
               type="url"
               value={formData.website}
               onChange={(e) => setFormData(prev => ({ ...prev, website: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
               placeholder="https://your-business.com"
             />
           </div>
@@ -99,7 +99,7 @@ function BusinessRegistrationForm({ onRegister, isPending }: BusinessRegistratio
               id="industry"
               value={formData.industry}
               onChange={(e) => setFormData(prev => ({ ...prev, industry: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
             >
               <option value="">Select an industry</option>
               <option value="ecommerce">E-commerce</option>
@@ -114,7 +114,7 @@ function BusinessRegistrationForm({ onRegister, isPending }: BusinessRegistratio
           <button
             type="submit"
             disabled={isPending || !formData.businessName.trim()}
-            className="w-full bg-cyan-600 text-white py-2 px-4 rounded-md hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-sky-600 text-white py-2 px-4 rounded-md hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isPending ? 'Registering...' : 'Register Business'}
           </button>
@@ -131,13 +131,13 @@ function DashboardActions() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Link
           href="/campaigns/create"
-          className="inline-flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          className="inline-flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md text-white bg-sky-600 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500"
         >
           Create New Campaign
         </Link>
         <Link
           href="/campaigns"
-          className="inline-flex items-center justify-center px-4 py-3 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          className="inline-flex items-center justify-center px-4 py-3 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500"
         >
           View My Campaigns
         </Link>
@@ -151,12 +151,12 @@ function BusinessInsights() {
     <div className="bg-white rounded-lg border border-gray-200 p-6">
       <h3 className="text-lg font-medium text-gray-900 mb-4">Business Insights</h3>
       <div className="space-y-4">
-        <div className="flex items-center justify-between p-3 bg-blue-50 rounded-md">
+        <div className="flex items-center justify-between p-3 bg-sky-50 rounded-md">
           <div>
-            <p className="text-sm font-medium text-blue-900">Improve Your Health Score</p>
-            <p className="text-xs text-blue-700">Make on-time payments to increase your rating</p>
+            <p className="text-sm font-medium text-sky-900">Improve Your Health Score</p>
+            <p className="text-xs text-sky-700">Make on-time payments to increase your rating</p>
           </div>
-          <div className="text-cyan-600">
+          <div className="text-sky-600">
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
             </svg>
@@ -226,7 +226,7 @@ export default function BusinessDashboard() {
           <p className="text-gray-600 mb-4">Your business is now registered on the platform.</p>
           <button 
             onClick={() => window.location.reload()} 
-            className="bg-cyan-600 text-white px-4 py-2 rounded-md hover:bg-cyan-700"
+            className="bg-sky-600 text-white px-4 py-2 rounded-md hover:bg-sky-700"
           >
             Continue to Dashboard
           </button>
