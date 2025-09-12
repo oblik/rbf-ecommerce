@@ -269,10 +269,22 @@ export default function CreateCampaignForm() {
       );
     }
     
-    // Step 2 & 3: Standard validation
-    return currentStepData.fields.every(field => 
-      field === 'image' ? true : formData[field as keyof CampaignFormData]?.toString().trim()
-    );
+    // Step 2: Standard validation (no image requirement)
+    if (currentStep === 2) {
+      return currentStepData.fields.every(field => 
+        formData[field as keyof CampaignFormData]?.toString().trim()
+      );
+    }
+    
+    // Step 3: Require image to be uploaded for form to be valid
+    if (currentStep === 3) {
+      const fieldsValid = currentStepData.fields.every(field => 
+        field === 'image' ? formData.image : formData[field as keyof CampaignFormData]?.toString().trim()
+      );
+      return fieldsValid;
+    }
+    
+    return false;
   };
 
   return (
@@ -303,8 +315,13 @@ export default function CreateCampaignForm() {
       </div>
 
       <form onSubmit={handleSubmit} onKeyDown={(e) => {
-        // Prevent Enter key from submitting form when typing in input fields
-        if (e.key === 'Enter' && e.target instanceof HTMLInputElement && currentStep < 3) {
+        // Prevent Enter key from submitting form when typing in any input field
+        // Only allow Enter on submit button itself
+        if (e.key === 'Enter' && (
+          e.target instanceof HTMLInputElement || 
+          e.target instanceof HTMLTextAreaElement ||
+          e.target instanceof HTMLSelectElement
+        )) {
           e.preventDefault();
         }
       }} className="space-y-6">
