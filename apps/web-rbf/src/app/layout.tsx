@@ -7,7 +7,7 @@ import Navbar from '@/components/Navbar';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Folk - Revenue-Based Financing for Ecommerce',
+  title: 'Jama - Revenue-Based Financing for Ecommerce',
   description: 'Get the capital you need to grow, pay it back as you earn',
 };
 

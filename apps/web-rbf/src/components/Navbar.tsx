@@ -43,9 +43,9 @@ export default function Navbar() {
         <div className="md:hidden flex items-center justify-between h-16">
           <Link href="/" className="flex items-center">
             <div className="w-8 h-8 bg-cyan-600 rounded-lg flex items-center justify-center mr-3">
-              <span className="text-white font-bold text-lg">F</span>
+              <span className="text-white font-bold text-lg">J</span>
             </div>
-            <span className="text-xl font-bold text-gray-900">Folk</span>
+            <span className="text-xl font-bold text-gray-900">Jama</span>
           </Link>
           
           <button
@@ -133,9 +133,9 @@ export default function Navbar() {
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
               <div className="w-8 h-8 bg-cyan-600 rounded-lg flex items-center justify-center mr-3">
-                <span className="text-white font-bold text-lg">F</span>
+                <span className="text-white font-bold text-lg">J</span>
               </div>
-              <span className="text-xl font-bold text-gray-900">Folk</span>
+              <span className="text-xl font-bold text-gray-900">Jama</span>
             </Link>
           </div>
 

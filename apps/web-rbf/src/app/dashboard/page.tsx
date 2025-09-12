@@ -219,7 +219,7 @@ export default function DashboardPage() {
               {filter === 'all' ? 'No campaigns yet' : `No ${filter} campaigns`}
             </h3>
             <p className="text-gray-600 mb-6">
-              Create your first Folk campaign to start raising capital
+              Create your first Jama campaign to start raising capital
             </p>
             <Link
               href="/create-campaign"

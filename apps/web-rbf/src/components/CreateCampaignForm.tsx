@@ -239,7 +239,7 @@ export default function CreateCampaignForm() {
           </svg>
         </div>
         <h2 className="text-2xl font-bold text-gray-900 mb-2">Campaign Created!</h2>
-        <p className="text-gray-600 mb-4">Your Folk campaign has been successfully created and is now live.</p>
+        <p className="text-gray-600 mb-4">Your Jama campaign has been successfully created and is now live.</p>
         <button
           onClick={() => window.location.href = '/'}
           className="bg-cyan-600 text-white px-6 py-2 rounded-lg hover:bg-cyan-700"
