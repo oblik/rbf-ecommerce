@@ -117,7 +117,7 @@ export default function Navbar() {
                         className="block px-4 py-3 text-center bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl no-underline transition-colors"
                         onClick={() => setMobileMenuOpen(false)}
                       >
-                        Start Campaign
+                        Get started
                       </Link>
                     </div>
                   )}
