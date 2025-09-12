@@ -262,11 +262,7 @@ export default function CreateCampaignForm() {
     
     // Step 1: Business Info validation
     if (currentStep === 1) {
-      const requiredFields = ['title', 'description'];
-      // Business name is only required for new businesses
-      if (!isRegistered) {
-        requiredFields.push('businessName');
-      }
+      const requiredFields = ['title', 'description', 'businessName'];
       
       return requiredFields.every(field => 
         formData[field as keyof CampaignFormData]?.toString().trim()
@@ -326,7 +322,7 @@ export default function CreateCampaignForm() {
                   </p>
                 </div>
                 <p className="text-green-600 text-sm mt-1">
-                  Your business is already registered. You can create campaigns instantly.
+                  Your business is registered. You can use your existing business name or create campaigns under a new business name.
                 </p>
               </div>
             ) : (
@@ -361,21 +357,20 @@ export default function CreateCampaignForm() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Business Name
-                {!isRegistered && <span className="text-red-500"> *</span>}
+                <span className="text-red-500"> *</span>
               </label>
               <input
                 type="text"
                 name="businessName"
                 value={formData.businessName}
                 onChange={handleInputChange}
-                placeholder="e.g., GreenTech Solutions Inc."
+                placeholder={isRegistered ? `Current: ${businessProfile?.name || 'GreenTech Solutions'} (or enter new name)` : "e.g., GreenTech Solutions Inc."}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent"
-                required={!isRegistered}
-                disabled={isRegistered}
+                required
               />
               {isRegistered && (
-                <p className="text-sm text-gray-500 mt-1">
-                  Registered business name (cannot be changed)
+                <p className="text-sm text-sky-600 mt-1">
+                  You can use your registered business name "{businessProfile?.name || 'GreenTech Solutions'}" or enter a new business name for this campaign.
                 </p>
               )}
             </div>
