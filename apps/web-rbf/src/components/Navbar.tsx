@@ -109,19 +109,12 @@ export default function Navbar() {
                     )}
                   </div>
                   
-                  {/* Navigation links - only show when not authenticated */}
+                  {/* Start Campaign button - only show when not authenticated */}
                   {!authenticated && (
-                    <div className="space-y-2">
-                      <Link
-                        href="/"
-                        className="block px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl font-medium no-underline transition-colors"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        Explore
-                      </Link>
+                    <div className="w-full">
                       <Link
                         href="/create-campaign"
-                        className="block px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl font-bold no-underline transition-colors"
+                        className="block px-4 py-3 text-center bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl no-underline transition-colors"
                         onClick={() => setMobileMenuOpen(false)}
                       >
                         Start Campaign
@@ -136,27 +129,21 @@ export default function Navbar() {
 
         {/* Desktop Navbar */}
         <div className="hidden md:flex items-center justify-between h-16">
-          <div className="flex items-center space-x-6">
+          {/* Left: Logo */}
+          <div className="flex items-center">
             <Link href="/" className="flex items-center">
               <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center mr-3">
                 <span className="text-white font-bold text-lg">F</span>
               </div>
               <span className="text-xl font-bold text-gray-900">Folk</span>
             </Link>
-            
-            {/* Navigation Links */}
-            <div className="flex items-center space-x-6">
-              <Link href="/" className="text-gray-700 hover:text-gray-900 font-medium transition-colors">
-                Explore
-              </Link>
-              <Link href="/create-campaign" className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-xl transition-colors duration-200">
-                Start Campaign
-              </Link>
-            </div>
           </div>
 
-          {/* Right: Auth Buttons and User Menu */}
+          {/* Right: Start Campaign, Auth Buttons and User Menu */}
           <div className="flex-shrink-0 flex items-center space-x-3">
+            <Link href="/create-campaign" className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-xl transition-colors duration-200">
+              Start Campaign
+            </Link>
             {!ready ? (
               <div className="w-20 h-10 bg-gray-100 rounded-xl animate-pulse" />
             ) : authenticated ? (
