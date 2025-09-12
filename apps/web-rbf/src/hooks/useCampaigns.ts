@@ -56,25 +56,45 @@ interface Campaign {
 
 async function getIPFSMetadata(cid: string): Promise<CampaignMetadata | null> {
   if (!cid) return null;
-  try {
-    // Log the raw CID to debug
-    console.log('Fetching IPFS metadata for CID:', cid);
-    
-    const url = `${IPFS_GATEWAY}${cid.replace('ipfs://', '')}`;
-    console.log('IPFS URL:', url);
-    
-    const response = await fetch(url);
-    if (!response.ok) {
-      console.error(`Failed to fetch metadata from IPFS: ${response.statusText}`);
-      return null;
+  
+  // Multiple IPFS gateways to try in order
+  const gateways = [
+    'https://ipfs.io/ipfs/',
+    'https://gateway.pinata.cloud/ipfs/',
+    'https://dweb.link/ipfs/',
+    'https://cloudflare-ipfs.com/ipfs/'
+  ];
+  
+  const cleanCid = cid.replace('ipfs://', '');
+  console.log('Fetching IPFS metadata for CID:', cleanCid);
+  
+  for (const gateway of gateways) {
+    try {
+      const url = `${gateway}${cleanCid}`;
+      console.log('Trying IPFS URL:', url);
+      
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        const metadata = await response.json();
+        console.log('Successfully fetched metadata:', metadata);
+        return metadata;
+      } else {
+        console.warn(`Gateway ${gateway} failed with status:`, response.status);
+      }
+    } catch (error) {
+      console.warn(`Gateway ${gateway} failed with error:`, error);
+      // Continue to next gateway
     }
-    const metadata = await response.json();
-    console.log('Fetched metadata:', metadata);
-    return metadata;
-  } catch (error) {
-    console.error("Error fetching or parsing IPFS metadata:", error);
-    return null;
   }
+  
+  console.error(`All IPFS gateways failed for CID: ${cleanCid}`);
+  return null;
 }
 
 export function useCampaigns() {
