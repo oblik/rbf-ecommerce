@@ -49,19 +49,16 @@ export default function VerticalSelector({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             {selectedVertical ? (
-              <>
-                <span className="text-lg">{selectedVertical.icon}</span>
-                <div>
-                  <div className="font-medium text-gray-900">
-                    {selectedVertical.name}
-                  </div>
-                  {showDescription && (
-                    <div className="text-sm text-gray-500">
-                      {selectedVertical.description}
-                    </div>
-                  )}
+              <div>
+                <div className="font-medium text-gray-900">
+                  {selectedVertical.name}
                 </div>
-              </>
+                {showDescription && (
+                  <div className="text-sm text-gray-500">
+                    {selectedVertical.description}
+                  </div>
+                )}
+              </div>
             ) : (
               <span className="text-gray-500">Select your business vertical...</span>
             )}
@@ -89,29 +86,12 @@ export default function VerticalSelector({
                 value === vertical.id ? 'bg-sky-50' : ''
               }`}
             >
-              <div className="flex items-start gap-3">
-                <span className="text-lg mt-0.5">{vertical.icon}</span>
-                <div className="flex-1">
-                  <div className="font-medium text-gray-900 mb-1">
-                    {vertical.name}
-                  </div>
-                  <div className="text-sm text-gray-600 mb-2">
-                    {vertical.description}
-                  </div>
-                  <div className="flex items-center gap-4 text-xs">
-                    <div className="flex items-center gap-1">
-                      <span className="text-gray-500">Margins:</span>
-                      <span className="font-medium text-green-600">
-                        {vertical.typicalMargins.min}%-{vertical.typicalMargins.max}%
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <span className="text-gray-500">Avg:</span>
-                      <span className="font-medium text-blue-600">
-                        {vertical.typicalMargins.average}%
-                      </span>
-                    </div>
-                  </div>
+              <div className="flex-1">
+                <div className="font-medium text-gray-900 mb-1">
+                  {vertical.name}
+                </div>
+                <div className="text-sm text-gray-600">
+                  {vertical.description}
                 </div>
               </div>
             </button>
