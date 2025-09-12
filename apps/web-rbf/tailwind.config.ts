@@ -8,6 +8,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Figtree', 'sans-serif'],
+      },
       colors: {
         primary: {
           50: '#f0f9ff',
