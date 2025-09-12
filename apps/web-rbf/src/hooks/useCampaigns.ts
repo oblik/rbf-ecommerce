@@ -57,13 +57,20 @@ interface Campaign {
 async function getIPFSMetadata(cid: string): Promise<CampaignMetadata | null> {
   if (!cid) return null;
   try {
+    // Log the raw CID to debug
+    console.log('Fetching IPFS metadata for CID:', cid);
+    
     const url = `${IPFS_GATEWAY}${cid.replace('ipfs://', '')}`;
+    console.log('IPFS URL:', url);
+    
     const response = await fetch(url);
     if (!response.ok) {
       console.error(`Failed to fetch metadata from IPFS: ${response.statusText}`);
       return null;
     }
-    return await response.json();
+    const metadata = await response.json();
+    console.log('Fetched metadata:', metadata);
+    return metadata;
   } catch (error) {
     console.error("Error fetching or parsing IPFS metadata:", error);
     return null;
@@ -91,7 +98,10 @@ export function useCampaigns() {
     if (!data?.campaigns) return;
 
     try {
+      console.log('Processing campaigns from subgraph:', data.campaigns);
+      
       const campaignPromises = data.campaigns.map(async (campaign: any) => {
+        console.log('Processing campaign:', campaign);
         let metadata: CampaignMetadata | null = null;
         
         if (campaign.metadataURI) {
@@ -104,8 +114,8 @@ export function useCampaigns() {
           fundingGoal: campaign.fundingGoal.toString(),
           totalFunded: campaign.totalFunded.toString(),
           deadline: campaign.deadline.toString(),
-          revenueSharePercent: parseInt(campaign.revenueSharePercent.toString()) / 100, // Convert from basis points
-          repaymentCap: parseInt(campaign.repaymentCap.toString()) / 10000, // Convert from basis points 
+          revenueSharePercent: parseInt(campaign.revenueSharePercent.toString()), // Keep as basis points (500 = 5%)
+          repaymentCap: parseInt(campaign.repaymentCap.toString()), // Keep as basis points (15000 = 1.5x) 
           fundingActive: campaign.fundingActive,
           repaymentActive: campaign.repaymentActive,
           backerCount: campaign.investorCount || 0,
