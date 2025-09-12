@@ -302,7 +302,12 @@ export default function CreateCampaignForm() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} onKeyDown={(e) => {
+        // Prevent Enter key from submitting form when typing in input fields
+        if (e.key === 'Enter' && e.target instanceof HTMLInputElement && currentStep < 3) {
+          e.preventDefault();
+        }
+      }} className="space-y-6">
         {/* Step 1: Business Information */}
         {currentStep === 1 && (
           <>
@@ -579,8 +584,12 @@ export default function CreateCampaignForm() {
           ) : (
             <button
               type="submit"
-              disabled={!isConnected || isSubmitting || isPending || isConfirming}
-              className="px-8 py-2 bg-sky-600 text-white rounded-lg font-medium hover:bg-sky-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+              disabled={!isConnected || !isStepValid() || isSubmitting || isPending || isConfirming}
+              className={`px-8 py-2 rounded-lg font-medium ${
+                (isConnected && isStepValid() && !isSubmitting && !isPending && !isConfirming)
+                  ? 'bg-sky-600 text-white hover:bg-sky-700' 
+                  : 'bg-gray-400 text-white cursor-not-allowed'
+              }`}
             >
               {isSubmitting || isPending || isConfirming ? 'Creating...' : 'Create Campaign'}
             </button>
