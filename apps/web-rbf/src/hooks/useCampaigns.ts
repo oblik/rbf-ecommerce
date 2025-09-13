@@ -51,6 +51,7 @@ interface Campaign {
   fundingActive: boolean;
   repaymentActive: boolean;
   backerCount?: number;
+  createdAt?: string;
   metadata: CampaignMetadata | null;
 }
 
@@ -139,6 +140,7 @@ export function useCampaigns() {
           fundingActive: campaign.fundingActive,
           repaymentActive: campaign.repaymentActive,
           backerCount: campaign.investorCount || 0,
+          createdAt: campaign.createdAt,
           metadata,
         };
       });
@@ -163,6 +165,7 @@ export function useCampaigns() {
         fundingActive: true,
         repaymentActive: false,
         backerCount: 23,
+        createdAt: (Date.now() / 1000 - 86400 * 14).toString(), // 14 days ago
         metadata: {
           title: 'Expand E-commerce Platform',
           description: 'We\'re looking to raise capital to expand our e-commerce platform into new markets and add AI-powered recommendation features.',
@@ -186,6 +189,7 @@ export function useCampaigns() {
         fundingActive: true,
         repaymentActive: false,
         backerCount: 15,
+        createdAt: (Date.now() / 1000 - 86400 * 7).toString(), // 7 days ago
         metadata: {
           title: 'SaaS Platform Scale-Up',
           description: 'Growing our B2B SaaS platform to handle enterprise clients and expand our feature set with advanced analytics.',

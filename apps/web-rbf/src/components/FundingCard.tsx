@@ -5,6 +5,10 @@ import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagm
 import { parseUnits, formatUnits } from 'viem';
 import { useCampaigns } from '@/hooks/useCampaigns';
 import { campaignAbi } from '@/abi/campaign';
+import ShareModal from './ShareModal';
+import type { CampaignShareData } from '@/utils/shareUtils';
+import { getRevenueShareRating, getRepaymentCapRating, type RiskLevel } from '@/utils/riskComparison';
+import { ProgressiveBar } from './ProgressiveBar';
 
 interface FundingCardProps {
   campaignId: string;
@@ -16,6 +20,7 @@ export default function FundingCard({ campaignId, onFundClick }: FundingCardProp
   const { campaigns, loading } = useCampaigns();
   const [fundAmount, setFundAmount] = useState('');
   const [showFundingForm, setShowFundingForm] = useState(false);
+  const [isShareModalOpen, setShareModalOpen] = useState(false);
 
   const { writeContract, data: hash, error, isPending } = useWriteContract();
   const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash });
@@ -56,6 +61,11 @@ export default function FundingCard({ campaignId, onFundClick }: FundingCardProp
   const progressPercentage = (Number(campaign.totalFunded) / Number(campaign.fundingGoal)) * 100;
   const remainingAmount = Number(formattedFundingGoal) - Number(formattedTotalFunded);
   const daysLeft = Math.max(0, Math.floor((Number(campaign.deadline) * 1000 - Date.now()) / (1000 * 60 * 60 * 24)));
+
+  // Risk-adjusted ratings (using Medium risk as default for demo)
+  const riskLevel: RiskLevel = 'Medium'; // In real implementation, this would come from campaign.riskAnalysis?.overallRisk
+  const revenueShareRating = getRevenueShareRating(campaign.revenueSharePercent, riskLevel);
+  const repaymentCapRating = getRepaymentCapRating(campaign.repaymentCap, riskLevel);
 
   if (isSuccess) {
     return (
@@ -120,23 +130,28 @@ export default function FundingCard({ campaignId, onFundClick }: FundingCardProp
         </div>
       </div>
 
-      {/* Investment Terms */}
+      {/* Terms */}
       <div className="bg-gray-50 rounded-lg p-4">
-        <h4 className="font-medium text-gray-900 mb-3">Investment Terms</h4>
-        <div className="flex justify-between items-center mb-3">
+        <div className="flex justify-between items-center">
           <div className="text-center flex-1">
             <div className="text-xs text-gray-500 mb-0.5">Revenue Share</div>
-            <div className="font-medium text-xs text-gray-900">{(campaign.revenueSharePercent / 100) || 5}%</div>
+            <div className="font-semibold text-sm text-gray-900 mb-2">
+              {(campaign.revenueSharePercent / 100) || 5}%
+            </div>
+            <div className="flex justify-center">
+              <ProgressiveBar rating={revenueShareRating} size="sm" />
+            </div>
           </div>
-          <div className="w-px h-6 bg-gray-300 mx-2"></div>
+          <div className="w-px h-8 bg-gray-300 mx-3"></div>
           <div className="text-center flex-1">
-            <div className="text-xs text-gray-500 mb-0.5">Max Return</div>
-            <div className="font-medium text-xs text-gray-900">{(campaign.repaymentCap / 10000) || 1.5}x</div>
+            <div className="text-xs text-gray-500 mb-0.5">Max Repayment</div>
+            <div className="font-semibold text-sm text-gray-900 mb-2">
+              {(campaign.repaymentCap / 10000) || 1.5}x
+            </div>
+            <div className="flex justify-center">
+              <ProgressiveBar rating={repaymentCapRating} size="sm" />
+            </div>
           </div>
-        </div>
-        <div className="flex justify-between text-sm">
-          <span className="text-gray-600">Min Contribution:</span>
-          <span className="font-medium">$100</span>
         </div>
       </div>
 
@@ -156,17 +171,7 @@ export default function FundingCard({ campaignId, onFundClick }: FundingCardProp
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  // Share functionality
-                  const shareData = {
-                    title: campaign.metadata?.title || 'Support this campaign',
-                    text: `Support ${campaign.metadata?.businessName || 'this business'} on Jama`,
-                    url: `${window.location.origin}/campaign/${campaignId}`
-                  };
-                  if (navigator.share && navigator.canShare(shareData)) {
-                    navigator.share(shareData);
-                  } else {
-                    navigator.clipboard.writeText(shareData.url);
-                  }
+                  setShareModalOpen(true);
                 }}
                 className="w-full bg-white border-2 border-transparent bg-gradient-to-r from-blue-600 to-green-600 p-0.5 rounded-lg hover:from-blue-700 hover:to-green-700 transition-all group"
               >
@@ -240,6 +245,23 @@ export default function FundingCard({ campaignId, onFundClick }: FundingCardProp
           Only contribute what you can afford to lose. Repayments are not guaranteed.
         </p>
       </div>
+
+      {/* Share Modal */}
+      <ShareModal
+        isOpen={isShareModalOpen}
+        onClose={() => setShareModalOpen(false)}
+        campaign={{
+          id: campaignId,
+          title: campaign.metadata?.title || 'Funding Campaign',
+          businessName: campaign.metadata?.businessName || 'Business',
+          description: campaign.metadata?.description,
+          image: campaign.metadata?.image,
+          goal: Number(formattedFundingGoal),
+          raised: Number(formattedTotalFunded),
+          progressPercentage,
+          daysLeft
+        } as CampaignShareData}
+      />
     </div>
   );
 }

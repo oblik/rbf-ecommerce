@@ -42,7 +42,7 @@ export default function Navbar() {
         {/* Mobile Navbar */}
         <div className="md:hidden flex items-center justify-between h-16">
           <Link href="/" className="flex items-center">
-            <span className="text-4xl font-black bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent" style={{ fontWeight: 900 }}>Jama</span>
+            <span className="text-4xl bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent font-uni-sans" style={{ fontWeight: 900 }}>Jama</span>
           </Link>
           
           <button
@@ -129,7 +129,7 @@ export default function Navbar() {
           {/* Left: Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
-              <span className="text-4xl font-black bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent" style={{ fontWeight: 900 }}>Jama</span>
+              <span className="text-4xl bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent font-uni-sans" style={{ fontWeight: 900 }}>Jama</span>
             </Link>
           </div>
 

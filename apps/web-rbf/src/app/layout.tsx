@@ -1,10 +1,17 @@
 import type { Metadata } from 'next';
-import { Figtree } from 'next/font/google';
+import { Figtree, Nunito } from 'next/font/google';
 import './globals.css';
 import { Providers } from '@/providers/Providers';
 import Navbar from '@/components/Navbar';
 
 const figtree = Figtree({ subsets: ['latin'] });
+export const nunito = Nunito({ subsets: ['latin'], variable: '--font-nunito' });
+
+// Note: 'Uni Sans' is not available on Google Fonts, using system fonts fallback
+const uniSans = {
+  className: '',
+  variable: '--font-uni-sans'
+};
 
 export const metadata: Metadata = {
   title: 'Jama - Crowdfund Your Growth',
@@ -18,7 +25,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={figtree.className}>
+      <body className={`${figtree.className} ${nunito.variable} ${uniSans.variable}`}>
         <Providers>
           <Navbar />
           {children}

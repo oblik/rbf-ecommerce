@@ -1,11 +1,15 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useEnhancedCampaigns, type EnhancedCampaign } from '@/hooks/useEnhancedCampaigns';
 import { formatUnits } from 'viem';
 import Link from 'next/link';
 import { RiskBadge, InvestmentRiskAnalysis } from './InvestmentRiskAnalysis';
 import { CompactHealthScore } from './HealthScoreIndicator';
+import ShareModal from './ShareModal';
+import type { CampaignShareData } from '@/utils/shareUtils';
+import { getRevenueShareRating, getRepaymentCapRating, type RiskLevel } from '@/utils/riskComparison';
+import { ProgressiveBar } from './ProgressiveBar';
 
 const USDC_DECIMALS = 6;
 
@@ -48,6 +52,8 @@ export default function FundingRequestList() {
 }
 
 function FundingRequestCard({ campaign }: { campaign: EnhancedCampaign }) {
+  const [isShareModalOpen, setShareModalOpen] = useState(false);
+  
   const formattedTotal = formatUnits(BigInt(campaign.totalFunded || '0'), USDC_DECIMALS);
   const formattedGoal = formatUnits(BigInt(campaign.fundingGoal || '0'), USDC_DECIMALS);
   const progressPercentage = campaign.fundingGoal && Number(campaign.fundingGoal) > 0 
@@ -58,6 +64,11 @@ function FundingRequestCard({ campaign }: { campaign: EnhancedCampaign }) {
   const daysRemaining = campaign.deadline ? Math.max(0, Math.floor((Number(campaign.deadline) - Date.now() / 1000) / 86400)) : 0;
   const isActive = campaign.fundingActive;
   const isFullyFunded = progressPercentage >= 100;
+
+  // Risk-adjusted ratings (using Medium risk as default for demo)
+  const riskLevel: RiskLevel = campaign.riskAnalysis?.overallRisk as RiskLevel || 'Medium';
+  const revenueShareRating = getRevenueShareRating(campaign.revenueSharePercent, riskLevel);
+  const repaymentCapRating = getRepaymentCapRating(campaign.repaymentCap, riskLevel);
 
   return (
     <Link 
@@ -150,16 +161,26 @@ function FundingRequestCard({ campaign }: { campaign: EnhancedCampaign }) {
           </div>
         </div>
 
-        {/* Investment Terms */}
-        <div className="flex justify-between items-center mb-4 py-2 px-3 bg-gray-50 rounded-md">
+        {/* Terms */}
+        <div className="flex justify-between items-center mb-4 py-2.5 px-3 bg-gray-50 rounded-md">
           <div className="text-center flex-1">
             <div className="text-xs text-gray-500 mb-0.5">Revenue Share</div>
-            <div className="font-medium text-xs text-gray-900">{campaign.revenueSharePercent / 100}%</div>
+            <div className="font-semibold text-xs text-gray-900 mb-1.5">
+              {campaign.revenueSharePercent / 100}%
+            </div>
+            <div className="flex justify-center">
+              <ProgressiveBar rating={revenueShareRating} size="sm" />
+            </div>
           </div>
           <div className="w-px h-6 bg-gray-300 mx-2"></div>
           <div className="text-center flex-1">
             <div className="text-xs text-gray-500 mb-0.5">Max Repayment</div>
-            <div className="font-medium text-xs text-gray-900">{campaign.repaymentCap / 10000}x</div>
+            <div className="font-semibold text-xs text-gray-900 mb-1.5">
+              {campaign.repaymentCap / 10000}x
+            </div>
+            <div className="flex justify-center">
+              <ProgressiveBar rating={repaymentCapRating} size="sm" />
+            </div>
           </div>
         </div>
 
@@ -174,18 +195,7 @@ function FundingRequestCard({ campaign }: { campaign: EnhancedCampaign }) {
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  // Share functionality
-                  const shareData = {
-                    title: campaign.metadata?.title || 'Support this campaign',
-                    text: `Support ${campaign.metadata?.businessName || 'this business'} on Jama`,
-                    url: `${window.location.origin}/campaign/${campaign.address}`
-                  };
-                  if (navigator.share && navigator.canShare(shareData)) {
-                    navigator.share(shareData);
-                  } else {
-                    navigator.clipboard.writeText(shareData.url);
-                    // Could add toast notification here
-                  }
+                  setShareModalOpen(true);
                 }}
                 className="w-8 h-8 bg-white border-2 border-blue-600 rounded-lg flex items-center justify-center hover:bg-blue-50 transition-colors"
                 title="Share campaign"
@@ -204,18 +214,7 @@ function FundingRequestCard({ campaign }: { campaign: EnhancedCampaign }) {
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  // Share functionality
-                  const shareData = {
-                    title: campaign.metadata?.title || 'Support this campaign',
-                    text: `Support ${campaign.metadata?.businessName || 'this business'} on Jama`,
-                    url: `${window.location.origin}/campaign/${campaign.address}`
-                  };
-                  if (navigator.share && navigator.canShare(shareData)) {
-                    navigator.share(shareData);
-                  } else {
-                    navigator.clipboard.writeText(shareData.url);
-                    // Could add toast notification here
-                  }
+                  setShareModalOpen(true);
                 }}
                 className="w-8 h-8 bg-white border-2 border-blue-600 rounded-lg flex items-center justify-center hover:bg-blue-50 transition-colors"
                 title="Share campaign"
@@ -261,6 +260,23 @@ function FundingRequestCard({ campaign }: { campaign: EnhancedCampaign }) {
           </div>
         </div>
       </div>
+      
+      {/* Share Modal */}
+      <ShareModal
+        isOpen={isShareModalOpen}
+        onClose={() => setShareModalOpen(false)}
+        campaign={{
+          id: campaign.address,
+          title: campaign.metadata?.title || 'Funding Campaign',
+          businessName: campaign.metadata?.businessName || 'Business',
+          description: campaign.metadata?.description,
+          image: campaign.metadata?.image,
+          goal: Number(formattedGoal),
+          raised: Number(formattedTotal),
+          progressPercentage,
+          daysLeft: daysRemaining
+        } as CampaignShareData}
+      />
     </Link>
   );
 }

@@ -10,6 +10,8 @@ const config: Config = {
     extend: {
       fontFamily: {
         sans: ['Figtree', 'sans-serif'],
+        nunito: ['var(--font-nunito)', 'sans-serif'],
+        'uni-sans': ['Uni Sans', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Helvetica Neue', 'Arial', 'sans-serif'],
       },
       colors: {
         primary: {

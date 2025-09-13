@@ -153,7 +153,10 @@ export default function CampaignDetails({ campaignId }: CampaignDetailsProps) {
                     <div className="flex justify-between">
                       <span className="text-gray-600">Created:</span>
                       <span className="font-medium">
-Unknown
+                        {campaign.createdAt 
+                          ? new Date(Number(campaign.createdAt) * 1000).toLocaleDateString() 
+                          : 'Unknown'
+                        }
                       </span>
                     </div>
                     <div className="flex justify-between">
