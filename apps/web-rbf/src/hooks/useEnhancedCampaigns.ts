@@ -24,6 +24,7 @@ export interface EnhancedCampaign {
   fundingActive: boolean;
   repaymentActive: boolean;
   backerCount?: number;
+  createdAt?: string;
   metadata: any | null;
   businessHealth?: BusinessHealth;
   riskAnalysis?: {
