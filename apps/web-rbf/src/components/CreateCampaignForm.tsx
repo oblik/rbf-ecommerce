@@ -359,10 +359,10 @@ export default function CreateCampaignForm() {
                   <svg className="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 15.5c-.77.833.192 2.5 1.732 2.5z" />
                   </svg>
-                  <p className="text-yellow-700 font-medium">New Business</p>
+                  <p className="text-yellow-700 font-medium">Building Your Social Capital</p>
                 </div>
                 <p className="text-yellow-600 text-sm mt-1">
-                  We'll register your business profile when you create your first campaign.
+                  Connect your network and showcase your business performance to build community trust.
                 </p>
               </div>
             )}
@@ -435,11 +435,11 @@ export default function CreateCampaignForm() {
                   value={businessMetadata.businessDescription}
                   onChange={handleBusinessMetadataChange}
                   rows={3}
-                  placeholder="Tell us about your business, industry, and what makes you unique..."
+                  placeholder="Share your story, network connections, and what makes your community believe in you..."
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent"
                 />
                 <p className="text-sm text-gray-500 mt-1">
-                  This will be used for your business profile
+                  Help the community understand your social proof and business credibility
                 </p>
               </div>
             )}

@@ -27,12 +27,12 @@ export default function FundingRequestList() {
   if (!campaigns || campaigns.length === 0) {
     return (
       <div className="text-center py-12">
-        <p className="text-gray-500 mb-4">No funding requests found.</p>
+        <p className="text-gray-500 mb-4">Ready to leverage your network and prove your business performance.</p>
         <Link 
           href="/create-campaign" 
           className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-sky-600 hover:bg-sky-700"
         >
-          Create Campaign
+          Get Started
         </Link>
       </div>
     );

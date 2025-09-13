@@ -5,10 +5,10 @@ export default function Hero() {
       <div className="py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-6xl font-bold text-gray-900 mb-6">
-            Uncollateralized funding for the first time in crypto 🚀
+            Social capital meets revenue data - Web3's answer to traditional lending
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-            Revenue-based financing brings proven traditional finance methods to DeFi. No collateral, no liquidations, just shared growth.
+            Modern and proven financing built on relationships, validated by performance. No credit checks, no collateral, no equity dilution.
           </p>
         </div>
       </div>
@@ -17,7 +17,7 @@ export default function Hero() {
       <div className="pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl font-bold text-gray-900 mb-12">
-            Crowdfunded business growth, repaid from existing revenue
+            Community-backed partnerships that scale with your success
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white p-6 rounded-lg shadow-sm">

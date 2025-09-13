@@ -42,10 +42,7 @@ export default function Navbar() {
         {/* Mobile Navbar */}
         <div className="md:hidden flex items-center justify-between h-16">
           <Link href="/" className="flex items-center">
-            <div className="w-8 h-8 bg-sky-600 rounded-lg flex items-center justify-center mr-3">
-              <span className="text-white font-bold text-lg">J</span>
-            </div>
-            <span className="text-xl font-bold text-gray-900">Jama</span>
+            <span className="text-4xl font-black bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent" style={{ fontWeight: 900 }}>Jama</span>
           </Link>
           
           <button
@@ -117,7 +114,7 @@ export default function Navbar() {
                         className="block px-4 py-3 text-center bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl no-underline transition-colors"
                         onClick={() => setMobileMenuOpen(false)}
                       >
-                        Get started
+                        Get Started
                       </Link>
                     </div>
                   )}
@@ -132,17 +129,14 @@ export default function Navbar() {
           {/* Left: Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
-              <div className="w-8 h-8 bg-sky-600 rounded-lg flex items-center justify-center mr-3">
-                <span className="text-white font-bold text-lg">J</span>
-              </div>
-              <span className="text-xl font-bold text-gray-900">Jama</span>
+              <span className="text-4xl font-black bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent" style={{ fontWeight: 900 }}>Jama</span>
             </Link>
           </div>
 
           {/* Right: Start Campaign, Auth Buttons and User Menu */}
           <div className="flex-shrink-0 flex items-center space-x-3">
             <Link href="/create-campaign" className="bg-sky-600 hover:bg-sky-700 text-white font-medium py-2.5 px-4 rounded-xl transition-colors duration-200">
-              Start Campaign
+              Get Started
             </Link>
             {!ready ? (
               <div className="w-20 h-10 bg-gray-100 rounded-xl animate-pulse" />

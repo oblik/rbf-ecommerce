@@ -45,7 +45,7 @@ export default function VerticalInsights({
             {vertical.name} Insights
           </h4>
           <p className="text-sm text-sky-700">
-            Based on industry data and RBF best practices
+            Social capital patterns and revenue metrics for your industry
           </p>
         </div>
       </div>
@@ -123,8 +123,8 @@ export default function VerticalInsights({
 
       {/* Industry Note */}
       <div className="text-xs text-sky-600 bg-white rounded p-2 border border-sky-200">
-        💡 <strong>Industry Note:</strong> These recommendations are based on typical {vertical.name.toLowerCase()} business models. 
-        Adjust based on your specific business metrics and risk tolerance.
+        🌐 <strong>Social Capital Insight:</strong> {vertical.name.toLowerCase()} businesses build credibility through community connections and proven revenue performance. 
+        Your network strength + business metrics determine optimal partnership terms.
       </div>
     </div>
   );
