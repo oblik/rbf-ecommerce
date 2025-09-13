@@ -119,8 +119,8 @@ function FundingRequestCard({ campaign }: { campaign: EnhancedCampaign }) {
 
       <div className="p-5">
         <div className="flex items-start justify-between mb-3">
-          <h3 className="text-lg font-bold text-gray-900 line-clamp-2 flex-1">
-            {campaign.metadata?.title || 'Untitled Campaign'}
+          <h3 className="text-lg font-bold text-gray-900 line-clamp-1 flex-1">
+            {campaign.metadata?.businessName || 'Company Name'}
           </h3>
           {campaign.riskAnalysis && (
             <RiskBadge riskLevel={campaign.riskAnalysis.overallRisk} size="sm" />
@@ -128,30 +128,8 @@ function FundingRequestCard({ campaign }: { campaign: EnhancedCampaign }) {
         </div>
         
         <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-          {campaign.metadata?.description || 'No description available'}
+          {campaign.metadata?.title || 'Funding Campaign'}
         </p>
-
-        {/* Company Name & Business Health */}
-        <div className="mb-3">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <h4 className="text-sm font-semibold text-gray-700">
-                {campaign.metadata?.businessName || 'Company Name'}
-              </h4>
-              <div className="flex items-center gap-1">
-                {campaign.businessHealth?.isVerified && (
-                  <div className="w-1.5 h-1.5 bg-sky-500 rounded-full" title="Verified Business" />
-                )}
-                {campaign.businessHealth?.isRegistered && (
-                  <div className="w-1.5 h-1.5 bg-green-500 rounded-full" title="Registered Business" />
-                )}
-              </div>
-            </div>
-          </div>
-          {campaign.businessHealth && (
-            <CompactHealthScore score={campaign.businessHealth.healthScore} />
-          )}
-        </div>
 
         <div className="mb-4">
           <div className="flex justify-between items-center mb-2">
@@ -173,31 +151,110 @@ function FundingRequestCard({ campaign }: { campaign: EnhancedCampaign }) {
         </div>
 
         {/* Investment Terms */}
-        <div className="grid grid-cols-2 gap-3 mb-4 p-3 bg-gray-50 rounded-lg">
-          <div className="text-center">
-            <div className="text-xs text-gray-500">Revenue Share</div>
-            <div className="font-semibold text-sm text-gray-900">{campaign.revenueSharePercent / 100}%</div>
+        <div className="flex justify-between items-center mb-4 py-2 px-3 bg-gray-50 rounded-md">
+          <div className="text-center flex-1">
+            <div className="text-xs text-gray-500 mb-0.5">Revenue Share</div>
+            <div className="font-medium text-xs text-gray-900">{campaign.revenueSharePercent / 100}%</div>
           </div>
-          <div className="text-center">
-            <div className="text-xs text-gray-500">Max Return</div>
-            <div className="font-semibold text-sm text-gray-900">{campaign.repaymentCap / 10000}x</div>
+          <div className="w-px h-6 bg-gray-300 mx-2"></div>
+          <div className="text-center flex-1">
+            <div className="text-xs text-gray-500 mb-0.5">Max Repayment</div>
+            <div className="font-medium text-xs text-gray-900">{campaign.repaymentCap / 10000}x</div>
           </div>
         </div>
 
         {/* Quick Action */}
         <div className="flex gap-2">
           {isActive && !isFullyFunded ? (
-            <div className="flex-1 bg-sky-600 text-white text-center py-2 rounded-lg text-sm font-medium group-hover:bg-sky-700 transition-colors">
-              Invest Now
-            </div>
+            <>
+              <div className="flex-1 bg-sky-600 text-white text-center py-2 rounded-lg text-sm font-medium group-hover:bg-sky-700 transition-colors">
+                Fund Now
+              </div>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  // Share functionality
+                  const shareData = {
+                    title: campaign.metadata?.title || 'Support this campaign',
+                    text: `Support ${campaign.metadata?.businessName || 'this business'} on Jama`,
+                    url: `${window.location.origin}/campaign/${campaign.address}`
+                  };
+                  if (navigator.share && navigator.canShare(shareData)) {
+                    navigator.share(shareData);
+                  } else {
+                    navigator.clipboard.writeText(shareData.url);
+                    // Could add toast notification here
+                  }
+                }}
+                className="w-8 h-8 bg-white border-2 border-blue-600 rounded-lg flex items-center justify-center hover:bg-blue-50 transition-colors"
+                title="Share campaign"
+              >
+                <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+                </svg>
+              </button>
+            </>
           ) : isFullyFunded ? (
-            <div className="flex-1 bg-green-100 text-green-700 text-center py-2 rounded-lg text-sm font-medium">
-              Fully Funded
-            </div>
+            <>
+              <div className="flex-1 bg-green-100 text-green-700 text-center py-2 rounded-lg text-sm font-medium">
+                Fully Funded
+              </div>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  // Share functionality
+                  const shareData = {
+                    title: campaign.metadata?.title || 'Support this campaign',
+                    text: `Support ${campaign.metadata?.businessName || 'this business'} on Jama`,
+                    url: `${window.location.origin}/campaign/${campaign.address}`
+                  };
+                  if (navigator.share && navigator.canShare(shareData)) {
+                    navigator.share(shareData);
+                  } else {
+                    navigator.clipboard.writeText(shareData.url);
+                    // Could add toast notification here
+                  }
+                }}
+                className="w-8 h-8 bg-white border-2 border-blue-600 rounded-lg flex items-center justify-center hover:bg-blue-50 transition-colors"
+                title="Share campaign"
+              >
+                <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+                </svg>
+              </button>
+            </>
           ) : (
-            <div className="flex-1 bg-gray-100 text-gray-500 text-center py-2 rounded-lg text-sm font-medium">
-              Campaign Ended
-            </div>
+            <>
+              <div className="flex-1 bg-gray-100 text-gray-500 text-center py-2 rounded-lg text-sm font-medium">
+                Campaign Ended
+              </div>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  // Share functionality
+                  const shareData = {
+                    title: campaign.metadata?.title || 'Support this campaign',
+                    text: `Check out ${campaign.metadata?.businessName || 'this business'} on Jama`,
+                    url: `${window.location.origin}/campaign/${campaign.address}`
+                  };
+                  if (navigator.share && navigator.canShare(shareData)) {
+                    navigator.share(shareData);
+                  } else {
+                    navigator.clipboard.writeText(shareData.url);
+                    // Could add toast notification here
+                  }
+                }}
+                className="w-8 h-8 bg-white border-2 border-blue-600 rounded-lg flex items-center justify-center hover:bg-blue-50 transition-colors"
+                title="Share campaign"
+              >
+                <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+                </svg>
+              </button>
+            </>
           )}
           <div className="px-3 py-2 border border-gray-200 rounded-lg text-xs text-gray-500 group-hover:border-gray-300 transition-colors">
             View Details

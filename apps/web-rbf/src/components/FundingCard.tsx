@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
-import { parseUnits } from 'viem';
+import { parseUnits, formatUnits } from 'viem';
 import { useCampaigns } from '@/hooks/useCampaigns';
 import { campaignAbi } from '@/abi/campaign';
 
@@ -50,8 +50,11 @@ export default function FundingCard({ campaignId, onFundClick }: FundingCardProp
     );
   }
 
+  const USDC_DECIMALS = 6;
+  const formattedTotalFunded = formatUnits(BigInt(campaign.totalFunded || '0'), USDC_DECIMALS);
+  const formattedFundingGoal = formatUnits(BigInt(campaign.fundingGoal || '0'), USDC_DECIMALS);
   const progressPercentage = (Number(campaign.totalFunded) / Number(campaign.fundingGoal)) * 100;
-  const remainingAmount = Number(campaign.fundingGoal) - Number(campaign.totalFunded);
+  const remainingAmount = Number(formattedFundingGoal) - Number(formattedTotalFunded);
   const daysLeft = Math.max(0, Math.floor((Number(campaign.deadline) * 1000 - Date.now()) / (1000 * 60 * 60 * 24)));
 
   if (isSuccess) {
@@ -96,11 +99,11 @@ export default function FundingCard({ campaignId, onFundClick }: FundingCardProp
         <div className="space-y-3">
           <div className="flex justify-between">
             <span className="text-sm text-gray-600">Raised:</span>
-            <span className="font-semibold">${Number(campaign.totalFunded).toLocaleString()}</span>
+            <span className="font-semibold">${parseFloat(formattedTotalFunded).toLocaleString()}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-sm text-gray-600">Goal:</span>
-            <span className="font-semibold">${Number(campaign.fundingGoal).toLocaleString()}</span>
+            <span className="font-semibold">${parseFloat(formattedFundingGoal).toLocaleString()}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-sm text-gray-600">Remaining:</span>
@@ -120,19 +123,20 @@ export default function FundingCard({ campaignId, onFundClick }: FundingCardProp
       {/* Investment Terms */}
       <div className="bg-gray-50 rounded-lg p-4">
         <h4 className="font-medium text-gray-900 mb-3">Investment Terms</h4>
-        <div className="space-y-2 text-sm">
-          <div className="flex justify-between">
-            <span className="text-gray-600">Revenue Share:</span>
-            <span className="font-medium">{(campaign.revenueSharePercent / 100) || 5}%</span>
+        <div className="flex justify-between items-center mb-3">
+          <div className="text-center flex-1">
+            <div className="text-xs text-gray-500 mb-0.5">Revenue Share</div>
+            <div className="font-medium text-xs text-gray-900">{(campaign.revenueSharePercent / 100) || 5}%</div>
           </div>
-          <div className="flex justify-between">
-            <span className="text-gray-600">Repayment Cap:</span>
-            <span className="font-medium">{(campaign.repaymentCap / 10000) || 1.5}x</span>
+          <div className="w-px h-6 bg-gray-300 mx-2"></div>
+          <div className="text-center flex-1">
+            <div className="text-xs text-gray-500 mb-0.5">Max Return</div>
+            <div className="font-medium text-xs text-gray-900">{(campaign.repaymentCap / 10000) || 1.5}x</div>
           </div>
-          <div className="flex justify-between">
-            <span className="text-gray-600">Min Investment:</span>
-            <span className="font-medium">$100</span>
-          </div>
+        </div>
+        <div className="flex justify-between text-sm">
+          <span className="text-gray-600">Min Contribution:</span>
+          <span className="font-medium">$100</span>
         </div>
       </div>
 
@@ -140,18 +144,45 @@ export default function FundingCard({ campaignId, onFundClick }: FundingCardProp
       {campaign.fundingActive && daysLeft > 0 ? (
         <div className="space-y-4">
           {!showFundingForm ? (
-            <button
-              onClick={() => setShowFundingForm(true)}
-              disabled={!isConnected}
-              className="w-full bg-sky-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-sky-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
-            >
-              {isConnected ? 'Fund This Campaign' : 'Connect Wallet to Fund'}
-            </button>
+            <>
+              <button
+                onClick={() => setShowFundingForm(true)}
+                disabled={!isConnected}
+                className="w-full bg-sky-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-sky-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+              >
+                {isConnected ? 'Fund This Campaign' : 'Connect Wallet to Fund'}
+              </button>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  // Share functionality
+                  const shareData = {
+                    title: campaign.metadata?.title || 'Support this campaign',
+                    text: `Support ${campaign.metadata?.businessName || 'this business'} on Jama`,
+                    url: `${window.location.origin}/campaign/${campaignId}`
+                  };
+                  if (navigator.share && navigator.canShare(shareData)) {
+                    navigator.share(shareData);
+                  } else {
+                    navigator.clipboard.writeText(shareData.url);
+                  }
+                }}
+                className="w-full bg-white border-2 border-transparent bg-gradient-to-r from-blue-600 to-green-600 p-0.5 rounded-lg hover:from-blue-700 hover:to-green-700 transition-all group"
+              >
+                <div className="w-full h-full bg-white rounded-md py-2 px-4 flex items-center justify-center gap-2 group-hover:bg-gray-50 transition-colors">
+                  <svg className="w-4 h-4 bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+                  </svg>
+                  <span className="font-bold text-blue-600">Share</span>
+                </div>
+              </button>
+            </>
           ) : (
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Investment Amount (USDC)
+                  Contribution Amount (USDC)
                 </label>
                 <div className="relative">
                   <input
@@ -166,7 +197,7 @@ export default function FundingCard({ campaignId, onFundClick }: FundingCardProp
                   <span className="absolute left-3 top-3 text-gray-500">$</span>
                 </div>
                 <p className="text-xs text-gray-500 mt-1">
-                  Minimum: $100 | Available: ${remainingAmount.toLocaleString()}
+                  Minimum: $100 | Available: ${Math.max(0, remainingAmount).toLocaleString()}
                 </p>
               </div>
 
@@ -205,8 +236,8 @@ export default function FundingCard({ campaignId, onFundClick }: FundingCardProp
       {/* Risk Disclaimer */}
       <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
         <p className="text-xs text-yellow-800">
-          ⚠️ <strong>Investment Risk:</strong> Revenue-based financing involves risk. 
-          Only invest what you can afford to lose. Returns are not guaranteed.
+          ⚠️ <strong>Funding Risk:</strong> Revenue-based financing involves risk. 
+          Only contribute what you can afford to lose. Repayments are not guaranteed.
         </p>
       </div>
     </div>

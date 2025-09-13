@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
-import { parseUnits } from 'viem';
+import { parseUnits, formatUnits } from 'viem';
 import { useCampaigns } from '@/hooks/useCampaigns';
 import { campaignAbi } from '@/abi/campaign';
 
@@ -62,7 +62,10 @@ export default function FundCampaignPage() {
     );
   }
 
-  const remainingAmount = Number(campaign.fundingGoal) - Number(campaign.totalFunded);
+  const USDC_DECIMALS = 6;
+  const formattedTotalFunded = formatUnits(BigInt(campaign.totalFunded || '0'), USDC_DECIMALS);
+  const formattedFundingGoal = formatUnits(BigInt(campaign.fundingGoal || '0'), USDC_DECIMALS);
+  const remainingAmount = Number(formattedFundingGoal) - Number(formattedTotalFunded);
   const progressPercentage = (Number(campaign.totalFunded) / Number(campaign.fundingGoal)) * 100;
 
   if (isSuccess) {
@@ -74,9 +77,9 @@ export default function FundCampaignPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Investment Successful!</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">Funding Successful!</h1>
           <p className="text-xl text-gray-600 mb-6">
-            You've successfully invested ${fundAmount} USDC in {campaign.metadata?.title}
+            You've successfully contributed ${fundAmount} USDC to {campaign.metadata?.title}
           </p>
           <div className="flex justify-center space-x-4">
             <button
@@ -114,7 +117,7 @@ export default function FundCampaignPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Campaign Summary */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Investment Summary</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Funding Summary</h2>
           
           <div className="space-y-4">
             <div>
@@ -131,16 +134,16 @@ export default function FundCampaignPage() {
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Raised:</span>
-                  <span className="font-semibold">${Number(campaign.totalFunded).toLocaleString()}</span>
+                  <span className="font-semibold">${parseFloat(formattedTotalFunded).toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Goal:</span>
-                  <span className="font-semibold">${Number(campaign.fundingGoal).toLocaleString()}</span>
+                  <span className="font-semibold">${parseFloat(formattedFundingGoal).toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Available:</span>
                   <span className="font-semibold text-sky-600">
-                    ${remainingAmount.toLocaleString()}
+                    ${Math.max(0, remainingAmount).toLocaleString()}
                   </span>
                 </div>
               </div>
@@ -155,7 +158,7 @@ export default function FundCampaignPage() {
             </div>
 
             <div className="bg-sky-50 rounded-lg p-4">
-              <h4 className="font-medium text-sky-900 mb-3">Investment Terms</h4>
+              <h4 className="font-medium text-sky-900 mb-3">Funding Terms</h4>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-sky-700">Revenue Share:</span>
@@ -170,7 +173,7 @@ export default function FundCampaignPage() {
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sky-700">Min Investment:</span>
+                  <span className="text-sky-700">Min Contribution:</span>
                   <span className="font-medium text-sky-900">$100</span>
                 </div>
               </div>
@@ -180,7 +183,7 @@ export default function FundCampaignPage() {
 
         {/* Investment Form */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Make Your Investment</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Make Your Contribution</h2>
 
           {!isConnected ? (
             <div className="text-center py-8">
@@ -191,7 +194,7 @@ export default function FundCampaignPage() {
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Connect Your Wallet</h3>
               <p className="text-gray-600 mb-4">
-                Please connect your wallet to make an investment
+                Please connect your wallet to make a contribution
               </p>
               <button className="bg-sky-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-sky-700">
                 Connect Wallet
@@ -201,7 +204,7 @@ export default function FundCampaignPage() {
             <div className="space-y-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Investment Amount (USDC)
+                  Contribution Amount (USDC)
                 </label>
                 <div className="relative">
                   <input
@@ -216,16 +219,16 @@ export default function FundCampaignPage() {
                   <span className="absolute left-3 top-3 text-gray-500">$</span>
                 </div>
                 <p className="text-sm text-gray-500 mt-1">
-                  Minimum: $100 | Maximum: ${remainingAmount.toLocaleString()}
+                  Minimum: $100 | Maximum: ${Math.max(0, remainingAmount).toLocaleString()}
                 </p>
               </div>
 
               {fundAmount && Number(fundAmount) >= 100 && (
                 <div className="bg-green-50 rounded-lg p-4">
-                  <h4 className="font-medium text-green-900 mb-2">Investment Preview</h4>
+                  <h4 className="font-medium text-green-900 mb-2">Contribution Preview</h4>
                   <div className="space-y-1 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-green-700">Investment:</span>
+                      <span className="text-green-700">Contribution:</span>
                       <span className="font-medium">${Number(fundAmount).toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between">
@@ -233,7 +236,7 @@ export default function FundCampaignPage() {
                       <span className="font-medium">{(campaign.revenueSharePercent / 100) || 5}%</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-green-700">Maximum Return:</span>
+                      <span className="text-green-700">Maximum Repayment:</span>
                       <span className="font-medium">
                         ${(Number(fundAmount) * ((campaign.repaymentCap / 10000) || 1.5)).toLocaleString()}
                       </span>
@@ -251,8 +254,8 @@ export default function FundCampaignPage() {
                     className="mt-1 rounded border-gray-300 text-sky-600 focus:ring-sky-500"
                   />
                   <span className="ml-3 text-sm text-gray-700">
-                    I understand the risks involved in revenue-based financing and agree to the investment terms. 
-                    I acknowledge that returns are not guaranteed and I may lose my investment.
+                    I understand the risks involved in revenue-based financing and agree to the funding terms. 
+                    I acknowledge that repayments are not guaranteed and I may lose my contribution.
                   </span>
                 </label>
 
@@ -262,8 +265,8 @@ export default function FundCampaignPage() {
                   className="w-full bg-sky-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-sky-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
                 >
                   {isPending || isConfirming 
-                    ? 'Processing Investment...' 
-                    : `Invest $${fundAmount || '0'} USDC`
+                    ? 'Processing Contribution...' 
+                    : `Contribute $${fundAmount || '0'} USDC`
                   }
                 </button>
               </div>

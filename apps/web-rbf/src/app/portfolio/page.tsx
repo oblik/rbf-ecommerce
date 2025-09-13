@@ -2,7 +2,7 @@
 
 import { usePrivy } from '@privy-io/react-auth';
 import { useRouter } from 'next/navigation';
-import InvestorPortfolio from '@/components/InvestorPortfolio';
+import ContributorPortfolio from '@/components/InvestorPortfolio';
 import Link from 'next/link';
 
 export default function PortfolioPage() {
@@ -19,9 +19,9 @@ export default function PortfolioPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Investment Portfolio</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Funding Portfolio</h2>
           <p className="text-gray-600 mb-6">
-            Sign in to view your investments and track returns
+            Sign in to view your contributions and track repayments
           </p>
           <button
             onClick={login}
@@ -53,10 +53,10 @@ export default function PortfolioPage() {
                 <svg className="w-8 h-8 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
-                Investment Portfolio
+                Funding Portfolio
               </h1>
               <p className="text-gray-600 mt-1">
-                Track your revenue-based financing investments and returns
+                Track your revenue-based financing contributions and repayments
               </p>
             </div>
             
@@ -75,7 +75,7 @@ export default function PortfolioPage() {
       
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <InvestorPortfolio />
+        <ContributorPortfolio />
       </div>
     </div>
   );

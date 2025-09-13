@@ -155,8 +155,8 @@ export function useCampaigns() {
       {
         address: '0x1234567890123456789012345678901234567890' as `0x${string}`,
         owner: '0x0987654321098765432109876543210987654321',
-        fundingGoal: '50000',
-        totalFunded: '32500',
+        fundingGoal: '50000000000',
+        totalFunded: '32500000000',
         deadline: (Date.now() / 1000 + 86400 * 30).toString(), // 30 days from now
         revenueSharePercent: 500, // 5%
         repaymentCap: 15000, // 1.5x
@@ -178,8 +178,8 @@ export function useCampaigns() {
       {
         address: '0x2345678901234567890123456789012345678901' as `0x${string}`,
         owner: '0x1876543210987654321098765432109876543210',
-        fundingGoal: '25000',
-        totalFunded: '18750',
+        fundingGoal: '25000000000',
+        totalFunded: '18750000000',
         deadline: (Date.now() / 1000 + 86400 * 45).toString(), // 45 days from now
         revenueSharePercent: 600, // 6%
         repaymentCap: 20000, // 2x

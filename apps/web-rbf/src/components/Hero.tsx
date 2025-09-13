@@ -30,7 +30,7 @@ export default function Hero() {
             </div>
             <div className="bg-white p-6 rounded-lg shadow-sm">
               <div className="text-3xl font-bold text-sky-600 mb-2">1.1x - 3x</div>
-              <div className="text-gray-600">Return Cap</div>
+              <div className="text-gray-600">Repayment Cap</div>
             </div>
           </div>
         </div>
