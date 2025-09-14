@@ -35,7 +35,6 @@ export class PrivyProvider implements IPaymentProvider {
         success: true,
         message: 'Wallet payment prepared - transaction will be executed next',
         provider: this.name,
-        amount: usdcAmount.toString(),
       };
     } catch (error: any) {
       const errorMsg = error.message || 'Wallet payment failed';
