@@ -14,8 +14,8 @@ const uniSans = {
 };
 
 export const metadata: Metadata = {
-  title: 'Jama - Crowdfund Your Growth',
-  description: 'Crowdfund your growth, repay from existing revenue. No equity dilution.',
+  title: 'Jama - Revenue-Based Financing',
+  description: 'Fund growing businesses and earn returns from their success through revenue-based financing.',
 };
 
 export default function RootLayout({

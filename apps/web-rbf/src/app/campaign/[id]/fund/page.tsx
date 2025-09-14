@@ -1,285 +1,172 @@
-'use client';
+"use client";
 
 import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
-import { parseUnits, formatUnits } from 'viem';
 import { useCampaigns } from '@/hooks/useCampaigns';
-import { campaignAbi } from '@/abi/campaign';
+import FundingForm from '@/components/FundingForm';
+import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 
-export default function FundCampaignPage() {
-  const router = useRouter();
-  const params = useParams<{ id: string }>();
-  const campaignId = params.id;
-  const { address, isConnected } = useAccount();
-  const { campaigns, loading } = useCampaigns();
-  
-  const [fundAmount, setFundAmount] = useState('');
-  const [agreedToTerms, setAgreedToTerms] = useState(false);
+export default function FundPage() {
+    const params = useParams<{ id: string }>();
+    const router = useRouter();
+    const campaignId = params.id;
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const { writeContract, data: hash, error, isPending } = useWriteContract();
-  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash });
+    const { campaigns, loading } = useCampaigns();
+    const campaign = campaigns.find(c => c.address === campaignId);
 
-  const campaign = campaigns.find(c => c.address === campaignId);
+    const handleSuccess = (message: string) => {
+        console.log("Investment successful:", message);
+        setSuccessMessage(message);
+        setErrorMessage(null);
+        
+        // Clear success message after 5 seconds and redirect back to campaign
+        setTimeout(() => {
+            setSuccessMessage(null);
+            router.push(`/campaign/${campaignId}`);
+        }, 5000);
+    };
 
-  const handleFund = async () => {
-    if (!fundAmount || !campaign || !isConnected || !agreedToTerms) return;
+    const handleError = (error: string) => {
+        console.error("Investment Error:", error);
+        setErrorMessage(error);
+        setSuccessMessage(null);
+    };
 
-    try {
-      const amount = parseUnits(fundAmount, 6); // USDC has 6 decimals
-      writeContract({
-        address: campaignId as `0x${string}`,
-        abi: campaignAbi,
-        functionName: 'contribute',
-        args: [amount],
-      });
-    } catch (error) {
-      console.error('Error funding campaign:', error);
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+                <div className="text-center space-y-4">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600 mx-auto"></div>
+                    <p className="text-gray-600">Loading campaign details...</p>
+                </div>
+            </div>
+        );
     }
-  };
+    
+    if (!campaign && !loading) {
+        return (
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+                <div className="text-center bg-white p-8 rounded-lg shadow-sm">
+                    <h1 className="text-2xl font-bold text-gray-900 mb-4">Campaign Not Found</h1>
+                    <p className="text-gray-600 mb-6">The campaign you're looking for doesn't exist.</p>
+                    <button
+                        onClick={() => router.push('/')}
+                        className="bg-sky-600 text-white px-6 py-2 rounded-lg hover:bg-sky-700"
+                    >
+                        Back to Campaigns
+                    </button>
+                </div>
+            </div>
+        );
+    }
+    
+    if (!campaign) {
+        return (
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+                <div className="text-center space-y-4">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600 mx-auto"></div>
+                    <p className="text-gray-600">Loading campaign details...</p>
+                </div>
+            </div>
+        );
+    }
 
-  if (!campaignId || typeof campaignId !== 'string') {
     return (
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
-          <p className="text-red-800 font-medium">Invalid campaign ID</p>
-          <a href="/" className="text-sky-600 hover:text-green-700 underline mt-2 inline-block">
-            Browse campaigns →
-          </a>
-        </div>
-      </div>
-    );
-  }
-
-  if (loading || !campaign) {
-    return (
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="animate-pulse space-y-4">
-          <div className="h-8 bg-gray-200 rounded"></div>
-          <div className="h-64 bg-gray-200 rounded"></div>
-        </div>
-      </div>
-    );
-  }
-
-  const USDC_DECIMALS = 6;
-  const formattedTotalFunded = formatUnits(BigInt(campaign.totalFunded || '0'), USDC_DECIMALS);
-  const formattedFundingGoal = formatUnits(BigInt(campaign.fundingGoal || '0'), USDC_DECIMALS);
-  const remainingAmount = Number(formattedFundingGoal) - Number(formattedTotalFunded);
-  const progressPercentage = (Number(campaign.totalFunded) / Number(campaign.fundingGoal)) * 100;
-
-  if (isSuccess) {
-    return (
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="bg-green-50 border border-green-200 rounded-xl p-8 text-center">
-          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg className="w-8 h-8 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Funding Successful!</h1>
-          <p className="text-xl text-gray-600 mb-6">
-            You've successfully contributed ${fundAmount} USDC to {campaign.metadata?.title}
-          </p>
-          <div className="flex justify-center space-x-4">
-            <button
-              onClick={() => router.push(`/campaign/${campaignId}`)}
-              className="bg-sky-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-sky-700"
-            >
-              View Campaign
-            </button>
-            <button
-              onClick={() => router.push('/portfolio')}
-              className="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-300"
-            >
-              View Portfolio
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="mb-6">
-        <button
-          onClick={() => router.back()}
-          className="flex items-center text-gray-600 hover:text-gray-900"
-        >
-          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          Back to Campaign
-        </button>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Campaign Summary */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Funding Summary</h2>
-          
-          <div className="space-y-4">
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-2">
-                {campaign.metadata?.title || 'Untitled Campaign'}
-              </h3>
-              <p className="text-gray-600">
-                By {campaign.metadata?.businessName}
-              </p>
-            </div>
-
-            <div className="bg-gray-50 rounded-lg p-4">
-              <h4 className="font-medium text-gray-900 mb-3">Campaign Progress</h4>
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Raised:</span>
-                  <span className="font-semibold">${parseFloat(formattedTotalFunded).toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Goal:</span>
-                  <span className="font-semibold">${parseFloat(formattedFundingGoal).toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Available:</span>
-                  <span className="font-semibold text-sky-600">
-                    ${Math.max(0, remainingAmount).toLocaleString()}
-                  </span>
-                </div>
-              </div>
-              <div className="mt-3">
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div 
-                    className="bg-sky-600 h-2 rounded-full"
-                    style={{ width: `${Math.min(progressPercentage, 100)}%` }}
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-sky-50 rounded-lg p-4">
-              <h4 className="font-medium text-sky-900 mb-3">Funding Terms</h4>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-sky-700">Revenue Share:</span>
-                  <span className="font-medium text-sky-900">
-                    {(campaign.revenueSharePercent / 100) || 5}%
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sky-700">Repayment Cap:</span>
-                  <span className="font-medium text-sky-900">
-                    {(campaign.repaymentCap / 10000) || 1.5}x
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sky-700">Min Contribution:</span>
-                  <span className="font-medium text-sky-900">$100</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Investment Form */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Make Your Contribution</h2>
-
-          {!isConnected ? (
-            <div className="text-center py-8">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Connect Your Wallet</h3>
-              <p className="text-gray-600 mb-4">
-                Please connect your wallet to make a contribution
-              </p>
-              <button className="bg-sky-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-sky-700">
-                Connect Wallet
-              </button>
-            </div>
-          ) : (
-            <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Contribution Amount (USDC)
-                </label>
-                <div className="relative">
-                  <input
-                    type="number"
-                    value={fundAmount}
-                    onChange={(e) => setFundAmount(e.target.value)}
-                    placeholder="100"
-                    min="100"
-                    max={remainingAmount.toString()}
-                    className="w-full px-4 py-3 pl-8 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent"
-                  />
-                  <span className="absolute left-3 top-3 text-gray-500">$</span>
-                </div>
-                <p className="text-sm text-gray-500 mt-1">
-                  Minimum: $100 | Maximum: ${Math.max(0, remainingAmount).toLocaleString()}
-                </p>
-              </div>
-
-              {fundAmount && Number(fundAmount) >= 100 && (
-                <div className="bg-green-50 rounded-lg p-4">
-                  <h4 className="font-medium text-green-900 mb-2">Contribution Preview</h4>
-                  <div className="space-y-1 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-green-700">Contribution:</span>
-                      <span className="font-medium">${Number(fundAmount).toLocaleString()}</span>
+        <div className="min-h-screen bg-gray-50">
+            {/* Header */}
+            <div className="bg-white shadow-sm border-b">
+                <div className="max-w-4xl mx-auto px-4 py-6">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-4">
+                            <button
+                                onClick={() => router.push(`/campaign/${campaignId}`)}
+                                className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
+                            >
+                                <ArrowLeftIcon className="w-5 h-5" />
+                                <span>Back to Campaign</span>
+                            </button>
+                        </div>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-green-700">Monthly Revenue Share:</span>
-                      <span className="font-medium">{(campaign.revenueSharePercent / 100) || 5}%</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-green-700">Maximum Repayment:</span>
-                      <span className="font-medium">
-                        ${(Number(fundAmount) * ((campaign.repaymentCap / 10000) || 1.5)).toLocaleString()}
-                      </span>
-                    </div>
-                  </div>
                 </div>
-              )}
-
-              <div className="space-y-4">
-                <label className="flex items-start">
-                  <input
-                    type="checkbox"
-                    checked={agreedToTerms}
-                    onChange={(e) => setAgreedToTerms(e.target.checked)}
-                    className="mt-1 rounded border-gray-300 text-sky-600 focus:ring-sky-500"
-                  />
-                  <span className="ml-3 text-sm text-gray-700">
-                    I understand the risks involved in revenue-based financing and agree to the funding terms. 
-                    I acknowledge that repayments are not guaranteed and I may lose my contribution.
-                  </span>
-                </label>
-
-                <button
-                  onClick={handleFund}
-                  disabled={!fundAmount || !agreedToTerms || isPending || isConfirming || Number(fundAmount) < 100}
-                  className="w-full bg-sky-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-sky-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
-                >
-                  {isPending || isConfirming 
-                    ? 'Processing Contribution...' 
-                    : `Contribute $${fundAmount || '0'} USDC`
-                  }
-                </button>
-              </div>
-
-              {error && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                  <p className="text-red-800 text-sm">{error.message}</p>
-                </div>
-              )}
             </div>
-          )}
+
+            {/* Main Content */}
+            <div className="max-w-4xl mx-auto px-4 py-8">
+                <div className="text-center mb-8">
+                    <h1 className="text-3xl font-bold text-gray-900 mb-3">
+                        Fund "{campaign.metadata?.title || 'this campaign'}"
+                    </h1>
+                    <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                        Back this growing business and earn returns from their success.
+                    </p>
+                </div>
+
+                {/* Success Message */}
+                {successMessage && (
+                    <div className="max-w-lg mx-auto mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+                        <div className="flex items-start">
+                            <svg className="w-5 h-5 text-green-500 mt-0.5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                            </svg>
+                            <div>
+                                <h3 className="text-sm font-medium text-green-800">Investment Successful!</h3>
+                                <p className="text-sm text-green-700 mt-1">{successMessage}</p>
+                                <p className="text-xs text-green-600 mt-2">Redirecting back to campaign...</p>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Error Message */}
+                {errorMessage && (
+                    <div className="max-w-lg mx-auto mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                        <div className="flex items-start">
+                            <svg className="w-5 h-5 text-red-500 mt-0.5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                            </svg>
+                            <div>
+                                <h3 className="text-sm font-medium text-red-800">Investment Failed</h3>
+                                <p className="text-sm text-red-700 mt-1">{errorMessage}</p>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Campaign Summary */}
+                <div className="max-w-lg mx-auto mb-8 bg-white rounded-lg shadow-sm p-6">
+                    <div className="text-center">
+                        <h3 className="font-semibold text-gray-900 mb-4">Campaign Summary</h3>
+                        <div className="space-y-3 text-sm">
+                            <div className="flex justify-between">
+                                <span className="text-gray-600">Business:</span>
+                                <span className="font-medium">{campaign.metadata?.businessName || 'Unknown'}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-gray-600">Revenue Share:</span>
+                                <span className="font-medium text-sky-600">{(campaign.revenueSharePercent / 100) || 5}%</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-gray-600">Max Repayment:</span>
+                                <span className="font-medium text-green-600">{(campaign.repaymentCap / 10000) || 1.5}x</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-gray-600">Duration:</span>
+                                <span className="font-medium">24 months</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Funding Form */}
+                <FundingForm
+                    campaignId={campaignId}
+                    campaignNumericId={campaign.campaignId || campaignId}
+                    onSuccess={handleSuccess}
+                    onError={handleError}
+                />
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 }

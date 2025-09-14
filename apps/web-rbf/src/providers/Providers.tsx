@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ApolloProvider } from '@apollo/client';
 import { getClient } from '@/lib/apollo';
 import { http } from 'viem';
+import { PaymentProvider } from './payment/PaymentProvider';
 
 const wagmiConfig = createConfig({
   chains: [baseSepolia],
@@ -36,7 +37,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
       >
         <QueryClientProvider client={queryClient}>
           <WagmiProvider config={wagmiConfig}>
-            {children}
+            <PaymentProvider>
+              {children}
+            </PaymentProvider>
           </WagmiProvider>
         </QueryClientProvider>
       </PrivyProvider>
