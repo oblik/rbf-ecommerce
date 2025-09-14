@@ -66,7 +66,7 @@ export function useUSDCPayment({
     abi: usdcAbi,
     functionName: 'allowance',
     args: address && campaignAddress ? [address, campaignAddress] : undefined,
-  });
+  }) as { data: bigint | undefined };
   
   // Check user's USDC balance
   const { data: userBalance } = useReadContract({
@@ -74,7 +74,7 @@ export function useUSDCPayment({
     abi: usdcAbi,
     functionName: 'balanceOf',
     args: address ? [address] : undefined,
-  });
+  }) as { data: bigint | undefined };
   
   // Convert amount to USDC units (6 decimals)
   const usdcAmount = parseUnits(amount.toString(), TOKEN_CONFIG.USDC.decimals);
