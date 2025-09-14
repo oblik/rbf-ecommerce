@@ -42,6 +42,7 @@ interface CampaignMetadata {
 
 interface Campaign {
   address: `0x${string}`;
+  campaignId?: string;
   owner: string;
   fundingGoal: string;
   totalFunded: string;
@@ -131,6 +132,7 @@ export function useCampaigns() {
 
         return {
           address: campaign.id as `0x${string}`,
+          campaignId: campaign.campaignId,
           owner: campaign.owner,
           fundingGoal: campaign.fundingGoal.toString(),
           totalFunded: campaign.totalFunded.toString(),
