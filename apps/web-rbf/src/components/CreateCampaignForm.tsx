@@ -269,11 +269,18 @@ export default function CreateCampaignForm() {
     
     // Step 1: Business Info validation
     if (currentStep === 1) {
-      const requiredFields = ['title', 'description', 'businessName', 'vertical'];
+      const requiredFields = ['title', 'businessName', 'vertical'];
+      const requiredMetadata = ['businessDescription'];
       
-      return requiredFields.every(field => 
+      const formFieldsValid = requiredFields.every(field => 
         formData[field as keyof CampaignFormData]?.toString().trim()
       );
+      
+      const metadataFieldsValid = requiredMetadata.every(field =>
+        businessMetadata[field as keyof typeof businessMetadata]?.toString().trim()
+      );
+      
+      return formFieldsValid && metadataFieldsValid;
     }
     
     // Step 2: Social Capital (optional - can always proceed)
@@ -340,33 +347,27 @@ export default function CreateCampaignForm() {
         {/* Step 1: Business Information */}
         {currentStep === 1 && (
           <>
-            {/* Business Registration Status */}
-            {checkingRegistration ? (
-              <div className="bg-sky-50 border border-sky-200 rounded-lg p-4 mb-6">
-                <p className="text-sky-700">Checking business registration status...</p>
-              </div>
-            ) : isRegistered ? (
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
-                <div className="flex items-center gap-2">
-                  <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  <p className="text-green-700 font-medium">
-                    Welcome back, {businessProfile?.name || 'Business'}!
-                  </p>
-                </div>
-                <p className="text-green-600 text-sm mt-1">
-                  Your business is registered. You can use your existing business name or create campaigns under a new business name.
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Business Name
+                <span className="text-red-500"> *</span>
+              </label>
+              <input
+                type="text"
+                name="businessName"
+                value={formData.businessName}
+                onChange={handleInputChange}
+                placeholder={isRegistered ? `Current: ${businessProfile?.name || 'GreenTech Solutions'} (or enter new name)` : "e.g., GreenTech Solutions Inc."}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+                required
+              />
+              {isRegistered && (
+                <p className="text-sm text-sky-600 mt-1">
+                  You can use your registered business name "{businessProfile?.name || 'GreenTech Solutions'}" or enter a new business name for this campaign.
                 </p>
-              </div>
-            ) : (
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
-                <p className="text-gray-700 font-medium">New Campaign</p>
-                <p className="text-gray-600 text-sm mt-1">
-                  Create your first campaign and establish your business profile on the platform.
-                </p>
-              </div>
-            )}
+              )}
+            </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -404,67 +405,23 @@ export default function CreateCampaignForm() {
               )}
             </div>
 
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Business Name
-                <span className="text-red-500"> *</span>
+                About Your Business
               </label>
-              <input
-                type="text"
-                name="businessName"
-                value={formData.businessName}
-                onChange={handleInputChange}
-                placeholder={isRegistered ? `Current: ${businessProfile?.name || 'GreenTech Solutions'} (or enter new name)` : "e.g., GreenTech Solutions Inc."}
+              <textarea
+                name="businessDescription"
+                value={businessMetadata.businessDescription}
+                onChange={handleBusinessMetadataChange}
+                rows={4}
+                placeholder="Tell your story: What does your business do? How long have you been operating? What makes you unique? Why should the community support your growth?"
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent"
-                required
               />
-              {isRegistered && (
-                <p className="text-sm text-sky-600 mt-1">
-                  You can use your registered business name "{businessProfile?.name || 'GreenTech Solutions'}" or enter a new business name for this campaign.
-                </p>
-              )}
+              <p className="text-sm text-gray-500 mt-1">
+                Help funders understand your business, your journey, and your vision for the future
+              </p>
             </div>
-
-            {/* Business Vertical Selector */}
-            <VerticalSelector
-              value={formData.vertical}
-              onChange={(verticalId) => setFormData(prev => ({ ...prev, vertical: verticalId }))}
-              showDescription={true}
-            />
-
-            {/* Show insights if vertical is selected */}
-            {formData.vertical && (
-              <VerticalInsights 
-                verticalId={formData.vertical}
-                onRecommendationApply={(revenueShare, repaymentCap) => {
-                  setFormData(prev => ({
-                    ...prev,
-                    revenueSharePercent: revenueShare.toString(),
-                    repaymentCap: repaymentCap.toString()
-                  }));
-                }}
-                showApplyButton={true}
-              />
-            )}
-
-            {!isRegistered && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Business Description
-                </label>
-                <textarea
-                  name="businessDescription"
-                  value={businessMetadata.businessDescription}
-                  onChange={handleBusinessMetadataChange}
-                  rows={3}
-                  placeholder="Share your story, network connections, and what makes your community believe in you..."
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent"
-                />
-                <p className="text-sm text-gray-500 mt-1">
-                  Help the community understand your social proof and business credibility
-                </p>
-              </div>
-            )}
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -494,12 +451,62 @@ export default function CreateCampaignForm() {
                 required
               />
             </div>
+
+            {/* Business Vertical Selector */}
+            <VerticalSelector
+              value={formData.vertical}
+              onChange={(verticalId) => setFormData(prev => ({ ...prev, vertical: verticalId }))}
+              showDescription={true}
+            />
           </>
         )}
 
         {/* Step 2: Social Capital */}
         {currentStep === 2 && (
           <>
+            {/* Shopify OAuth Section */}
+            <div className="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center">
+                  <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M14.8 6.504c-.603-.66-1.347-1.074-2.231-1.244V4.97c0-.055-.044-.1-.1-.1h-.68c-.055 0-.1.044-.1.1v.29c-1.316.013-2.6.604-2.6 2.08 0 1.76 1.694 2.186 2.6 2.39v2.606c-.55-.13-1.08-.38-1.494-.65-.064-.042-.15-.026-.192.035l-.337.487c-.042.06-.026.143.035.185.605.424 1.347.714 2.146.782v.416c0 .055.045.1.1.1h.68c.055 0 .1-.045.1-.1v-.387c1.395-.043 2.688-.688 2.688-2.234 0-1.77-1.743-2.226-2.688-2.452V6.787c.462.103.875.282 1.194.486.062.04.144.02.185-.04l.298-.44c.04-.06.022-.142-.038-.18zm-3.15 1.95c-.606-.183-.99-.39-.99-.84 0-.463.395-.714.99-.714v1.554zm1.34 2.876c0 .496-.43.795-1.04.795V9.743c.64.196 1.04.416 1.04.887z"/>
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-green-900">Connect Your Shopify Store</h3>
+                  <p className="text-sm text-green-700">Verify your business performance and revenue data to build credibility</p>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-lg p-3 border border-sky-200">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <svg className="w-5 h-5 fill-[#95BF47]" viewBox="0 0 24 24">
+                      <path d="M14.8 6.504c-.603-.66-1.347-1.074-2.231-1.244V4.97c0-.055-.044-.1-.1-.1h-.68c-.055 0-.1.044-.1.1v.29c-1.316.013-2.6.604-2.6 2.08 0 1.76 1.694 2.186 2.6 2.39v2.606c-.55-.13-1.08-.38-1.494-.65-.064-.042-.15-.026-.192.035l-.337.487c-.042.06-.026.143.035.185.605.424 1.347.714 2.146.782v.416c0 .055.045.1.1.1h.68c.055 0 .1-.045.1-.1v-.387c1.395-.043 2.688-.688 2.688-2.234 0-1.77-1.743-2.226-2.688-2.452V6.787c.462.103.875.282 1.194.486.062.04.144.02.185-.04l.298-.44c.04-.06.022-.142-.038-.18zm-3.15 1.95c-.606-.183-.99-.39-.99-.84 0-.463.395-.714.99-.714v1.554zm1.34 2.876c0 .496-.43.795-1.04.795V9.743c.64.196 1.04.416 1.04.887z"/>
+                    </svg>
+                    <div>
+                      <h4 className="font-medium text-gray-900 text-sm">Shopify Store Integration</h4>
+                      <p className="text-xs text-gray-500">Securely connect to verify sales data and business metrics</p>
+                    </div>
+                  </div>
+                  <button className="bg-sky-600 text-white px-3 py-1.5 rounded-md text-sm font-medium hover:bg-sky-700 transition-colors">
+                    Connect
+                  </button>
+                </div>
+              </div>
+
+              <div className="mt-4 p-3 bg-green-100 rounded-lg border border-green-200">
+                <div className="flex items-start gap-2">
+                  <svg className="w-4 h-4 text-green-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div className="text-xs text-green-700">
+                    <strong>Boost credibility:</strong> Verified revenue data helps funders understand your business performance and growth potential.
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div className="bg-sky-50 border border-sky-200 rounded-lg p-6 mb-6">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 bg-sky-600 rounded-full flex items-center justify-center">
@@ -508,58 +515,162 @@ export default function CreateCampaignForm() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-sky-900">Connect Your Social Capital</h3>
+                  <h3 className="text-lg font-semibold text-sky-900">Connect Your Socials</h3>
                   <p className="text-sm text-sky-700">Link your social media accounts to showcase your network and community trust</p>
                 </div>
               </div>
 
-              <div className="space-y-4">
-                <div className="bg-white rounded-lg p-4 border border-sky-200">
-                  <div className="flex items-center justify-between mb-3">
+              <div className="space-y-3">
+                <div className="bg-white rounded-lg p-3 border border-sky-200">
+                  <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <svg className="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+                      <svg className="w-5 h-5" viewBox="0 0 1000 1000" fill="currentColor">
+                        <path d="M257.778 155.556H742.222V844.444H671.111V528.889H670.414C662.554 441.677 589.258 373.333 500 373.333C410.742 373.333 337.446 441.677 329.586 528.889H328.889V844.444H257.778V155.556Z" fill="#855DCD"/>
+                        <path d="M128.889 253.333L157.778 351.111H182.222V746.667C169.949 746.667 160 756.616 160 768.889V795.556H155.556C143.283 795.556 133.333 805.505 133.333 817.778V844.444H382.222V817.778C382.222 805.505 372.273 795.556 360 795.556H355.556V768.889C355.556 756.616 345.606 746.667 333.333 746.667H306.667V253.333H128.889Z" fill="#855DCD"/>
+                        <path d="M675.555 746.667C663.282 746.667 653.333 756.616 653.333 768.889V795.556H648.889C636.616 795.556 626.667 805.505 626.667 817.778V844.444H875.555V817.778C875.555 805.505 865.606 795.556 853.333 795.556H848.889V768.889C848.889 756.616 838.94 746.667 826.667 746.667V351.111H851.111L880 253.333H702.222V746.667H675.555Z" fill="#855DCD"/>
                       </svg>
                       <div>
-                        <h4 className="font-medium text-gray-900">Twitter / X</h4>
-                        <p className="text-xs text-gray-500">Connect your Twitter/X account</p>
+                        <h4 className="font-medium text-gray-900 text-sm">Farcaster</h4>
+                        <p className="text-xs text-gray-500">Connect with crypto and web3 community</p>
                       </div>
                     </div>
-                    <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
+                    <button className="bg-sky-600 text-white px-3 py-1.5 rounded-md text-sm font-medium hover:bg-sky-700 transition-colors">
                       Connect
                     </button>
                   </div>
                 </div>
 
-                <div className="bg-white rounded-lg p-4 border border-sky-200">
-                  <div className="flex items-center justify-between mb-3">
+                <div className="bg-white rounded-lg p-3 border border-sky-200">
+                  <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <svg className="w-6 h-6 text-blue-700" fill="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-5 h-5 fill-[#1877F2]" viewBox="0 0 24 24">
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                      </svg>
+                      <div>
+                        <h4 className="font-medium text-gray-900 text-sm">Facebook</h4>
+                        <p className="text-xs text-gray-500">Connect your Facebook profile</p>
+                      </div>
+                    </div>
+                    <button className="bg-sky-600 text-white px-3 py-1.5 rounded-md text-sm font-medium hover:bg-sky-700 transition-colors">
+                      Connect
+                    </button>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg p-3 border border-sky-200">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <svg className="w-5 h-5 fill-black" viewBox="0 0 24 24">
+                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                      </svg>
+                      <div>
+                        <h4 className="font-medium text-gray-900 text-sm">X (Twitter)</h4>
+                        <p className="text-xs text-gray-500">Connect your X/Twitter account</p>
+                      </div>
+                    </div>
+                    <button className="bg-sky-600 text-white px-3 py-1.5 rounded-md text-sm font-medium hover:bg-sky-700 transition-colors">
+                      Connect
+                    </button>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg p-3 border border-sky-200">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <svg className="w-5 h-5 fill-[#00A8E8]" viewBox="0 0 24 24">
+                        <path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364.136-.02.275-.039.415-.06-.138.017-.277.036-.415.056-2.67-.297-5.568.628-6.383 3.364C.378 17.85 0 22.81 0 23.5c0 .688.139 1.86.902 2.203.659.299 1.664.621 4.3-1.24 2.752-1.942 5.711-5.881 6.798-7.995C13.087 18.582 16.046 22.521 18.798 24.463c2.636 1.861 3.641 1.539 4.3 1.24.763-.343.902-1.515.902-2.203 0-.69-.378-5.65-.624-6.479-.815-2.736-3.713-3.661-6.383-3.364-.138-.02-.277-.039-.415-.056.138.017.277.036.415.056 2.67.297 5.568-.628 6.383-3.364C23.622 9.42 24 4.46 24 3.772c0-.688-.139-1.86-.902-2.203-.659-.299-1.664-.621-4.3 1.24C16.046 4.751 13.087 8.69 12 10.804z"/>
+                      </svg>
+                      <div>
+                        <h4 className="font-medium text-gray-900 text-sm">Bluesky</h4>
+                        <p className="text-xs text-gray-500">Connect to the decentralized social network</p>
+                      </div>
+                    </div>
+                    <button className="bg-sky-600 text-white px-3 py-1.5 rounded-md text-sm font-medium hover:bg-sky-700 transition-colors">
+                      Connect
+                    </button>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg p-3 border border-sky-200">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <svg className="w-5 h-5 fill-[#0A66C2]" viewBox="0 0 24 24">
                         <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
                       </svg>
                       <div>
-                        <h4 className="font-medium text-gray-900">LinkedIn</h4>
+                        <h4 className="font-medium text-gray-900 text-sm">LinkedIn</h4>
                         <p className="text-xs text-gray-500">Connect your professional network</p>
                       </div>
                     </div>
-                    <button className="bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-800 transition-colors">
+                    <button className="bg-sky-600 text-white px-3 py-1.5 rounded-md text-sm font-medium hover:bg-sky-700 transition-colors">
                       Connect
                     </button>
                   </div>
                 </div>
 
-                <div className="bg-white rounded-lg p-4 border border-sky-200">
-                  <div className="flex items-center justify-between mb-3">
+                <div className="bg-white rounded-lg p-3 border border-sky-200">
+                  <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <svg className="w-6 h-6 text-pink-600" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.719-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.739.097.118.11.221.082.343-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24.009c6.624 0 11.99-5.367 11.99-11.988C24.007 5.367 18.641.001.012.001z"/>
+                      <svg className="w-5 h-5 fill-[#E4405F]" viewBox="0 0 24 24">
+                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
                       </svg>
                       <div>
-                        <h4 className="font-medium text-gray-900">Pinterest</h4>
-                        <p className="text-xs text-gray-500">Showcase your brand aesthetic</p>
+                        <h4 className="font-medium text-gray-900 text-sm">Instagram</h4>
+                        <p className="text-xs text-gray-500">Showcase your brand visually</p>
                       </div>
                     </div>
-                    <button className="bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors">
+                    <button className="bg-sky-600 text-white px-3 py-1.5 rounded-md text-sm font-medium hover:bg-sky-700 transition-colors">
+                      Connect
+                    </button>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg p-3 border border-sky-200">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <svg className="w-5 h-5 fill-[#000000]" viewBox="0 0 24 24">
+                        <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
+                      </svg>
+                      <div>
+                        <h4 className="font-medium text-gray-900 text-sm">TikTok</h4>
+                        <p className="text-xs text-gray-500">Connect with younger audiences</p>
+                      </div>
+                    </div>
+                    <button className="bg-sky-600 text-white px-3 py-1.5 rounded-md text-sm font-medium hover:bg-sky-700 transition-colors">
+                      Connect
+                    </button>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg p-3 border border-sky-200">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <svg className="w-5 h-5 fill-[#5865F2]" viewBox="0 0 24 24">
+                        <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419-.0002 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9554 2.4189-2.1568 2.4189z"/>
+                      </svg>
+                      <div>
+                        <h4 className="font-medium text-gray-900 text-sm">Discord</h4>
+                        <p className="text-xs text-gray-500">Build and engage your community</p>
+                      </div>
+                    </div>
+                    <button className="bg-sky-600 text-white px-3 py-1.5 rounded-md text-sm font-medium hover:bg-sky-700 transition-colors">
+                      Connect
+                    </button>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg p-3 border border-sky-200">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <svg className="w-5 h-5 fill-[#FF0000]" viewBox="0 0 24 24">
+                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                      </svg>
+                      <div>
+                        <h4 className="font-medium text-gray-900 text-sm">YouTube</h4>
+                        <p className="text-xs text-gray-500">Share video content and tutorials</p>
+                      </div>
+                    </div>
+                    <button className="bg-sky-600 text-white px-3 py-1.5 rounded-md text-sm font-medium hover:bg-sky-700 transition-colors">
                       Connect
                     </button>
                   </div>
@@ -630,6 +741,21 @@ export default function CreateCampaignForm() {
                 <option value="90">90 days</option>
               </select>
             </div>
+
+            {/* Show insights if vertical is selected */}
+            {formData.vertical && (
+              <VerticalInsights 
+                verticalId={formData.vertical}
+                onRecommendationApply={(revenueShare, repaymentCap) => {
+                  setFormData(prev => ({
+                    ...prev,
+                    revenueSharePercent: revenueShare.toString(),
+                    repaymentCap: repaymentCap.toString()
+                  }));
+                }}
+                showApplyButton={true}
+              />
+            )}
           </>
         )}
 

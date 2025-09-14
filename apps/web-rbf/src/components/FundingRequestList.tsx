@@ -172,7 +172,7 @@ function FundingRequestCard({ campaign }: { campaign: EnhancedCampaign }) {
               <ProgressiveBar rating={revenueShareRating} size="sm" />
             </div>
           </div>
-          <div className="w-px h-6 bg-gray-300 mx-2"></div>
+          <div className="w-px h-6 bg-gray-300 mx-1"></div>
           <div className="text-center flex-1">
             <div className="text-xs text-gray-500 mb-0.5">Max Repayment</div>
             <div className="font-semibold text-xs text-gray-900 mb-1.5">
@@ -180,6 +180,13 @@ function FundingRequestCard({ campaign }: { campaign: EnhancedCampaign }) {
             </div>
             <div className="flex justify-center">
               <ProgressiveBar rating={repaymentCapRating} size="sm" />
+            </div>
+          </div>
+          <div className="w-px h-6 bg-gray-300 mx-1"></div>
+          <div className="text-center flex-1">
+            <div className="text-xs text-gray-500 mb-0.5">Duration</div>
+            <div className="font-semibold text-xs text-gray-900">
+              24 months
             </div>
           </div>
         </div>

@@ -142,7 +142,7 @@ export default function FundingCard({ campaignId, onFundClick }: FundingCardProp
               <ProgressiveBar rating={revenueShareRating} size="sm" />
             </div>
           </div>
-          <div className="w-px h-8 bg-gray-300 mx-3"></div>
+          <div className="w-px h-8 bg-gray-300 mx-2"></div>
           <div className="text-center flex-1">
             <div className="text-xs text-gray-500 mb-0.5">Max Repayment</div>
             <div className="font-semibold text-sm text-gray-900 mb-2">
@@ -150,6 +150,13 @@ export default function FundingCard({ campaignId, onFundClick }: FundingCardProp
             </div>
             <div className="flex justify-center">
               <ProgressiveBar rating={repaymentCapRating} size="sm" />
+            </div>
+          </div>
+          <div className="w-px h-8 bg-gray-300 mx-2"></div>
+          <div className="text-center flex-1">
+            <div className="text-xs text-gray-500 mb-0.5">Duration</div>
+            <div className="font-semibold text-sm text-gray-900">
+              24 months
             </div>
           </div>
         </div>
