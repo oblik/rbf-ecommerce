@@ -98,6 +98,13 @@ export const UserMenu = ({ inline = false, onItemClick }: UserMenuProps) => {
             Portfolio
           </Link>
           <Link
+            href="/investor/returns"
+            className="block px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl font-medium no-underline transition-colors"
+            onClick={handleItemClick}
+          >
+            Investment Returns
+          </Link>
+          <Link
             href="/business/dashboard"
             className="block px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl font-medium no-underline transition-colors"
             onClick={handleItemClick}
@@ -177,6 +184,14 @@ export const UserMenu = ({ inline = false, onItemClick }: UserMenuProps) => {
             onClick={() => setMenuOpen(false)}
           >
             Portfolio
+          </Link>
+          <Link
+            href="/investor/returns"
+            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 no-underline"
+            role="menuitem"
+            onClick={() => setMenuOpen(false)}
+          >
+            Investment Returns
           </Link>
           <Link
             href="/business/dashboard"

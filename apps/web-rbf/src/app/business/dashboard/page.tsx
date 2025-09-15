@@ -130,16 +130,16 @@ function DashboardActions() {
       <h3 className="text-lg font-medium text-gray-900 mb-4">Quick Actions</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Link
-          href="/campaigns/create"
+          href="/create-campaign"
           className="inline-flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md text-white bg-sky-600 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500"
         >
           Create New Campaign
         </Link>
         <Link
-          href="/campaigns"
-          className="inline-flex items-center justify-center px-4 py-3 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500"
+          href="/business/repayment"
+          className="inline-flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
         >
-          View My Campaigns
+          Manage Repayments
         </Link>
       </div>
     </div>
