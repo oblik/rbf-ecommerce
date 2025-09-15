@@ -133,13 +133,13 @@ export default function FundingCard({ campaignId, onFundClick }: FundingCardProp
               e.stopPropagation();
               setShareModalOpen(true);
             }}
-            className="w-full bg-gradient-to-r from-blue-500 to-purple-600 p-1 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all group shadow-lg hover:shadow-xl transform hover:scale-105"
+            className="w-full bg-gradient-to-r from-blue-500/70 to-green-500/70 p-[3px] rounded-lg hover:from-blue-500/80 hover:to-green-500/80 transition-all group"
           >
-            <div className="w-full h-full bg-white rounded-md py-2.5 px-4 flex items-center justify-center gap-2 group-hover:bg-gradient-to-r group-hover:from-blue-50 group-hover:to-purple-50 transition-all">
-              <svg className="w-5 h-5 text-purple-600 group-hover:text-purple-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+            <div className="w-full h-full bg-white rounded-md py-2 px-4 flex items-center justify-center gap-2 group-hover:bg-gray-50/50 transition-colors">
+              <svg className="w-4 h-4 text-gray-600 group-hover:text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
               </svg>
-              <span className="font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Share Campaign</span>
+              <span className="font-medium text-gray-700 group-hover:text-gray-800">Share</span>
             </div>
           </button>
         </div>
