@@ -110,6 +110,26 @@ function FundingRequestCard({ campaign }: { campaign: EnhancedCampaign }) {
                 target.src = originalSrc.replace('https://ipfs.io/ipfs/', 'https://dweb.link/ipfs/');
               } else if (originalSrc.includes('dweb.link')) {
                 target.src = originalSrc.replace('https://dweb.link/ipfs/', 'https://cloudflare-ipfs.com/ipfs/');
+              } else if (originalSrc.includes('cloudflare-ipfs.com')) {
+                target.src = originalSrc.replace('https://cloudflare-ipfs.com/ipfs/', 'https://gateway.pinata.cloud/ipfs/');
+              } else {
+                // If all IPFS gateways fail, show fallback placeholder
+                target.style.display = 'none';
+                const parent = target.parentElement;
+                if (parent) {
+                  parent.innerHTML = `
+                    <div class="h-48 w-full bg-gradient-to-br from-gray-400 to-gray-500 flex items-center justify-center">
+                      <div class="text-white text-center">
+                        <div class="w-16 h-16 mx-auto mb-2 bg-white/20 rounded-full flex items-center justify-center">
+                          <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+                          </svg>
+                        </div>
+                        <p class="text-sm font-medium">Image unavailable</p>
+                      </div>
+                    </div>
+                  `;
+                }
               }
             }}
           />
@@ -131,7 +151,11 @@ function FundingRequestCard({ campaign }: { campaign: EnhancedCampaign }) {
       <div className="p-5">
         <div className="flex items-start justify-between mb-3">
           <h3 className="text-lg font-bold text-gray-900 line-clamp-1 flex-1">
-            {campaign.metadata?.businessName || 'Company Name'}
+            {campaign.metadata?.businessName ? (
+              campaign.metadata.businessName
+            ) : (
+              <span className="text-gray-400 italic">Business name loading...</span>
+            )}
           </h3>
           {campaign.riskAnalysis && (
             <RiskBadge riskLevel={campaign.riskAnalysis.overallRisk} size="sm" />
@@ -139,7 +163,13 @@ function FundingRequestCard({ campaign }: { campaign: EnhancedCampaign }) {
         </div>
         
         <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-          {campaign.metadata?.title || 'Funding Campaign'}
+          {campaign.metadata?.title ? (
+            campaign.metadata.title
+          ) : campaign.metadata?.description ? (
+            campaign.metadata.description
+          ) : (
+            <span className="text-gray-400 italic">Campaign details loading...</span>
+          )}
         </p>
 
         <div className="mb-4">

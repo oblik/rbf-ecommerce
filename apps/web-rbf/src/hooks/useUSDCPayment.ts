@@ -104,13 +104,14 @@ export function useUSDCPayment({
         
         setIsApproving(true);
         
-        // Approve USDC spending
+        // Approve USDC spending with higher gas limit for Base Sepolia
         writeApproval({
           address: TOKEN_CONFIG.USDC.address,
           abi: usdcAbi,
           functionName: 'approve',
           args: [campaignAddress, usdcAmount],
           gas: GAS_CONFIG.APPROVE_GAS_LIMIT,
+          gasPrice: undefined, // Let wagmi estimate
         });
         
         // Wait for approval to be confirmed
@@ -154,6 +155,20 @@ export function useUSDCPayment({
     }
   }, [isApprovalConfirmed, isApproving]);
   
+  // Effect to handle approval timeout (Base Sepolia can be slow)
+  React.useEffect(() => {
+    if (isApproving && approvalTxHash) {
+      const timeout = setTimeout(() => {
+        if (isApproving && !isApprovalConfirmed) {
+          console.warn('⏰ Approval transaction taking longer than expected');
+          setError('Transaction is taking longer than expected. Please check your wallet or try again.');
+        }
+      }, 30000); // 30 second timeout
+      
+      return () => clearTimeout(timeout);
+    }
+  }, [isApproving, approvalTxHash, isApprovalConfirmed]);
+  
   // Effect to handle contribution completion
   React.useEffect(() => {
     if (isContributionConfirmed && isContributing) {
@@ -166,14 +181,24 @@ export function useUSDCPayment({
   // Effect to handle errors
   React.useEffect(() => {
     if (approvalError) {
-      console.error('Approval error:', approvalError);
-      setError(approvalError.message || 'Approval failed');
+      console.error('🚨 Approval error:', approvalError);
+      console.error('Error details:', {
+        code: approvalError.cause?.code,
+        message: approvalError.message,
+        data: approvalError.cause?.data,
+      });
+      setError(`Approval failed: ${approvalError.shortMessage || approvalError.message}`);
       setIsApproving(false);
     }
     
     if (contributionError) {
-      console.error('Contribution error:', contributionError);
-      setError(contributionError.message || 'Contribution failed');
+      console.error('🚨 Contribution error:', contributionError);
+      console.error('Error details:', {
+        code: contributionError.cause?.code,
+        message: contributionError.message,
+        data: contributionError.cause?.data,
+      });
+      setError(`Contribution failed: ${contributionError.shortMessage || contributionError.message}`);
       setIsContributing(false);
     }
   }, [approvalError, contributionError]);

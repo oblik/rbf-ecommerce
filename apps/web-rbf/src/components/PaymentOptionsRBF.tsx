@@ -159,12 +159,55 @@ export default function PaymentOptionsRBF({
                     </button>
                     
                     {(usdcPayment.isApproving || usdcPayment.isContributing) && (
-                        <div className="mt-3 text-center">
+                        <div className="mt-3 text-center space-y-2">
                             <div className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800">
                                 <div className="w-2 h-2 bg-blue-600 rounded-full animate-pulse mr-2"></div>
                                 {usdcPayment.isApproving && 'Step 1/2: Approving USDC spending...'}
                                 {usdcPayment.isContributing && 'Step 2/2: Contributing to campaign...'}
                             </div>
+                            
+                            {/* Show transaction hash for tracking */}
+                            {usdcPayment.approvalTxHash && (
+                                <div className="text-xs text-gray-600">
+                                    <a 
+                                        href={`https://sepolia.basescan.org/tx/${usdcPayment.approvalTxHash}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="hover:text-blue-600 underline"
+                                    >
+                                        Track Approval: {usdcPayment.approvalTxHash.slice(0, 8)}...{usdcPayment.approvalTxHash.slice(-6)}
+                                    </a>
+                                </div>
+                            )}
+                            
+                            {usdcPayment.contributionTxHash && (
+                                <div className="text-xs text-gray-600">
+                                    <a 
+                                        href={`https://sepolia.basescan.org/tx/${usdcPayment.contributionTxHash}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="hover:text-blue-600 underline"
+                                    >
+                                        Track Contribution: {usdcPayment.contributionTxHash.slice(0, 8)}...{usdcPayment.contributionTxHash.slice(-6)}
+                                    </a>
+                                </div>
+                            )}
+                            
+                            {/* Error display and retry option */}
+                            {usdcPayment.error && (
+                                <div className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg p-2">
+                                    <div className="font-medium mb-1">Transaction Error:</div>
+                                    <div className="mb-2">{usdcPayment.error}</div>
+                                    <button
+                                        onClick={() => {
+                                            usdcPayment.reset();
+                                        }}
+                                        className="text-blue-600 hover:text-blue-800 underline"
+                                    >
+                                        Try Again
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     )}
                     

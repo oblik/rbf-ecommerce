@@ -42,9 +42,9 @@ export const PAYMENT_CONFIG = {
 
 // Gas Configuration
 export const GAS_CONFIG = {
-  // Conservative gas limits for Base Sepolia
-  APPROVE_GAS_LIMIT: 50000n,
-  CONTRIBUTE_GAS_LIMIT: 100000n,
+  // Increased gas limits for Base Sepolia (testnet can be unpredictable)
+  APPROVE_GAS_LIMIT: 100000n, // Increased from 50000n
+  CONTRIBUTE_GAS_LIMIT: 200000n, // Increased from 100000n
   // Gas price buffer for faster transactions
-  GAS_PRICE_BUFFER: 1.1, // 10% buffer
+  GAS_PRICE_BUFFER: 1.2, // Increased to 20% buffer
 } as const;
