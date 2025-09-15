@@ -1,10 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { formatUnits } from 'viem';
 import { campaignAbi } from '@/abi/campaign';
 import { TOKEN_CONFIG } from '@/lib/constants';
+import { useInvestorData } from '@/hooks/useInvestorData';
 import Link from 'next/link';
 import { ArrowLeftIcon, ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 
@@ -126,49 +127,18 @@ function InvestmentCard({ investment, onWithdraw }: {
 
 export default function InvestorReturnsPage() {
   const { address, isConnected } = useAccount();
-  const [investments, setInvestments] = useState<InvestmentReturn[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { 
+    investments, 
+    summary, 
+    loading, 
+    error, 
+    formatCurrency, 
+    getInvestmentsByStatus 
+  } = useInvestorData();
   const [withdrawingFrom, setWithdrawingFrom] = useState<`0x${string}` | null>(null);
   
   const { writeContract, data: hash } = useWriteContract();
   const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash });
-
-  // Calculate totals
-  const totalInvested = investments.reduce((sum, inv) => sum + inv.contribution, 0n);
-  const totalPending = investments.reduce((sum, inv) => sum + inv.pendingReturns, 0n);
-  const totalReceived = investments.reduce((sum, inv) => sum + inv.totalReceived, 0n);
-  const totalValue = totalReceived + totalPending;
-  const totalROI = totalInvested > 0n ? Number((totalValue - totalInvested) * 100n / totalInvested) : 0;
-
-  // In a real app, we'd fetch user's investments from the subgraph or contracts
-  useEffect(() => {
-    if (address) {
-      // Mock data for testing
-      setLoading(false);
-      setInvestments([
-        {
-          campaignAddress: '0x1234567890123456789012345678901234567890',
-          campaignTitle: 'Expand E-commerce Platform',
-          businessName: 'TechFlow Commerce',
-          contribution: BigInt(1000 * 10**6), // $1000
-          pendingReturns: BigInt(50 * 10**6), // $50
-          totalReceived: BigInt(100 * 10**6), // $100
-          expectedReturn: BigInt(1500 * 10**6), // $1500 (1.5x)
-          status: 'active',
-        },
-        {
-          campaignAddress: '0x2345678901234567890123456789012345678901',
-          campaignTitle: 'SaaS Platform Scale-Up',
-          businessName: 'DataFlow Solutions',
-          contribution: BigInt(500 * 10**6), // $500
-          pendingReturns: BigInt(25 * 10**6), // $25
-          totalReceived: BigInt(200 * 10**6), // $200
-          expectedReturn: BigInt(1000 * 10**6), // $1000 (2x)
-          status: 'active',
-        },
-      ]);
-    }
-  }, [address]);
 
   const handleWithdraw = async (campaignAddress: `0x${string}`) => {
     setWithdrawingFrom(campaignAddress);
@@ -224,39 +194,39 @@ export default function InvestorReturnsPage() {
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">Total Invested</p>
             <p className="text-2xl font-bold text-gray-900 mt-2">
-              ${formatUnits(totalInvested, TOKEN_CONFIG.USDC.decimals)}
+              {formatCurrency(summary.totalInvested)}
             </p>
           </div>
           
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">Total Received</p>
             <p className="text-2xl font-bold text-gray-900 mt-2">
-              ${formatUnits(totalReceived, TOKEN_CONFIG.USDC.decimals)}
+              {formatCurrency(summary.totalReceived)}
             </p>
           </div>
           
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">Pending Returns</p>
             <p className="text-2xl font-bold text-green-600 mt-2">
-              ${formatUnits(totalPending, TOKEN_CONFIG.USDC.decimals)}
+              {formatCurrency(summary.totalPending)}
             </p>
           </div>
           
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">Total ROI</p>
-            <p className={`text-2xl font-bold mt-2 ${totalROI >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-              {totalROI > 0 ? '+' : ''}{totalROI.toFixed(1)}%
+            <p className={`text-2xl font-bold mt-2 ${summary.totalROI >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+              {summary.totalROI > 0 ? '+' : ''}{summary.totalROI.toFixed(1)}%
             </p>
           </div>
         </div>
 
         {/* Withdraw All Button */}
-        {totalPending > 0n && (
+        {summary.totalPending > 0n && (
           <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-green-900">
-                  You have ${formatUnits(totalPending, TOKEN_CONFIG.USDC.decimals)} available to withdraw
+                  You have {formatCurrency(summary.totalPending)} available to withdraw
                 </p>
                 <p className="text-xs text-green-700 mt-1">
                   Withdraw from all campaigns with pending returns
