@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { usePrivy, useWallets, ConnectedWallet } from '@privy-io/react-auth';
 import { BanknotesIcon, CreditCardIcon as OutlineCreditCardIcon } from '@heroicons/react/24/outline';
 import { usePaymentProvider } from '@/providers/payment/PaymentProvider';
@@ -29,6 +30,7 @@ export default function PaymentOptionsRBF({
     onSuccess, 
     onError 
 }: PaymentOptionsProps) {
+    const router = useRouter();
     const { user, authenticated, login, logout } = usePrivy();
     const { wallets } = useWallets();
     const { provider } = usePaymentProvider();
@@ -106,10 +108,12 @@ export default function PaymentOptionsRBF({
     // Handle USDC payment completion
     useEffect(() => {
         if (usdcPayment.isCompleted) {
-            onSuccess(`Successfully invested ${fiatAmount} USDC in the campaign!`);
+            // Redirect to success page with transaction details
+            const successUrl = `/campaign/${campaignId}/success?amount=${fiatAmount}${usdcPayment.contributionTxHash ? `&tx=${usdcPayment.contributionTxHash}` : ''}`;
+            router.push(successUrl);
             usdcPayment.reset();
         }
-    }, [usdcPayment.isCompleted, fiatAmount, onSuccess]);
+    }, [usdcPayment.isCompleted, fiatAmount, campaignId, usdcPayment.contributionTxHash, router]);
 
     // Handle USDC payment errors
     useEffect(() => {
