@@ -1,0 +1,32 @@
+{
+  "name": "@rbf/automation",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc && forge build",
+    "start": "node dist/index.js",
+    "test": "jest && forge test",
+    "deploy": "forge script script/Deploy.s.sol --rpc-url base_sepolia --broadcast --verify",
+    "deploy:local": "forge script script/Deploy.s.sol --rpc-url localhost --broadcast",
+    "test:contracts": "forge test",
+    "test:gas": "forge test --gas-report"
+  },
+  "dependencies": {
+    "@gelatonetwork/web3-functions-sdk": "^2.14.0",
+    "@gelatonetwork/relay-sdk": "^5.2.0",
+    "dotenv": "^16.3.1",
+    "ethers": "^6.8.1",
+    "viem": "^1.19.0",
+    "stripe": "^14.9.0",
+    "axios": "^1.6.2",
+    "cron": "^3.1.6"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.7",
+    "tsx": "^4.6.0",
+    "typescript": "^5.2.2",
+    "jest": "^29.7.0",
+    "@types/jest": "^29.5.8"
+  }
+}
