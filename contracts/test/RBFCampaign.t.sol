@@ -28,6 +28,10 @@ contract RBFCampaignTest is Test {
         BusinessRegistry businessRegistry = new BusinessRegistry();
         factory = new RBFCampaignFactory(address(usdc), address(businessRegistry));
         
+        // Register the business first
+        vm.prank(owner);
+        businessRegistry.registerBusiness("Test Business", "ipfs://test-business");
+        
         // Create a campaign
         vm.prank(owner);
         address campaignAddr = factory.createCampaign(
