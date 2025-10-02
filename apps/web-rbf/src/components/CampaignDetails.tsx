@@ -8,6 +8,9 @@ import { InvestmentRiskAnalysis, RiskBadge } from './InvestmentRiskAnalysis';
 import { CompactHealthScore, HealthScore } from './HealthScoreIndicator';
 import { BusinessMetricsSummary } from './BusinessMetrics';
 import { BusinessAnalytics } from './BusinessAnalytics';
+import { MerchantKPICards } from './MerchantKPICards';
+import { RepaymentTimeline } from './RepaymentTimeline';
+import { OwnerSettlementPanel } from './OwnerSettlementPanel';
 import Link from 'next/link';
 
 interface CampaignDetailsProps {
@@ -45,6 +48,7 @@ export default function CampaignDetails({ campaignId }: CampaignDetailsProps) {
 
   const tabs = [
     { id: 'overview', label: 'Overview' },
+    { id: 'performance', label: 'Performance' },
     { id: 'business', label: 'Business Info' },
     { id: 'analytics', label: 'Analytics' },
     { id: 'terms', label: 'Terms' },
@@ -193,6 +197,48 @@ export default function CampaignDetails({ campaignId }: CampaignDetailsProps) {
                   </div>
                 </div>
               </div>
+            </div>
+          )}
+
+          {activeTab === 'performance' && (
+            <div className="space-y-6">
+              {/* Owner Settlement Panel (only visible to owner) */}
+              <OwnerSettlementPanel
+                campaignAddress={campaign.address as `0x${string}`}
+                ownerAddress={campaign.owner as `0x${string}`}
+                revenueSharePercent={campaign.revenueSharePercent}
+                repaymentCap={campaign.repaymentCap}
+                totalRepaid={BigInt(campaign.totalRepaid || 0)}
+                fundingGoal={BigInt(campaign.fundingGoal)}
+                lastRevenueReport={Number(campaign.lastRevenueReport || 0)}
+                campaignAbi={[]} // TODO: Import campaign ABI
+              />
+
+              {/* Repayment Timeline */}
+              <RepaymentTimeline
+                events={[]} // TODO: Fetch events from subgraph
+                totalRepaid={BigInt(campaign.totalRepaid || 0)}
+                repaymentCap={BigInt(campaign.repaymentCap)}
+                fundingGoal={BigInt(campaign.fundingGoal)}
+              />
+
+              {/* Merchant KPIs (if Shopify connected) */}
+              {campaign.metadata?.shopifyDomain && campaign.metadata?.shopifyAccessToken && (
+                <MerchantKPICards
+                  shop={campaign.metadata.shopifyDomain}
+                  accessToken={campaign.metadata.shopifyAccessToken}
+                  timezone={campaign.metadata?.timezone || 'America/New_York'}
+                  windowDays={30}
+                />
+              )}
+
+              {!campaign.metadata?.shopifyDomain && (
+                <div className="bg-gray-50 border border-gray-200 rounded-xl p-6">
+                  <p className="text-gray-600 text-center">
+                    📊 Connect Shopify to see real-time business performance metrics
+                  </p>
+                </div>
+              )}
             </div>
           )}
 
