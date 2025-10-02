@@ -19,6 +19,8 @@ interface CampaignFormData {
   revenueSharePercent: string;
   repaymentCap: string;
   image?: File;
+  shopifyDomain?: string;
+  shopifyAccessToken?: string;
 }
 
 
@@ -146,6 +148,8 @@ export default function CreateCampaignForm() {
       image: imageURI, // IPFS URI of the uploaded image
       revenueShare: Number(formData.revenueSharePercent),
       repaymentCap: Number(formData.repaymentCap),
+      shopifyDomain: formData.shopifyDomain,
+      shopifyAccessToken: formData.shopifyAccessToken,
       createdAt: new Date().toISOString(),
     };
 
@@ -258,9 +262,10 @@ export default function CreateCampaignForm() {
 
   const steps = [
     { id: 1, title: 'Business Info', fields: ['title', 'businessName', 'description'] },
-    { id: 2, title: 'Social Capital', fields: [] },
-    { id: 3, title: 'Funding Details', fields: ['fundingGoal', 'fundingPeriodDays'] },
-    { id: 4, title: 'Terms & Image', fields: ['revenueSharePercent', 'repaymentCap', 'image'] },
+    { id: 2, title: 'Shopify Connect', fields: [] },
+    { id: 3, title: 'Social Capital', fields: [] },
+    { id: 4, title: 'Funding Details', fields: ['fundingGoal', 'fundingPeriodDays'] },
+    { id: 5, title: 'Terms & Image', fields: ['revenueSharePercent', 'repaymentCap', 'image'] },
   ];
 
   const currentStepData = steps.find(s => s.id === currentStep);
@@ -283,20 +288,25 @@ export default function CreateCampaignForm() {
       return formFieldsValid && metadataFieldsValid;
     }
     
-    // Step 2: Social Capital (optional - can always proceed)
+    // Step 2: Shopify Connect (optional - can always proceed)
     if (currentStep === 2) {
+      return true; // Shopify connection is optional
+    }
+
+    // Step 3: Social Capital (optional - can always proceed)
+    if (currentStep === 3) {
       return true; // Social connections are optional
     }
-    
-    // Step 3: Funding Details validation
-    if (currentStep === 3) {
+
+    // Step 4: Funding Details validation
+    if (currentStep === 4) {
       return currentStepData.fields.every(field => 
         formData[field as keyof CampaignFormData]?.toString().trim()
       );
     }
     
-    // Step 4: Terms & Image - Require image to be uploaded for form to be valid
-    if (currentStep === 4) {
+    // Step 5: Terms & Image - Require image to be uploaded for form to be valid
+    if (currentStep === 5) {
       const fieldsValid = currentStepData.fields.every(field => 
         field === 'image' ? formData.image : formData[field as keyof CampaignFormData]?.toString().trim()
       );
@@ -461,51 +471,82 @@ export default function CreateCampaignForm() {
           </>
         )}
 
-        {/* Step 2: Social Capital */}
+        {/* Step 2: Shopify Connect */}
         {currentStep === 2 && (
           <>
-            {/* Shopify OAuth Section */}
-            <div className="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
+            {/* Shopify Integration Section */}
+            <div className="bg-green-50 border border-green-200 rounded-lg p-6">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center">
-                  <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center">
+                  <svg className="w-6 h-6 fill-white" viewBox="0 0 24 24">
                     <path d="M14.8 6.504c-.603-.66-1.347-1.074-2.231-1.244V4.97c0-.055-.044-.1-.1-.1h-.68c-.055 0-.1.044-.1.1v.29c-1.316.013-2.6.604-2.6 2.08 0 1.76 1.694 2.186 2.6 2.39v2.606c-.55-.13-1.08-.38-1.494-.65-.064-.042-.15-.026-.192.035l-.337.487c-.042.06-.026.143.035.185.605.424 1.347.714 2.146.782v.416c0 .055.045.1.1.1h.68c.055 0 .1-.045.1-.1v-.387c1.395-.043 2.688-.688 2.688-2.234 0-1.77-1.743-2.226-2.688-2.452V6.787c.462.103.875.282 1.194.486.062.04.144.02.185-.04l.298-.44c.04-.06.022-.142-.038-.18zm-3.15 1.95c-.606-.183-.99-.39-.99-.84 0-.463.395-.714.99-.714v1.554zm1.34 2.876c0 .496-.43.795-1.04.795V9.743c.64.196 1.04.416 1.04.887z"/>
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-green-900">Connect Your Shopify Store</h3>
-                  <p className="text-sm text-green-700">Verify your business performance and revenue data to build credibility</p>
+                  <h3 className="text-xl font-bold text-green-900">Connect Shopify Store</h3>
+                  <p className="text-sm text-green-700">Show verified revenue & business performance to build trust with funders</p>
                 </div>
               </div>
 
-              <div className="bg-white rounded-lg p-3 border border-sky-200">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <svg className="w-5 h-5 fill-[#95BF47]" viewBox="0 0 24 24">
-                      <path d="M14.8 6.504c-.603-.66-1.347-1.074-2.231-1.244V4.97c0-.055-.044-.1-.1-.1h-.68c-.055 0-.1.044-.1.1v.29c-1.316.013-2.6.604-2.6 2.08 0 1.76 1.694 2.186 2.6 2.39v2.606c-.55-.13-1.08-.38-1.494-.65-.064-.042-.15-.026-.192.035l-.337.487c-.042.06-.026.143.035.185.605.424 1.347.714 2.146.782v.416c0 .055.045.1.1.1h.68c.055 0 .1-.045.1-.1v-.387c1.395-.043 2.688-.688 2.688-2.234 0-1.77-1.743-2.226-2.688-2.452V6.787c.462.103.875.282 1.194.486.062.04.144.02.185-.04l.298-.44c.04-.06.022-.142-.038-.18zm-3.15 1.95c-.606-.183-.99-.39-.99-.84 0-.463.395-.714.99-.714v1.554zm1.34 2.876c0 .496-.43.795-1.04.795V9.743c.64.196 1.04.416 1.04.887z"/>
-                    </svg>
-                    <div>
-                      <h4 className="font-medium text-gray-900 text-sm">Shopify Store Integration</h4>
-                      <p className="text-xs text-gray-500">Securely connect to verify sales data and business metrics</p>
-                    </div>
-                  </div>
-                  <button className="bg-sky-600 text-white px-3 py-1.5 rounded-md text-sm font-medium hover:bg-sky-700 transition-colors">
-                    Connect
-                  </button>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Shopify Store Domain
+                  </label>
+                  <input
+                    type="text"
+                    name="shopifyDomain"
+                    value={formData.shopifyDomain || ''}
+                    onChange={handleInputChange}
+                    placeholder="your-store.myshopify.com"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                  <p className="text-xs text-gray-600 mt-1">Enter your Shopify store domain (e.g., bloombeam-3.myshopify.com)</p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Admin API Access Token
+                  </label>
+                  <input
+                    type="password"
+                    name="shopifyAccessToken"
+                    value={formData.shopifyAccessToken || ''}
+                    onChange={handleInputChange}
+                    placeholder="shpat_xxxxxxxxxxxxxxxxxxxxx"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent font-mono text-sm"
+                  />
+                  <p className="text-xs text-gray-600 mt-1">Generate from your Shopify Admin → Settings → Apps and sales channels → Develop apps</p>
                 </div>
               </div>
 
-              <div className="mt-4 p-3 bg-green-100 rounded-lg border border-green-200">
-                <div className="flex items-start gap-2">
-                  <svg className="w-4 h-4 text-green-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="mt-4 p-4 bg-white rounded-lg border border-green-200">
+                <div className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <div className="text-xs text-green-700">
-                    <strong>Boost credibility:</strong> Verified revenue data helps funders understand your business performance and growth potential.
+                  <div className="text-sm">
+                    <p className="font-semibold text-green-900 mb-1">Why connect Shopify?</p>
+                    <ul className="text-gray-700 space-y-1 text-xs">
+                      <li>• Display real-time KPIs (revenue, orders, customers) on your campaign page</li>
+                      <li>• Build credibility with verified business performance data</li>
+                      <li>• Help funders understand your growth potential</li>
+                      <li>• Optional but highly recommended for e-commerce businesses</li>
+                    </ul>
                   </div>
                 </div>
               </div>
+
+              <p className="text-center text-sm text-gray-600 mt-4">
+                <strong>Note:</strong> Connecting Shopify is optional. You can skip this step and add it later.
+              </p>
             </div>
+          </>
+        )}
+
+        {/* Step 3: Social Capital */}
+        {currentStep === 3 && (
+          <>
 
             <div className="bg-sky-50 border border-sky-200 rounded-lg p-6 mb-6">
               <div className="flex items-center gap-3 mb-4">
@@ -699,8 +740,8 @@ export default function CreateCampaignForm() {
           </>
         )}
 
-        {/* Step 3: Funding Details */}
-        {currentStep === 3 && (
+        {/* Step 4: Funding Details */}
+        {currentStep === 4 && (
           <>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -759,8 +800,8 @@ export default function CreateCampaignForm() {
           </>
         )}
 
-        {/* Step 4: Terms & Image */}
-        {currentStep === 4 && (
+        {/* Step 5: Terms & Image */}
+        {currentStep === 5 && (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -852,7 +893,7 @@ export default function CreateCampaignForm() {
             Previous
           </button>
 
-          {currentStep < 3 ? (
+          {currentStep < 5 ? (
             <button
               type="button"
               onClick={() => setCurrentStep(currentStep + 1)}
