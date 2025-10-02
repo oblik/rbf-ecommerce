@@ -13,7 +13,7 @@
     "test:gas": "forge test --gas-report"
   },
   "dependencies": {
-    "@gelatonetwork/web3-functions-sdk": "^2.14.0",
+    "@gelatonetwork/web3-functions-sdk": "^2.4.4",
     "@gelatonetwork/relay-sdk": "^5.2.0",
     "dotenv": "^16.3.1",
     "ethers": "^6.8.1",
