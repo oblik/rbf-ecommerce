@@ -2,13 +2,23 @@
 
 import { formatDistanceToNow } from 'date-fns';
 import { formatUnits } from 'viem';
+import { AttestationTimelineItem } from './AttestationTimelineItem';
 
 interface TimelineEvent {
-  type: 'goal_reached' | 'settlement' | 'withdrawal' | 'completed';
+  type: 'goal_reached' | 'settlement' | 'withdrawal' | 'completed' | 'attestation';
   timestamp: number; // Unix timestamp
   amount?: bigint;
   address?: string;
   txHash?: string;
+  // Attestation-specific fields
+  attestation?: {
+    month: string;
+    payloadCid: string;
+    signer: `0x${string}`;
+    signature: `0x${string}`;
+    hash: `0x${string}`;
+    netRevenue: string;
+  };
 }
 
 interface RepaymentTimelineProps {
@@ -71,6 +81,20 @@ export function RepaymentTimeline({
 }
 
 function TimelineItem({ event }: { event: TimelineEvent }) {
+  // Handle attestation events separately
+  if (event.type === 'attestation' && event.attestation) {
+    return (
+      <AttestationTimelineItem
+        month={event.attestation.month}
+        payloadCid={event.attestation.payloadCid}
+        signer={event.attestation.signer}
+        signature={event.attestation.signature}
+        hash={event.attestation.hash}
+        netRevenue={event.attestation.netRevenue}
+      />
+    );
+  }
+
   const timeAgo = formatDistanceToNow(event.timestamp * 1000, { addSuffix: true });
 
   const iconBg = {

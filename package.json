@@ -28,5 +28,8 @@
   },
   "dependencies": {
     "dotenv": "^17.2.1"
+  },
+  "resolutions": {
+    "postcss": "8.4.49"
   }
 }

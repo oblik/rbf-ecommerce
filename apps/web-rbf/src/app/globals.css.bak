@@ -1,0 +1,438 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+   RBF Platform CSS Variables & Global Styles
+   ============================================ */
+
+:root {
+  /* Core Brand Colors */
+  --rbf-primary: #0ea5e9;        /* sky-500 */
+  --rbf-primary-dark: #0284c7;   /* sky-600 */
+  --rbf-secondary: #10b981;      /* emerald-500 */
+  --rbf-accent: #f59e0b;         /* amber-500 */
+  --rbf-danger: #ef4444;         /* red-500 */
+  
+  /* Neutral Colors */
+  --rbf-gray-50: #f9fafb;
+  --rbf-gray-100: #f3f4f6;
+  --rbf-gray-200: #e5e7eb;
+  --rbf-gray-300: #d1d5db;
+  --rbf-gray-400: #9ca3af;
+  --rbf-gray-500: #6b7280;
+  --rbf-gray-600: #4b5563;
+  --rbf-gray-700: #374151;
+  --rbf-gray-800: #1f2937;
+  --rbf-gray-900: #111827;
+  
+  /* Typography */
+  --rbf-font-body: ui-sans-serif, system-ui, sans-serif;
+  --rbf-font-mono: ui-monospace, 'Cascadia Code', 'Source Code Pro', monospace;
+  
+  /* Shadows */
+  --rbf-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --rbf-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --rbf-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  
+  /* Animation Durations */
+  --rbf-transition-fast: 150ms;
+  --rbf-transition-normal: 200ms;
+  --rbf-transition-slow: 300ms;
+  
+  /* Z-index Scale */
+  --rbf-z-dropdown: 1000;
+  --rbf-z-modal: 1050;
+  --rbf-z-toast: 1100;
+  --rbf-z-tooltip: 1150;
+}
+
+/* ============================================
+   Base Styles
+   ============================================ */
+
+* {
+  scroll-behavior: smooth;
+}
+
+html {
+  font-family: var(--rbf-font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--rbf-gray-50);
+  color: var(--rbf-gray-900);
+  line-height: 1.6;
+}
+
+/* ============================================
+   Component Layer - Reusable Patterns
+   ============================================ */
+
+@layer components {
+  /* Card Components */
+  .rbf-card {
+    @apply bg-white rounded-xl shadow-sm border border-gray-200 p-6;
+  }
+  
+  .rbf-card-interactive {
+    @apply rbf-card hover:shadow-md transition-shadow duration-200 cursor-pointer;
+  }
+  
+  .rbf-card-featured {
+    @apply rbf-card border-sky-200 bg-gradient-to-br from-white to-sky-50;
+  }
+  
+  /* Button Components */
+  .rbf-btn {
+    @apply inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
+  }
+  
+  .rbf-btn-primary {
+    @apply rbf-btn bg-sky-600 text-white hover:bg-sky-700 focus:ring-sky-500;
+  }
+  
+  .rbf-btn-secondary {
+    @apply rbf-btn bg-gray-100 text-gray-900 hover:bg-gray-200 focus:ring-gray-500;
+  }
+  
+  .rbf-btn-success {
+    @apply rbf-btn bg-emerald-600 text-white hover:bg-emerald-700 focus:ring-emerald-500;
+  }
+  
+  .rbf-btn-danger {
+    @apply rbf-btn bg-red-600 text-white hover:bg-red-700 focus:ring-red-500;
+  }
+  
+  .rbf-btn-lg {
+    @apply px-6 py-3 text-base;
+  }
+  
+  .rbf-btn-sm {
+    @apply px-3 py-1.5 text-xs;
+  }
+  
+  /* Input Components */
+  .rbf-input {
+    @apply block w-full px-3 py-2 border border-gray-300 rounded-md text-sm placeholder-gray-400 
+           focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 
+           disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed;
+  }
+  
+  .rbf-input-error {
+    @apply rbf-input border-red-300 focus:ring-red-500 focus:border-red-500;
+  }
+  
+  /* Badge Components */
+  .rbf-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+  
+  .rbf-badge-success {
+    @apply rbf-badge bg-emerald-100 text-emerald-800;
+  }
+  
+  .rbf-badge-warning {
+    @apply rbf-badge bg-amber-100 text-amber-800;
+  }
+  
+  .rbf-badge-danger {
+    @apply rbf-badge bg-red-100 text-red-800;
+  }
+  
+  .rbf-badge-info {
+    @apply rbf-badge bg-sky-100 text-sky-800;
+  }
+  
+  .rbf-badge-gray {
+    @apply rbf-badge bg-gray-100 text-gray-800;
+  }
+  
+  /* Progress Components */
+  .rbf-progress {
+    @apply w-full bg-gray-200 rounded-full h-2.5 overflow-hidden;
+  }
+  
+  .rbf-progress-bar {
+    @apply h-full bg-sky-600 rounded-full transition-all duration-300 ease-out;
+  }
+  
+  .rbf-progress-success .rbf-progress-bar {
+    @apply bg-emerald-600;
+  }
+  
+  .rbf-progress-warning .rbf-progress-bar {
+    @apply bg-amber-600;
+  }
+  
+  /* Animation Components */
+  .rbf-fade-in {
+    animation: rbf-fadeIn 0.3s ease-out;
+  }
+  
+  .rbf-slide-up {
+    animation: rbf-slideUp 0.3s ease-out;
+  }
+  
+  .rbf-pulse {
+    animation: rbf-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  /* Loading States */
+  .rbf-skeleton {
+    @apply animate-pulse bg-gray-200 rounded;
+  }
+  
+  .rbf-spinner {
+    @apply inline-block w-4 h-4 border-2 border-gray-200 border-t-sky-600 rounded-full animate-spin;
+  }
+  
+  /* Focus States */
+  .rbf-focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2;
+  }
+  
+  /* Typography */
+  .rbf-heading-xl {
+    @apply text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl;
+  }
+  
+  .rbf-heading-lg {
+    @apply text-3xl font-bold tracking-tight text-gray-900;
+  }
+  
+  .rbf-heading-md {
+    @apply text-2xl font-semibold text-gray-900;
+  }
+  
+  .rbf-heading-sm {
+    @apply text-lg font-semibold text-gray-900;
+  }
+  
+  .rbf-text-muted {
+    @apply text-gray-600;
+  }
+  
+  .rbf-text-small {
+    @apply text-sm text-gray-500;
+  }
+  
+  /* Financial Display */
+  .rbf-currency {
+    @apply font-mono font-semibold;
+  }
+  
+  .rbf-currency-large {
+    @apply rbf-currency text-2xl;
+  }
+  
+  .rbf-percentage-positive {
+    @apply text-emerald-600 font-medium;
+  }
+  
+  .rbf-percentage-negative {
+    @apply text-red-600 font-medium;
+  }
+  
+  /* Status Indicators */
+  .rbf-status-dot {
+    @apply inline-block w-2 h-2 rounded-full mr-2;
+  }
+  
+  .rbf-status-active .rbf-status-dot {
+    @apply bg-emerald-500;
+  }
+  
+  .rbf-status-pending .rbf-status-dot {
+    @apply bg-amber-500;
+  }
+  
+  .rbf-status-inactive .rbf-status-dot {
+    @apply bg-gray-400;
+  }
+}
+
+/* ============================================
+   Utilities Layer - Custom Utilities
+   ============================================ */
+
+@layer utilities {
+  /* Text Utilities */
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  /* Scrollbar Styling */
+  .rbf-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: var(--rbf-gray-300) transparent;
+  }
+  
+  .rbf-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  .rbf-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .rbf-scrollbar::-webkit-scrollbar-thumb {
+    background-color: var(--rbf-gray-300);
+    border-radius: 3px;
+  }
+  
+  .rbf-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: var(--rbf-gray-400);
+  }
+  
+  /* Glass Effect */
+  .rbf-glass {
+    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  /* Gradient Text */
+  .rbf-gradient-text {
+    background: linear-gradient(135deg, var(--rbf-primary), var(--rbf-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  /* Hide scrollbar but keep functionality */
+  .rbf-hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .rbf-hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ============================================
+   Animation Keyframes
+   ============================================ */
+
+@keyframes rbf-fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes rbf-slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rbf-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* ============================================
+   Print Styles
+   ============================================ */
+
+@media print {
+  .rbf-no-print {
+    display: none !important;
+  }
+  
+  .rbf-card {
+    box-shadow: none;
+    border: 1px solid #e5e7eb;
+  }
+  
+  * {
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+  }
+}
+
+/* ============================================
+   Dark Mode Support (Optional)
+   ============================================ */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --rbf-gray-50: #111827;
+    --rbf-gray-100: #1f2937;
+    --rbf-gray-200: #374151;
+    --rbf-gray-300: #4b5563;
+    --rbf-gray-400: #6b7280;
+    --rbf-gray-500: #9ca3af;
+    --rbf-gray-600: #d1d5db;
+    --rbf-gray-700: #e5e7eb;
+    --rbf-gray-800: #f3f4f6;
+    --rbf-gray-900: #f9fafb;
+  }
+  
+  body {
+    background-color: var(--rbf-gray-50);
+    color: var(--rbf-gray-900);
+  }
+  
+  .rbf-card {
+    @apply bg-gray-800 border-gray-700;
+  }
+}
+
+/* ============================================
+   Component-Specific Styles
+   ============================================ */
+
+/* Campaign Card Enhancements */
+.campaign-card {
+  @apply rbf-card-interactive;
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+}
+
+.campaign-card:hover {
+  transform: translateY(-2px);
+}
+
+/* Investment Progress Animation */
+.investment-progress {
+  @apply rbf-progress;
+}
+
+.investment-progress .rbf-progress-bar {
+  background: linear-gradient(90deg, var(--rbf-primary), var(--rbf-secondary));
+}
+
+/* Notification Styles */
+.notification-toast {
+  @apply rbf-glass rounded-lg p-4 shadow-lg;
+  z-index: var(--rbf-z-toast);
+}
+
+/* Modal Backdrop */
+.modal-backdrop {
+  backdrop-filter: blur(4px);
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: var(--rbf-z-modal);
+}
+
+/* Revenue Share Visualization */
+.revenue-chart {
+  @apply rbf-card;
+  background: linear-gradient(135deg, #f0f9ff, #ecfdf5);
+}

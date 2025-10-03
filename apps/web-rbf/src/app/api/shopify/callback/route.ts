@@ -55,11 +55,11 @@ export async function GET(request: NextRequest) {
 
     const creditScore = await response.json();
 
-    // Store session data (in production, use a database)
-    // For now, we'll pass it in the redirect URL
-    const redirectUrl = new URL('/request-funding', process.env.NEXT_PUBLIC_APP_URL!);
-    redirectUrl.searchParams.set('creditScore', JSON.stringify(creditScore));
-    redirectUrl.searchParams.set('shopifyConnected', 'true');
+    // Pass session data to client via URL params (client will store in localStorage)
+    const redirectUrl = new URL('/shopify/connected', process.env.NEXT_PUBLIC_APP_URL!);
+    redirectUrl.searchParams.set('shop', shop);
+    redirectUrl.searchParams.set('accessToken', session.accessToken);
+    redirectUrl.searchParams.set('scope', session.scope);
 
     return NextResponse.redirect(redirectUrl.toString());
   } catch (error) {
